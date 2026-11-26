@@ -804,6 +804,8 @@ export function createCleanHouseholdSeed(options: {
         options.planTier === 'plus'
           ? new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10)
           : undefined,
+      onboardingDismissed: false,
+      onboardingChecklistDismissed: false,
       syncEnabled: true,
       syncServerUrl: '',
     },

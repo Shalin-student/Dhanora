@@ -204,7 +204,8 @@ export interface FinanceContextValue {
   getAuthSyncConfig: () => SyncClientConfig;
   signInWithCredentials: (
     email: string,
-    password: string
+    password: string,
+    redirectView?: ActiveView
   ) => Promise<{ ok: boolean; errorKey?: string }>;
   signUpWithAccount: (options: {
     name: string;
@@ -215,12 +216,14 @@ export interface FinanceContextValue {
     householdName?: string;
     inviteCode?: string;
     baseCurrency?: CurrencyCode;
+    redirectView?: ActiveView;
   }) => Promise<{ ok: boolean; errorKey?: string }>;
   enterGuestDemo: (presetIndex?: number) => void;
   signOut: () => void;
   deleteHouseholdAccount: () => Promise<boolean>;
   upgradePlan: (tier: PlanTier, billingCycle?: 'monthly' | 'yearly') => void;
   refreshSessionFromServer: () => Promise<void>;
+  dispatchStarterTemplate: (nextState: AppState) => void;
   // Multi-device SQLite sync state
   syncStatus: SyncStatus;
   syncRevision: number;
@@ -501,7 +504,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   );
 
   const applySessionTransition = useCallback(
-    (session: AuthSession, explicitInitialState?: AppState) => {
+    (session: AuthSession, explicitInitialState?: AppState, targetView: ActiveView = 'dashboard') => {
       try {
         if (typeof window !== 'undefined' && window.location.pathname !== '/') {
           window.history.replaceState({}, '', '/');
@@ -515,7 +518,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setAuthSession(session);
       authSessionRef.current = session;
       setRawSelectedMemberId(session.role === 'dependent' ? session.memberId : 'all');
-      setRawActiveView('dashboard');
+      setRawActiveView(targetView);
       setSyncStatus('local-only');
       syncRevisionRef.current = 0;
       setSyncRevision(0);
@@ -541,7 +544,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const signInWithCredentials: FinanceContextValue['signInWithCredentials'] = async (
     email,
-    password
+    password,
+    redirectView
   ) => {
     const res = await signInAccount({
       email,
@@ -552,7 +556,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (!res.ok || !res.session) {
       return { ok: false, errorKey: res.errorKey ?? 'auth.errInvalidCreds' };
     }
-    applySessionTransition(res.session);
+    const target =
+      redirectView && res.session.role !== 'dependent' ? redirectView : 'dashboard';
+    applySessionTransition(res.session, undefined, target);
     pushToast(tr('toast.signedInAs', { name: res.session.name }));
     return { ok: true };
   };
@@ -564,7 +570,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       password: options.password,
       role: options.role,
       householdName: options.householdName,
-      planTier: options.planTier,
+      planTier: 'free',
       inviteCode: options.inviteCode,
       existingMembers: options.inviteCode ? stateRef.current.members : [],
       syncWithServer:
@@ -590,12 +596,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         role: res.session.role,
         avatar: res.session.avatar,
         householdName: options.householdName?.trim() || res.session.householdName,
-        planTier: options.planTier ?? res.session.planTier ?? 'free',
+        planTier: res.session.planTier ?? 'free',
         language: lang,
         baseCurrency: options.baseCurrency,
       });
     }
-    applySessionTransition(res.session, starter);
+    const target =
+      options.redirectView && res.session.role !== 'dependent' ? options.redirectView : 'dashboard';
+    applySessionTransition(res.session, starter, target);
     const hhId = res.session.householdId || 'default';
     void saveAppStateToRepo(starter, hhId);
     pushToast(tr('toast.accountCreated', { name: res.session.name }));
@@ -1848,6 +1856,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
   };
 
+  const dispatchStarterTemplate = (nextState: AppState) => {
+    markMutated();
+    dispatch({ type: 'RESTORE_STATE', payload: nextState });
+    recordAudit('template', 'Applied household starter template', 'settings');
+  };
+
   const value = useMemo<FinanceContextValue>(
     () => ({
       state,
@@ -1870,6 +1884,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deleteHouseholdAccount,
       upgradePlan,
       refreshSessionFromServer,
+      dispatchStarterTemplate,
       syncStatus,
       syncRevision,
       lastSyncedAt,

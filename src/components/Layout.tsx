@@ -37,27 +37,51 @@ import type { ActiveView } from '../types/finance';
 import { shiftMonth } from '../utils/calculations';
 import { useI18n } from '../i18n/useI18n';
 import type { TranslationKey } from '../i18n';
+import { BrandMark } from './BrandMark';
 import { LanguageToggle } from './LanguageToggle';
 
-const NAV_ITEMS: Array<{
-  id: ActiveView;
-  labelKey: TranslationKey;
-  icon: React.ComponentType<{ className?: string }>;
+const NAV_GROUPS: Array<{
+  groupKey: TranslationKey;
+  items: Array<{
+    id: ActiveView;
+    labelKey: TranslationKey;
+    icon: React.ComponentType<{ className?: string }>;
+  }>;
 }> = [
-  { id: 'dashboard', labelKey: 'nav.dashboard', icon: Home },
-  { id: 'transactions', labelKey: 'nav.transactions', icon: ArrowLeftRight },
-  { id: 'receipts', labelKey: 'nav.receipts', icon: Receipt },
-  { id: 'budgets', labelKey: 'nav.budgets', icon: PiggyBank },
-  { id: 'bills', labelKey: 'nav.bills', icon: CalendarClock },
-  { id: 'accounts', labelKey: 'nav.accounts', icon: Landmark },
-  { id: 'goals', labelKey: 'nav.goals', icon: Target },
-  { id: 'safety', labelKey: 'nav.safety', icon: ShieldCheck },
-  { id: 'calculators', labelKey: 'nav.calculators', icon: Calculator },
-  { id: 'automation', labelKey: 'nav.automation', icon: Wand2 },
-  { id: 'family', labelKey: 'nav.family', icon: Users },
-  { id: 'reports', labelKey: 'nav.reports', icon: BarChart3 },
-  { id: 'pricing', labelKey: 'nav.pricing', icon: Crown },
-  { id: 'settings', labelKey: 'nav.settings', icon: Settings },
+  {
+    groupKey: 'nav.groupMoney',
+    items: [
+      { id: 'dashboard', labelKey: 'nav.dashboard', icon: Home },
+      { id: 'transactions', labelKey: 'nav.transactions', icon: ArrowLeftRight },
+      { id: 'receipts', labelKey: 'nav.receipts', icon: Receipt },
+      { id: 'budgets', labelKey: 'nav.budgets', icon: PiggyBank },
+      { id: 'bills', labelKey: 'nav.bills', icon: CalendarClock },
+    ],
+  },
+  {
+    groupKey: 'nav.groupWealth',
+    items: [
+      { id: 'accounts', labelKey: 'nav.accounts', icon: Landmark },
+      { id: 'goals', labelKey: 'nav.goals', icon: Target },
+      { id: 'safety', labelKey: 'nav.safety', icon: ShieldCheck },
+    ],
+  },
+  {
+    groupKey: 'nav.groupTools',
+    items: [
+      { id: 'calculators', labelKey: 'nav.calculators', icon: Calculator },
+      { id: 'automation', labelKey: 'nav.automation', icon: Wand2 },
+      { id: 'reports', labelKey: 'nav.reports', icon: BarChart3 },
+    ],
+  },
+  {
+    groupKey: 'nav.groupWorkspace',
+    items: [
+      { id: 'family', labelKey: 'nav.family', icon: Users },
+      { id: 'pricing', labelKey: 'nav.pricing', icon: Crown },
+      { id: 'settings', labelKey: 'nav.settings', icon: Settings },
+    ],
+  },
 ];
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -95,9 +119,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }, [activeView]);
 
   const isDark = state.settings.theme === 'dark';
-  const visibleNavItems = NAV_ITEMS.filter((item) =>
-    roleCapabilities.allowedViews.includes(item.id)
-  );
+  const visibleGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => roleCapabilities.allowedViews.includes(item.id)),
+  })).filter((group) => group.items.length > 0);
+
   const currentPlan = state.settings.planTier ?? 'free';
 
   const handleToggleTheme = () => {
@@ -120,7 +146,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         />
       )}
 
-      {/* Sidebar */}
+      {/* Grouped 4-Section Sidebar */}
       <aside
         className={`no-print fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 dark:border-slate-800 dark:bg-slate-900 lg:translate-x-0 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
@@ -129,9 +155,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       >
         <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-emerald-500 text-lg text-white shadow-sm">
-              🏡
-            </div>
+            <BrandMark size="md" />
             <div>
               <div className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-white">
                 {t('brand.name')}
@@ -151,34 +175,43 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {visibleNavItems.map((item) => {
-            const Icon = item.icon;
-            const active = activeView === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                aria-current={active ? 'page' : undefined}
-                onClick={() => {
-                  setActiveView(item.id);
-                  setMobileMenuOpen(false);
-                }}
-                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition ${
-                  active
-                    ? 'bg-blue-50 text-blue-700 shadow-xs dark:bg-blue-950/60 dark:text-blue-300'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
-                }`}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                <span className="truncate">{t(item.labelKey)}</span>
-              </button>
-            );
-          })}
+        <nav className="flex-1 space-y-4 overflow-y-auto px-3 py-4">
+          {visibleGroups.map((group) => (
+            <div key={group.groupKey}>
+              <div className="mb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                {t(group.groupKey)}
+              </div>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const active = activeView === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      aria-current={active ? 'page' : undefined}
+                      onClick={() => {
+                        setActiveView(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm font-medium transition ${
+                        active
+                          ? 'bg-emerald-50 text-emerald-700 shadow-2xs dark:bg-emerald-950/60 dark:text-emerald-300'
+                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{t(item.labelKey)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className="space-y-3 border-t border-slate-200 p-4 dark:border-slate-800">
-          {/* Authenticated Account Badge (Role detected from Sign In / Sign Up) */}
+          {/* Authenticated Account Badge */}
           <div className="rounded-xl bg-slate-50 p-2.5 dark:bg-slate-800/70">
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2">
@@ -197,16 +230,30 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </span>
             </div>
             <div className="mt-2 flex items-center justify-between border-t border-slate-200/70 pt-2 text-[11px] dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveView('pricing');
-                  setMobileMenuOpen(false);
-                }}
-                className="font-semibold text-emerald-700 hover:underline dark:text-emerald-400"
-              >
-                {t('layout.planBadge', { plan: currentPlan.toUpperCase() })}
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveView('pricing');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="font-semibold text-emerald-700 hover:underline dark:text-emerald-400"
+                >
+                  {t('layout.planBadge', { plan: currentPlan.toUpperCase() })}
+                </button>
+                {currentPlan === 'free' && roleCapabilities.allowedViews.includes('pricing') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveView('pricing');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="rounded-md bg-emerald-600 px-1.5 py-0.5 text-[10px] font-bold text-white hover:bg-emerald-700"
+                  >
+                    {t('layout.upgradeShort')}
+                  </button>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={signOut}
@@ -253,7 +300,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <span className="min-w-[88px] text-center text-xs font-bold text-slate-800 dark:text-slate-100">
+              <span className="tabular-nums min-w-[88px] text-center text-xs font-bold text-slate-800 dark:text-slate-100">
                 {formatMonth(selectedMonth)}
               </span>
               <button
@@ -407,7 +454,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <button
               type="button"
               onClick={() => openQuickAdd(null)}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 lg:hidden"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 lg:hidden"
             >
               <Plus className="h-4 w-4" />
               {t('layout.addShort')}
@@ -415,10 +462,67 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           </div>
         </header>
 
-        <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6">
+        <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 p-4 pb-24 sm:p-6 lg:pb-6">
           {children}
         </main>
       </div>
+
+      {/* Sleek Mobile Bottom Quick-Nav (uses distinct aria-labels to avoid desktop sidebar conflicts) */}
+      <nav
+        aria-label="Mobile quick navigation"
+        className="no-print fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white/95 px-2 py-1.5 backdrop-blur-md lg:hidden dark:border-slate-800 dark:bg-slate-900/95"
+      >
+        <button
+          type="button"
+          aria-label="Bottom bar home"
+          onClick={() => setActiveView('dashboard')}
+          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-bold ${
+            activeView === 'dashboard' ? 'text-emerald-600' : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
+          <Home className="h-4 w-4" />
+          <span aria-hidden="true">Home</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Bottom bar ledger"
+          onClick={() => setActiveView('transactions')}
+          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-bold ${
+            activeView === 'transactions' ? 'text-emerald-600' : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
+          <ArrowLeftRight className="h-4 w-4" />
+          <span aria-hidden="true">Ledger</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Bottom bar quick entry"
+          onClick={() => openQuickAdd(null)}
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md hover:bg-emerald-700"
+        >
+          <Plus className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="Bottom bar targets"
+          onClick={() => setActiveView('goals')}
+          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-bold ${
+            activeView === 'goals' ? 'text-emerald-600' : 'text-slate-500 dark:text-slate-400'
+          }`}
+        >
+          <Target className="h-4 w-4" />
+          <span aria-hidden="true">Goals</span>
+        </button>
+        <button
+          type="button"
+          aria-label="Bottom bar menu"
+          onClick={() => setMobileMenuOpen(true)}
+          className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-bold text-slate-500 dark:text-slate-400"
+        >
+          <Menu className="h-4 w-4" />
+          <span aria-hidden="true">{t('layout.mobileMore')}</span>
+        </button>
+      </nav>
     </div>
   );
 };

@@ -111,9 +111,12 @@ describe('Commercial SaaS Landing, Pricing, Role Sign-Up/Sign-In, Calculators & 
     fireEvent.click(screen.getByRole('button', { name: 'USD' }));
     expect(screen.getByText('$15')).toBeInTheDocument();
 
-    // Open Sign Up, select Partner role, create account -> role automatically detected inside app!
+    // Open Sign Up, expand optional Role & Invite drawer, select Partner role -> role automatically detected inside app!
     fireEvent.click(screen.getByRole('button', { name: 'Create free account' }));
     fireEvent.change(screen.getByLabelText('Your Name'), { target: { value: 'Neha Shah' } });
+    fireEvent.click(
+      screen.getByRole('button', { name: /Joining with an Invite Code or as Partner/i })
+    );
     fireEvent.change(screen.getByLabelText('Account Role'), { target: { value: 'partner' } });
     fireEvent.change(screen.getByLabelText('Email Address'), {
       target: { value: 'neha@shah.family' },

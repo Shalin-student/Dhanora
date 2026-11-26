@@ -8,6 +8,7 @@ import { ToastContainer } from './components/ToastContainer';
 import { ReceiptLightboxModal } from './components/ReceiptLightboxModal';
 import { LanguageToggle } from './components/LanguageToggle';
 import { PublicPortal } from './components/PublicPortal';
+import { StarterTemplatesModal } from './components/StarterTemplatesModal';
 import { useI18n } from './i18n/useI18n';
 import { DashboardView } from './pages/DashboardView';
 import { CalculatorsFireView } from './pages/CalculatorsFireView';
@@ -159,6 +160,7 @@ const AppContent: React.FC = () => {
       <QuickAddModal />
       <CommandPalette />
       <ReceiptLightboxModal />
+      <StarterTemplatesModal />
       <ToastContainer />
     </Layout>
   );

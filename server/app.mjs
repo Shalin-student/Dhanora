@@ -476,7 +476,7 @@ export function createSyncServer(options = {}) {
             memberId: String(body?.memberId ?? `m-${Date.now()}`),
             avatar: String(body?.avatar ?? '🧑🏽‍💻'),
             householdName: body?.householdName,
-            planTier: body?.planTier === 'plus' ? 'plus' : 'free',
+            planTier: 'free',
             inviteCode: body?.inviteCode,
           });
           if (created.invalidInvite) {

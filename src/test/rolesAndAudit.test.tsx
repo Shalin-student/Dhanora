@@ -69,8 +69,9 @@ describe('Auth-Detected Roles (No In-App Switcher) & Audit Feed UI', () => {
   it('removes manual Acting As role switcher from sidebar and detects Dependent role strictly via Sign In', async () => {
     render(<App />);
 
-    // Open Sign In from Landing Page and click Leo (Dependent) account
+    // Open Sign In from Landing Page, expand Demo drawer, and click Leo (Dependent) account
     fireEvent.click(screen.getAllByRole('button', { name: 'Sign in' })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /Explore Demo Roles/i }));
     fireEvent.click(screen.getByRole('button', { name: /leo@carter\.family/i }));
 
     expect(await screen.findByText(/Leo.*Allowance & Goals/i)).toBeInTheDocument();
@@ -98,6 +99,7 @@ describe('Auth-Detected Roles (No In-App Switcher) & Audit Feed UI', () => {
     // Sign out -> Sign in with Demo Advisor detects Advisor role (calculators allowed, emergency safety hidden)
     fireEvent.click(screen.getByRole('button', { name: /Sign out/i }));
     fireEvent.click(screen.getAllByRole('button', { name: 'Sign in' })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /Explore Demo Roles/i }));
     fireEvent.click(screen.getByRole('button', { name: /meera@advisor\.in/i }));
     expect(await screen.findByText('Household Financial Pulse')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Calculators & FIRE/i })).toBeInTheDocument();

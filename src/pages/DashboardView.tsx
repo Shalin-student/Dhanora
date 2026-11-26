@@ -34,11 +34,13 @@ import {
 import { computeNetWorthHistory } from '../utils/wealth';
 import { computePortfolioSummary, computeWealthProjection } from '../utils/portfolio';
 import { CashflowChart, CashflowForecastChart, CategoryDonutChart } from '../components/Charts';
+import { StarterTemplatesModal } from '../components/StarterTemplatesModal';
 import { useI18n } from '../i18n/useI18n';
 
 export const DashboardView: React.FC = () => {
   const {
     state,
+    authSession,
     activeProfile,
     roleCapabilities,
     selectedMonth,
@@ -46,6 +48,7 @@ export const DashboardView: React.FC = () => {
     setActiveView,
     openQuickAdd,
     postRecurringDue,
+    updateSettings,
   } = useFinance();
   const {
     language,
@@ -59,6 +62,7 @@ export const DashboardView: React.FC = () => {
   } = useI18n();
 
   const [forecastScope, setForecastScope] = useState<'checking' | 'liquid'>('checking');
+  const [templatesModalOpen, setTemplatesModalOpen] = useState(false);
 
   const { baseCurrency, privacyMode } = state.settings;
   const summary = computeMonthlySummary(state.transactions, selectedMonth, selectedMemberId);
@@ -305,8 +309,25 @@ export const DashboardView: React.FC = () => {
         )
       : 0;
 
+  const step1Done = state.accounts.some((a) => a.initialBalance > 0);
+  const step2Done = state.transactions.length > 0;
+  const step3Done = state.goals.length > 0 || (state.sips ?? []).length > 0;
+  const step4Done =
+    state.accounts.some((a) => Boolean(a.nomineeName?.trim())) ||
+    (state.policies ?? []).length > 0;
+  const completedStepsCount = [step1Done, step2Done, step3Done, step4Done].filter(Boolean).length;
+  const showShieldChecklist =
+    !roleCapabilities.isDependent &&
+    !state.settings.onboardingChecklistDismissed &&
+    completedStepsCount < 4;
+
   return (
     <div className="space-y-6">
+      <StarterTemplatesModal
+        open={templatesModalOpen}
+        onClose={() => setTemplatesModalOpen(false)}
+      />
+
       {/* Header row */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -321,6 +342,16 @@ export const DashboardView: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {state.transactions.length === 0 && roleCapabilities.canDeleteHouseholdData && (
+            <button
+              type="button"
+              onClick={() => setTemplatesModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {t('onb.useStarterBannerBtn')}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setActiveView('reports')}
@@ -331,13 +362,80 @@ export const DashboardView: React.FC = () => {
           <button
             type="button"
             onClick={() => openQuickAdd(null)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-emerald-700"
           >
             <Plus className="h-4 w-4" />
             {t('dash.quickEntry')}
           </button>
         </div>
       </div>
+
+      {/* 4-Step Family Financial Shield Onboarding Checklist */}
+      {showShieldChecklist && (!authSession || !authSession.isDemo || state.transactions.length === 0) && (
+        <div className="rounded-2xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/70 via-white to-teal-50/60 p-4 shadow-xs dark:border-emerald-900/60 dark:from-emerald-950/30 dark:via-slate-900 dark:to-teal-950/30">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              <span className="text-xs font-extrabold text-slate-900 dark:text-white">
+                {t('onb.shieldTitle')}
+              </span>
+              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                {t('onb.shieldProgress', { done: completedStepsCount })}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => updateSettings({ onboardingChecklistDismissed: true })}
+              className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400"
+            >
+              {t('onb.dismiss')}
+            </button>
+          </div>
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                done: step1Done,
+                label: t('onb.step1'),
+                onClick: () => setActiveView('accounts'),
+              },
+              {
+                done: step2Done,
+                label: t('onb.step2'),
+                onClick: () => openQuickAdd(null),
+              },
+              {
+                done: step3Done,
+                label: t('onb.step3'),
+                onClick: () => setActiveView('goals'),
+              },
+              {
+                done: step4Done,
+                label: t('onb.step4'),
+                onClick: () =>
+                  setActiveView(roleCapabilities.allowedViews.includes('safety') ? 'safety' : 'accounts'),
+              },
+            ].map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                onClick={item.onClick}
+                className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-semibold transition ${
+                  item.done
+                    ? 'border-emerald-200 bg-emerald-50/70 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
+                    : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200'
+                }`}
+              >
+                <CheckCircle2
+                  className={`h-4 w-4 shrink-0 ${
+                    item.done ? 'text-emerald-600' : 'text-slate-300 dark:text-slate-600'
+                  }`}
+                />
+                <span className={item.done ? 'line-through opacity-75' : ''}>{item.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {smartAlerts.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 px-4 py-3 dark:border-amber-900/60 dark:bg-amber-950/20">

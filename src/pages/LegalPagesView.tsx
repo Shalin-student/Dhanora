@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, FileCheck2, HelpCircle, Lock, RefreshCw } from 'lucide-react';
 import type { PublicLegalPage } from '../types/finance';
 import { LanguageToggle } from '../components/LanguageToggle';
+import { BrandMark } from '../components/BrandMark';
 import { useI18n } from '../i18n/useI18n';
 
 export const LegalPagesView: React.FC<{
@@ -50,14 +51,17 @@ export const LegalPagesView: React.FC<{
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
-        <button
-          type="button"
-          onClick={onBackHome}
-          className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>{t('auth.backHome')}</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <BrandMark size="sm" />
+          <button
+            type="button"
+            onClick={onBackHome}
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>{t('auth.backHome')}</span>
+          </button>
+        </div>
         <LanguageToggle />
       </header>
 

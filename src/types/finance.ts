@@ -302,6 +302,8 @@ export interface AppSettings {
   csvPresets?: CsvPreset[];
   planTier?: PlanTier;
   trialEndsAt?: string;
+  onboardingDismissed?: boolean;
+  onboardingChecklistDismissed?: boolean;
   syncEnabled?: boolean;
   syncServerUrl?: string;
   syncKey?: string;

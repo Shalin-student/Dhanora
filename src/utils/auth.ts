@@ -246,6 +246,7 @@ export async function signUpAccount(options: {
   let resolvedHouseholdName =
     options.householdName?.trim() || `${cleanName}'s Household`;
   let serverToken: string | undefined;
+  let serverPlanTier: PlanTier = 'free';
   let joinedExisting = Boolean(cleanInvite);
 
   if (options.syncWithServer) {
@@ -257,7 +258,7 @@ export async function signUpAccount(options: {
       memberId,
       avatar,
       householdName: resolvedHouseholdName,
-      planTier: options.planTier ?? 'free',
+      planTier: 'free',
       inviteCode: cleanInvite || undefined,
     });
     if (serverRes?.error === 'EMAIL_EXISTS') {
@@ -271,6 +272,7 @@ export async function signUpAccount(options: {
       resolvedRole = serverRes.session.role;
       resolvedHouseholdName = serverRes.session.householdName || resolvedHouseholdName;
       serverToken = serverRes.session.token;
+      serverPlanTier = serverRes.session.planTier ?? 'free';
       joinedExisting = Boolean(cleanInvite);
     }
   }
@@ -302,7 +304,7 @@ export async function signUpAccount(options: {
     role: user.role,
     memberId: user.memberId,
     avatar: user.avatar,
-    planTier: options.planTier ?? 'free',
+    planTier: serverPlanTier,
     isDemo: false,
   };
   persistAuthSession(session);

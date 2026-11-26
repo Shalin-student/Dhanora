@@ -541,11 +541,61 @@ export const PricingView: React.FC<{
         </div>
       )}
 
+      {/* Canva-Style Side-by-Side Comparison Matrix */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="border-b border-slate-100 px-5 py-3.5 dark:border-slate-800">
+          <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
+            {t('price.matrixTitle')}
+          </h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] text-left text-xs">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+                <th className="px-5 py-3">{t('price.colFeature')}</th>
+                <th className="px-4 py-3 text-center">{t('price.freeName')}</th>
+                <th className="px-4 py-3 text-center text-emerald-700 dark:text-emerald-400">
+                  {t('price.plusName')}
+                </th>
+                <th className="px-4 py-3 text-center">{t('price.advisorName')}</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {[
+                { label: t('price.rowTx'), free: t('price.unlimited'), plus: t('price.unlimited'), adv: t('price.unlimited') },
+                { label: t('price.rowGoals'), free: t('price.upTo3Goals'), plus: t('price.unlimited'), adv: t('price.unlimited') },
+                { label: t('price.rowMembers'), free: t('price.upTo4Members'), plus: t('price.unlimited'), adv: t('price.unlimited') },
+                { label: t('price.rowCalcs'), free: t('price.included'), plus: t('price.included'), adv: t('price.included') },
+                { label: t('price.rowVault'), free: '—', plus: t('price.included'), adv: t('price.included') },
+                { label: t('price.rowDebt'), free: '—', plus: t('price.included'), adv: t('price.included') },
+                { label: t('price.rowAdvisor'), free: t('price.ownerOnly'), plus: t('price.ownerOnly'), adv: t('price.isolatedAdvisor') },
+              ].map((row) => (
+                <tr key={row.label} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
+                  <td className="px-5 py-3 font-semibold text-slate-800 dark:text-slate-200">
+                    {row.label}
+                  </td>
+                  <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">
+                    {row.free}
+                  </td>
+                  <td className="px-4 py-3 text-center font-bold text-emerald-700 dark:text-emerald-400">
+                    {row.plus}
+                  </td>
+                  <td className="px-4 py-3 text-center font-semibold text-slate-700 dark:text-slate-200">
+                    {row.adv}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3.5 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
         <span className="inline-flex items-center gap-2 font-semibold">
           <ShieldCheck className="h-4 w-4 text-emerald-600" />
           {t('price.guaranteeLine')}
         </span>
+        <span className="font-medium">{t('price.razorpayBadge')}</span>
         <span>{t('price.noAutoRenewNote')}</span>
       </div>
     </div>
