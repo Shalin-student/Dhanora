@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: hearthledger-saas
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/health
+    disk:
+      name: hearthledger-sqlite
+      mountPath: /data
+      sizeGB: 5
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: "4174"
+      - key: DB_PATH
+        value: /data/hearthledger.db
+      - key: REQUIRE_AUTH_FOR_SYNC
+        value: "true"
+      - key: ALLOW_TEST_BILLING
+        value: "false"
+      - key: APP_BASE_URL
+        sync: false
+      - key: GOOGLE_SITE_VERIFICATION
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false

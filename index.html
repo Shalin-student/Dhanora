@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#059669" />
+    <meta
+      name="description"
+      content="HearthLedger — Family financial planning, expense tracking, SIP portfolio, FIRE &amp; Indian tax regime planner, insurance adequacy &amp; nominee safety pack."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="HearthLedger — Family Financial Planner, Wealth &amp; Safety Hub" />
+    <meta
+      property="og:description"
+      content="Sort family income, expenses, budgets, SIPs, retirement/FIRE, Old vs New Tax Regime, and emergency nominee packs — private, ad-free, and bilingual (EN / Gujarati)."
+    />
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og-image.png" />
+    <meta name="robots" content="index, follow" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <title>HearthLedger — Family Financial Planning, SIP &amp; Wealth Tracker</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "HearthLedger",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web, PWA",
+        "description": "Private family financial planner with budgeting, SIP investment portfolio, FIRE retirement simulation, Old vs New tax calculator, and nominee safety pack.",
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": "INR",
+          "lowPrice": "0",
+          "highPrice": "4999"
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

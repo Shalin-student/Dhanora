@@ -1,0 +1,26 @@
+services:
+  hearthledger:
+    build: .
+    container_name: hearthledger-saas
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4174}:4174"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=4174
+      - DB_PATH=/data/hearthledger.db
+      - REQUIRE_AUTH_FOR_SYNC=true
+      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:4174}
+      - GOOGLE_SITE_VERIFICATION=${GOOGLE_SITE_VERIFICATION:-}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
+      - RAZORPAY_WEBHOOK_SECRET=${RAZORPAY_WEBHOOK_SECRET:-}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - ALLOW_TEST_BILLING=${ALLOW_TEST_BILLING:-false}
+    volumes:
+      - hearthledger_data:/data
+
+volumes:
+  hearthledger_data:

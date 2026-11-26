@@ -1,0 +1,276 @@
+export interface BilingualEntry {
+  en: string;
+  gu: string;
+}
+
+export const DICT_CORE = {
+  // Brand & Shell
+  'brand.name': { en: 'HearthLedger', gu: 'હાર્થલેજર (HearthLedger)' },
+  'brand.subtitle': { en: 'The Carter Family', gu: 'કાર્ટર પરિવાર' },
+  'meta.docTitle': {
+    en: 'HearthLedger — Family Income & Spend Tracker',
+    gu: 'હાર્થલેજર — પરિવાર આવક અને ખર્ચ ટ્રેકર',
+  },
+  'a11y.skipToContent': { en: 'Skip to main content', gu: 'મુખ્ય સામગ્રી પર જાઓ' },
+  'a11y.primaryNav': { en: 'Primary Navigation', gu: 'મુખ્ય નેવિગેશન' },
+  'a11y.closeNav': { en: 'Close navigation menu', gu: 'મેનુ બંધ કરો' },
+  'a11y.openNav': { en: 'Open navigation menu', gu: 'મેનુ ખોલો' },
+  'a11y.loadingView': { en: 'Loading view', gu: 'દૃશ્ય લોડ થઈ રહ્યું છે' },
+  'a11y.prevMonth': { en: 'Previous month', gu: 'પાછલો મહિનો' },
+  'a11y.nextMonth': { en: 'Next month', gu: 'આગલો મહિનો' },
+  'a11y.filterMember': { en: 'Filter by family member', gu: 'પરિવારના સભ્ય મુજબ ફિલ્ટર કરો' },
+  'a11y.activeProfile': { en: 'Active family profile', gu: 'સક્રિય પરિવાર પ્રોફાઇલ' },
+  'a11y.syncStatus': { en: 'Multi-device sync status', gu: 'બહુ-ઉપકરણ સિંક સ્થિતિ' },
+  'a11y.commandPalette': { en: 'Open command palette', gu: 'ઝડપી આદેશ પેનલ ખોલો' },
+  'a11y.privacyToggle': { en: 'Toggle privacy mode', gu: 'ગોપનીયતા મોડ બદલો' },
+  'a11y.darkToggle': { en: 'Toggle dark mode', gu: 'ડાર્ક મોડ બદલો' },
+  'a11y.lockApp': { en: 'Lock household ledger', gu: 'પરિવાર ખાતાવહી લૉક કરો' },
+  'a11y.closeModal': { en: 'Close modal', gu: 'વિન્ડો બંધ કરો' },
+  'a11y.dismissToast': { en: 'Dismiss notification', gu: 'સૂચના બંધ કરો' },
+  'a11y.langSwitcher': {
+    en: 'Switch website language between English and Gujarati',
+    gu: 'વેબસાઇટની ભાષા અંગ્રેજી અને ગુજરાતી વચ્ચે બદલો',
+  },
+
+  // Language Switcher
+  'lang.en': { en: 'EN', gu: 'EN' },
+  'lang.gu': { en: 'ગુજ', gu: 'ગુજ' },
+  'lang.englishFull': { en: 'English', gu: 'અંગ્રેજી (English)' },
+  'lang.gujaratiFull': { en: 'ગુજરાતી', gu: 'ગુજરાતી' },
+  'lang.label': { en: 'Language', gu: 'ભાષા' },
+
+  // Navigation Items
+  'nav.dashboard': { en: 'Overview', gu: 'મુખ્ય ઝાંખી' },
+  'nav.transactions': { en: 'Transactions', gu: 'વ્યવહારો' },
+  'nav.receipts': { en: 'Receipt Vault', gu: 'રસીદ તિજોરી' },
+  'nav.budgets': { en: 'Budgets & 50/30/20', gu: 'બજેટ અને 50/30/20' },
+  'nav.bills': { en: 'Recurring & Bills', gu: 'નિયમિત બિલ અને પગાર' },
+  'nav.automation': { en: 'Automation & Rules', gu: 'ઓટોમેશન અને નિયમો' },
+  'nav.goals': { en: 'Goals & Debts', gu: 'બચત લક્ષ્યો અને દેવું' },
+  'nav.accounts': { en: 'Accounts & Net Worth', gu: 'ખાતા અને કુલ સંપત્તિ' },
+  'nav.safety': { en: 'Insurance & Safety', gu: 'વીમો અને સુરક્ષા કવચ' },
+  'nav.calculators': { en: 'Calculators & FIRE', gu: 'કેલ્ક્યુલેટર અને FIRE' },
+  'nav.family': { en: 'Family & Splits', gu: 'પરિવાર અને ભાગલા' },
+  'nav.reports': { en: 'Reports & Export', gu: 'રિપોર્ટ અને નિકાસ' },
+  'nav.pricing': { en: 'Pricing & Plan', gu: 'પ્લાન અને કિંમતો' },
+  'nav.settings': { en: 'Settings', gu: 'સેટિંગ્સ' },
+
+  // Layout Sidebar & Header
+  'layout.actingAs': { en: 'Acting As', gu: 'હાલની ભૂમિકા' },
+  'layout.planBadge': { en: '{plan} Plan', gu: '{plan} પ્લાન' },
+  'layout.signOut': { en: 'Sign out', gu: 'લૉગ આઉટ' },
+  'layout.enterPin': { en: 'Enter Household PIN', gu: 'પરિવારનો PIN દાખલ કરો' },
+  'layout.elevationPinLabel': { en: 'Profile elevation PIN', gu: 'પ્રોફાઇલ બદલવા માટે PIN' },
+  'layout.incorrectPin': { en: 'Incorrect PIN', gu: 'ખોટો PIN' },
+  'layout.cancel': { en: 'Cancel', gu: 'રદ કરો' },
+  'layout.switch': { en: 'Switch', gu: 'બદલો' },
+  'layout.addTransaction': { en: 'Add Transaction', gu: 'વ્યવહાર ઉમેરો' },
+  'layout.addShort': { en: 'Add', gu: 'ઉમેરો' },
+  'layout.scopedView': { en: '{avatar} {name} (Scoped View)', gu: '{avatar} {name} (મર્યાદિત દૃશ્ય)' },
+  'layout.allMembers': { en: 'All Family Members', gu: 'પરિવારના બધા સભ્યો' },
+  'layout.syncedRev': { en: 'Synced #{rev}', gu: 'સિંક થયેલ #{rev}' },
+  'layout.syncing': { en: 'Syncing...', gu: 'સિંક થઈ રહ્યું છે...' },
+  'layout.localSync': { en: 'Local Sync', gu: 'સ્થાનિક સિંક' },
+  'layout.syncTitleSynced': {
+    en: 'SQLite Sync active (Revision #{rev}) — click to sync',
+    gu: 'SQLite સિંક સક્રિય (આવૃત્તિ #{rev}) — સિંક કરવા ક્લિક કરો',
+  },
+  'layout.syncTitleLocal': {
+    en: 'Local-first mode (start SQLite server for live multi-device sync)',
+    gu: 'સ્થાનિક મોડ (લાઇવ બહુ-ઉપકરણ સિંક માટે SQLite સર્વર શરૂ કરો)',
+  },
+  'layout.offline': { en: 'Offline', gu: 'ઑફલાઇન' },
+  'layout.offlineTitle': {
+    en: 'Offline mode active — changes saved locally',
+    gu: 'ઑફલાઇન મોડ સક્રિય — ફેરફારો સ્થાનિક સ્તરે સાચવાયા છે',
+  },
+  'layout.installApp': { en: 'Install App', gu: 'એપ ઇન્સ્ટોલ કરો' },
+  'layout.installTitle': {
+    en: 'Install HearthLedger app for offline access',
+    gu: 'ઑફલાઇન ઉપયોગ માટે હાર્થલેજર એપ ઇન્સ્ટોલ કરો',
+  },
+  'layout.jump': { en: 'Jump', gu: 'શોધો' },
+  'layout.jumpTitle': {
+    en: 'Search & Quick Commands (Ctrl+K / Cmd+K)',
+    gu: 'ઝડપી શોધ અને આદેશો (Ctrl+K / Cmd+K)',
+  },
+  'layout.hidden': { en: 'Hidden', gu: 'છુપાવેલ' },
+  'layout.privacy': { en: 'Privacy', gu: 'ગોપનીયતા' },
+  'layout.privacyTitle': {
+    en: 'Toggle Privacy Mode (Mask amounts)',
+    gu: 'ગોપનીયતા મોડ (રકમ છુપાવો / બતાવો)',
+  },
+  'layout.themeTitle': { en: 'Toggle light/dark theme', gu: 'લાઇટ / ડાર્ક થીમ બદલો' },
+  'layout.lockTitle': { en: 'Lock App', gu: 'એપ લૉક કરો' },
+
+  // Lock Screen
+  'lock.prompt': { en: 'Enter household PIN to unlock', gu: 'અનલૉક કરવા પરિવારનો PIN દાખલ કરો' },
+  'lock.incorrect': {
+    en: 'Incorrect PIN. Please try again.',
+    gu: 'ખોટો PIN. કૃપા કરીને ફરી પ્રયાસ કરો.',
+  },
+  'lock.placeholder': { en: 'PIN', gu: 'PIN' },
+  'lock.ariaInput': { en: 'Household PIN', gu: 'પરિવાર PIN' },
+  'lock.verifying': { en: 'Verifying...', gu: 'ચકાસણી થઈ રહી છે...' },
+  'lock.unlock': { en: 'Unlock Ledger', gu: 'ખાતાવહી અનલૉક કરો' },
+
+  // Toast Container
+  'toast.undo': { en: 'Undo', gu: 'પૂર્વવત્ કરો' },
+
+  // Command Palette
+  'palette.dialogLabel': { en: 'Command palette', gu: 'આદેશ પેનલ' },
+  'palette.searchLabel': { en: 'Command palette search', gu: 'આદેશો અને વ્યવહારો શોધો' },
+  'palette.closeLabel': { en: 'Close command palette', gu: 'આદેશ પેનલ બંધ કરો' },
+  'palette.placeholder': {
+    en: 'Jump to view, filter member, run action, or search transactions...',
+    gu: 'પેજ ખોલો, સભ્ય પસંદ કરો, ક્રિયા ચલાવો અથવા વ્યવહાર શોધો...',
+  },
+  'palette.empty': {
+    en: 'No matching commands or transactions.',
+    gu: 'કોઈ મેળ ખાતા આદેશો કે વ્યવહારો મળ્યા નથી.',
+  },
+  'palette.footerHint': {
+    en: '↑↓ Navigate • Enter Select • Esc Close',
+    gu: '↑↓ ખસો • Enter પસંદ કરો • Esc બંધ કરો',
+  },
+  'palette.group.nav': { en: 'Navigation', gu: 'નેવિગેશન' },
+  'palette.group.action': { en: 'Quick Action', gu: 'ઝડપી ક્રિયા' },
+  'palette.group.family': { en: 'Family Filter', gu: 'પરિવાર ફિલ્ટર' },
+  'palette.group.tx': { en: 'Transactions', gu: 'વ્યવહારો' },
+  'palette.actAddTx': { en: 'Add New Transaction', gu: 'નવો વ્યવહાર ઉમેરો' },
+  'palette.actAddTxSub': {
+    en: 'Record income, expense, or transfer (Shortcut: N)',
+    gu: 'આવક, ખર્ચ અથવા ટ્રાન્સફર નોંધો (શોર્ટકટ: N)',
+  },
+  'palette.switchLight': { en: 'Switch to Light Theme', gu: 'લાઇટ થીમ પર જાઓ' },
+  'palette.switchDark': { en: 'Switch to Dark Theme', gu: 'ડાર્ક થીમ પર જાઓ' },
+  'palette.themeSub': { en: 'Toggle appearance mode', gu: 'દેખાવ મોડ બદલો' },
+  'palette.disablePrivacy': { en: 'Disable Privacy Mode', gu: 'ગોપનીયતા મોડ બંધ કરો' },
+  'palette.enablePrivacy': { en: 'Enable Privacy Mode', gu: 'ગોપનીયતા મોડ ચાલુ કરો' },
+  'palette.privacySub': {
+    en: 'Mask or reveal currency balances',
+    gu: 'રકમ છુપાવો અથવા બતાવો',
+  },
+  'palette.filterAll': { en: 'Filter: All Family Members', gu: 'ફિલ્ટર: પરિવારના બધા સભ્યો' },
+  'palette.filterAllSub': { en: 'Combined household view', gu: 'સંયુક્ત પરિવાર દૃશ્ય' },
+  'palette.filterMember': { en: 'Filter: {avatar} {name}', gu: 'ફિલ્ટર: {avatar} {name}' },
+  'palette.filterMemberSub': { en: 'Role: {role}', gu: 'ભૂમિકા: {role}' },
+  'palette.editTxSub': { en: '{date} • Edit transaction', gu: '{date} • વ્યવહાર સુધારો' },
+  'palette.viewSub.dashboard': { en: 'KPIs, cashflow & health score', gu: 'મુખ્ય આંકડા, રોકડ પ્રવાહ અને સ્વાસ્થ્ય સ્કોર' },
+  'palette.viewSub.transactions': { en: 'Search, splits, CSV import/export', gu: 'શોધ, ભાગલા, CSV આયાત/નિકાસ' },
+  'palette.viewSub.receipts': { en: 'Archived receipt images & missing audit', gu: 'રસીદ સંગ્રહ અને બાકી રસીદ તપાસ' },
+  'palette.viewSub.budgets': { en: 'Category envelopes & rollovers', gu: 'શ્રેણી બજેટ અને રોલઓવર' },
+  'palette.viewSub.bills': { en: 'Scheduled bills & payroll', gu: 'નિયમિત બિલ અને પગાર' },
+  'palette.viewSub.automation': { en: 'Auto-post, merchant rules & alerts', gu: 'ઓટો-પોસ્ટ, નિયમો અને ચેતવણીઓ' },
+  'palette.viewSub.goals': { en: 'Sinking funds & loan payoffs', gu: 'બચત લક્ષ્યો અને લોન ચુકવણી' },
+  'palette.viewSub.accounts': { en: 'Balances, cards & brokerage', gu: 'બેલેન્સ, કાર્ડ્સ અને રોકાણ' },
+  'palette.viewSub.safety': {
+    en: 'Term/health cover gap & nominee pack',
+    gu: 'વીમા કવચ તપાસ અને નોમિની સંગ્રહ',
+  },
+  'palette.viewSub.calculators': {
+    en: 'FIRE, Old vs New Tax, Rent vs Buy, Prepay',
+    gu: 'FIRE, જૂનો/નવો ટેક્સ, ભાડું વિ. ખરીદી',
+  },
+  'palette.viewSub.family': { en: 'Allowances & shared bill IOUs', gu: 'ભથ્થાં અને સંયુક્ત બિલ પતાવટ' },
+  'palette.viewSub.reports': { en: 'Daily heatmap & monthly statement', gu: 'દૈનિક હીટમેપ અને માસિક સ્ટેટમેન્ટ' },
+  'palette.viewSub.pricing': { en: 'Free, Family Plus & Advisor Pro plans', gu: 'ફ્રી, પરિવાર પ્લસ અને સલાહકાર પ્લાન' },
+  'palette.viewSub.settings': { en: 'Currency, PIN lock & JSON backup', gu: 'ચલણ, PIN લૉક અને બેકઅપ' },
+
+  // Charts
+  'charts.income': { en: 'Income', gu: 'આવક' },
+  'charts.expenses': { en: 'Expenses', gu: 'ખર્ચ' },
+  'charts.net': { en: 'Net', gu: 'ચોખ્ખું' },
+  'charts.netCashflowTop': { en: 'Net Cashflow (Top)', gu: 'ચોખ્ખો પ્રવાહ (ઉપર)' },
+  'charts.cashflowAria': {
+    en: 'Monthly household income versus expenses bar chart',
+    gu: 'માસિક પરિવાર આવક વિરુદ્ધ ખર્ચ બાર ચાર્ટ',
+  },
+  'charts.totalSpend': { en: 'Total Spend', gu: 'કુલ ખર્ચ' },
+  'charts.noExpenses': {
+    en: 'No expenses recorded for this selection.',
+    gu: 'આ પસંદગી માટે કોઈ ખર્ચ નોંધાયો નથી.',
+  },
+  'charts.hoverForecast': {
+    en: 'Hover chart dots to inspect scheduled inflows & bills',
+    gu: 'આવક અને બિલ જોવા ચાર્ટના બિંદુઓ પર કર્સર મૂકો',
+  },
+  'charts.forecastAria': {
+    en: '90-day projected account balance chart',
+    gu: '90 દિવસનો સંભવિત ખાતા બેલેન્સ ચાર્ટ',
+  },
+  'charts.buffer': { en: 'Buffer {amt}', gu: 'સલામત સપાટી {amt}' },
+  'charts.netWorth': { en: 'Net Worth', gu: 'કુલ સંપત્તિ' },
+  'charts.assets': { en: 'Assets', gu: 'અસ્કયામતો' },
+  'charts.netWorthAria': {
+    en: '6-month net worth history chart',
+    gu: '6 મહિનાનો કુલ સંપત્તિ ઇતિહાસ ચાર્ટ',
+  },
+
+  // QuickAddModal
+  'qa.editTitle': { en: 'Edit Transaction', gu: 'વ્યવહાર સુધારો' },
+  'qa.newTitle': { en: 'Record Family Transaction', gu: 'પરિવારનો વ્યવહાર નોંધો' },
+  'qa.tipPrefix': { en: 'Tip: Press', gu: 'ટિપ: દબાવો' },
+  'qa.tipSuffix': { en: 'anywhere to open quick entry', gu: 'ઝડપી એન્ટ્રી ખોલવા માટે ગમે ત્યાં' },
+  'qa.errAmount': {
+    en: 'Please enter a valid amount greater than 0.',
+    gu: 'કૃપા કરીને 0 થી વધુ માન્ય રકમ દાખલ કરો.',
+  },
+  'qa.errMerchant': {
+    en: 'Please enter a merchant, source, or description.',
+    gu: 'કૃપા કરીને દુકાનદાર, સ્ત્રોત અથવા વિગત દાખલ કરો.',
+  },
+  'qa.errTransferSame': {
+    en: 'Source and destination accounts must be different for transfers.',
+    gu: 'ટ્રાન્સફર માટે મૂળ અને ગંતવ્ય ખાતા અલગ હોવા જોઈએ.',
+  },
+  'qa.errSplitTotal': {
+    en: 'Category split amounts ({splitTotal}) must equal {total}.',
+    gu: 'શ્રેણી વિભાજન રકમ ({splitTotal}) કુલ {total} બરાબર હોવી જોઈએ.',
+  },
+  'qa.amount': { en: 'Amount', gu: 'રકમ' },
+  'qa.currency': { en: 'Currency', gu: 'ચલણ' },
+  'qa.sourceLabel': { en: 'Income Source / Payer', gu: 'આવકનો સ્ત્રોત / ચુકવનાર' },
+  'qa.transferLabel': { en: 'Transfer Description', gu: 'ટ્રાન્સફર વિગત' },
+  'qa.merchantLabel': { en: 'Merchant / Payee', gu: 'દુકાનદાર / લેનાર' },
+  'qa.incomePlaceholder': { en: 'e.g. Employer Payroll', gu: 'દા.ત. પગાર અથવા વ્યવસાય આવક' },
+  'qa.expensePlaceholder': { en: 'e.g. Trader Joe’s', gu: 'દા.ત. કરિયાણા સ્ટોર અથવા ડી-માર્ટ' },
+  'qa.autoMatchedRule': { en: 'Auto-matched rule: "{pattern}"', gu: 'ઓટો-મેચ થયેલ નિયમ: "{pattern}"' },
+  'qa.date': { en: 'Date', gu: 'તારીખ' },
+  'qa.fromAccount': { en: 'From Account', gu: 'કયા ખાતામાંથી' },
+  'qa.account': { en: 'Account', gu: 'ખાતું' },
+  'qa.toAccount': { en: 'To Account', gu: 'કયા ખાતામાં' },
+  'qa.category': { en: 'Category', gu: 'શ્રેણી' },
+  'qa.member': { en: 'Family Member', gu: 'પરિવારનો સભ્ય' },
+  'qa.splitCats': { en: 'Split Categories', gu: 'શ્રેણીઓ વહેંચો' },
+  'qa.splitMembers': { en: 'Split Bill Among Members', gu: 'સભ્યો વચ્ચે બિલ વહેંચો' },
+  'qa.catSplitHeading': { en: 'Category Split Breakdown', gu: 'શ્રેણી વિભાજન વિગત' },
+  'qa.addRow': { en: 'Add row', gu: 'હરોળ ઉમેરો' },
+  'qa.removeSplitRow': { en: 'Remove split row', gu: 'વિભાજન હરોળ દૂર કરો' },
+  'qa.memberShareHeading': { en: 'Member Share (IOU Tracking)', gu: 'સભ્ય હિસ્સો (લેણદેણ નોંધ)' },
+  'qa.splitEqually': { en: 'Split Equally', gu: 'સરખે ભાગે વહેંચો' },
+  'qa.tags': { en: 'Tags (comma separated)', gu: 'ટેગ્સ (અલ્પવિરામથી અલગ)' },
+  'qa.tagsPlaceholder': { en: 'groceries, weekly, reimbursable', gu: 'કરિયાણું, સાપ્તાહિક, ઓફિસ-ખર્ચ' },
+  'qa.statusReceipt': { en: 'Status & Receipt', gu: 'સ્થિતિ અને રસીદ' },
+  'qa.attachReceipt': { en: 'Attach Receipt', gu: 'રસીદ જોડો' },
+  'qa.notes': { en: 'Notes', gu: 'નોંધ' },
+  'qa.notesPlaceholder': { en: 'Optional memo or details...', gu: 'વધારાની નોંધ અથવા વિગતો...' },
+  'qa.saveChanges': { en: 'Save Changes', gu: 'ફેરફાર સાચવો' },
+  'qa.saveTx': { en: 'Save Transaction', gu: 'વ્યવહાર સાચવો' },
+
+  // Receipt Lightbox
+  'lightbox.title': { en: 'Receipt: {merchant}', gu: 'રસીદ: {merchant}' },
+  'lightbox.close': { en: 'Close receipt viewer', gu: 'રસીદ વિન્ડો બંધ કરો' },
+  'lightbox.loading': { en: 'Loading receipt from IndexedDB...', gu: 'તિજોરીમાંથી રસીદ લોડ થઈ રહી છે...' },
+  'lightbox.empty': {
+    en: 'No stored receipt image found for this entry.',
+    gu: 'આ વ્યવહાર માટે કોઈ સંગ્રહિત રસીદ મળી નથી.',
+  },
+  'lightbox.fit': { en: 'Fit', gu: 'ફિટ' },
+  'lightbox.zoom': { en: 'Zoom', gu: 'ઝૂમ' },
+  'lightbox.download': { en: 'Download', gu: 'ડાઉનલોડ' },
+  'lightbox.replace': { en: 'Replace', gu: 'બદલો' },
+  'lightbox.remove': { en: 'Remove Receipt', gu: 'રસીદ દૂર કરો' },
+} satisfies Record<string, BilingualEntry>;
+
+export type CoreDictKey = keyof typeof DICT_CORE;
