@@ -85,10 +85,10 @@ export const ReportsView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('rep.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[#404944] dark:text-[#707974]">
             {t('rep.subtitle', { month: formatMonth(selectedMonth) })}
           </p>
         </div>
@@ -97,7 +97,7 @@ export const ReportsView: React.FC = () => {
           <button
             type="button"
             onClick={handleDownloadMonthlyCsv}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfc9c3]/60 bg-white px-3.5 py-2 text-xs font-semibold text-[#131b2e] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff]"
           >
             <Download className="h-4 w-4" />
             {t('tx.exportCsv')}
@@ -105,7 +105,7 @@ export const ReportsView: React.FC = () => {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Printer className="h-4 w-4" />
             {t('rep.printStatement')}
@@ -114,15 +114,15 @@ export const ReportsView: React.FC = () => {
       </div>
 
       {/* Daily Spend Heatmap */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="wdw-card p-5">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-blue-600" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <Calendar className="h-4 w-4 text-[#0F766E]" />
+            <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
               {t('rep.heatmapTitle', { month: formatMonth(selectedMonth) })}
             </h2>
           </div>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-[#404944]">
             {t('rep.heatmapSub')}
           </span>
         </div>
@@ -133,12 +133,12 @@ export const ReportsView: React.FC = () => {
             const intensity = val / maxDaySpend;
             const bgClass =
               val === 0
-                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300'
+                ? 'bg-[#b0f0d6]/35 text-[#064E3B] dark:bg-emerald-950/30 dark:text-emerald-300'
                 : intensity > 0.65
-                ? 'bg-rose-500 text-white'
+                ? 'bg-[#ba1a1a] text-white'
                 : intensity > 0.3
                 ? 'bg-amber-400 text-slate-950'
-                : 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-200';
+                : 'bg-[#9cf2e8]/45 text-[#003430] dark:bg-[#004d47]/50 dark:text-[#b0f0d6]';
 
             return (
               <div
@@ -163,33 +163,33 @@ export const ReportsView: React.FC = () => {
 
       {/* Statement Summary + Tag Breakdown */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="mb-4 text-base font-bold text-slate-900 dark:text-white">
+        <div className="wdw-card p-5">
+          <h2 className="mb-4 text-base font-bold text-[#131b2e] dark:text-white">
             {t('rep.breakdownTitle')}
           </h2>
-          <div className="mb-4 grid grid-cols-3 gap-3 rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60">
+          <div className="mb-4 grid grid-cols-3 gap-3 rounded-xl bg-[#f2f3ff] p-3 text-center dark:bg-[#1c2640]">
             <div>
-              <div className="text-[11px] text-slate-500">{t('rep.totalIncome')}</div>
-              <div className="text-sm font-bold text-emerald-600">
+              <div className="text-[11px] text-[#404944]">{t('rep.totalIncome')}</div>
+              <div className="text-sm font-bold text-[#10B981]">
                 {formatMoney(summary.income, baseCurrency, privacyMode)}
               </div>
             </div>
             <div>
-              <div className="text-[11px] text-slate-500">{t('rep.totalSpend')}</div>
-              <div className="text-sm font-bold text-rose-600">
+              <div className="text-[11px] text-[#404944]">{t('rep.totalSpend')}</div>
+              <div className="text-sm font-bold text-[#ba1a1a]">
                 {formatMoney(summary.expense, baseCurrency, privacyMode)}
               </div>
             </div>
             <div>
-              <div className="text-[11px] text-slate-500">{t('rep.saved')}</div>
-              <div className="text-sm font-bold text-blue-600">
+              <div className="text-[11px] text-[#404944]">{t('rep.saved')}</div>
+              <div className="text-sm font-bold text-[#0F766E]">
                 {formatMoney(summary.netSavings, baseCurrency, privacyMode)} ({summary.savingsRate}%)
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
-            <h3 className="text-xs font-bold uppercase text-slate-400">
+            <h3 className="text-xs font-bold uppercase text-[#707974]">
               {t('rep.incomeSources')}
             </h3>
             {incCategories
@@ -199,13 +199,13 @@ export const ReportsView: React.FC = () => {
                   <span>
                     {c.category.icon} {catName(c.category)}
                   </span>
-                  <span className="font-bold text-emerald-600">
+                  <span className="font-bold text-[#10B981]">
                     +{formatMoney(c.spent, baseCurrency, privacyMode)}
                   </span>
                 </div>
               ))}
 
-            <h3 className="pt-3 text-xs font-bold uppercase text-slate-400">
+            <h3 className="pt-3 text-xs font-bold uppercase text-[#707974]">
               {t('rep.expenseCategories')}
             </h3>
             {expCategories
@@ -224,20 +224,20 @@ export const ReportsView: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+          <div className="wdw-card p-5">
+            <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
               {t('rep.tagTitle')}
             </h2>
             {topTags.length === 0 ? (
-              <p className="text-xs text-slate-500">{t('rep.noTags')}</p>
+              <p className="text-xs text-[#404944]">{t('rep.noTags')}</p>
             ) : (
               <div className="flex flex-wrap gap-2">
                 {topTags.map(([tag, amt]) => (
                   <div
                     key={tag}
-                    className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="rounded-xl border border-[#bfc9c3]/60 bg-[#f2f3ff] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                   >
-                    <span className="font-semibold text-blue-600 dark:text-blue-400">#{tag}</span>{' '}
+                    <span className="font-semibold text-[#0F766E] dark:text-[#6ac0b6]">#{tag}</span>{' '}
                     <span className="font-bold">
                       {formatMoney(amt, baseCurrency, privacyMode)}
                     </span>
@@ -247,12 +247,12 @@ export const ReportsView: React.FC = () => {
             )}
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+          <div className="wdw-card p-5">
+            <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
               {t('rep.ledger6MoTitle')}
             </h2>
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-200 text-[11px] text-slate-500 dark:border-slate-800">
+              <thead className="border-b border-[#bfc9c3]/60 text-[11px] text-[#404944] dark:border-[#232f4f]">
                 <tr>
                   <th className="py-2">{t('rep.thMonth')}</th>
                   <th className="py-2 text-right">{t('rep.thIncome')}</th>
@@ -261,28 +261,28 @@ export const ReportsView: React.FC = () => {
                   <th className="py-2 text-right">{t('rep.thRate')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-[#F1F5F9] dark:divide-[#232f4f]">
                 {annualRows.map((row) => (
                   <tr key={row.month}>
                     <td className="py-2 font-semibold">{formatMonth(row.month)}</td>
-                    <td className="py-2 text-right text-emerald-600">
+                    <td className="py-2 text-right text-[#10B981]">
                       {formatMoney(row.income, baseCurrency, privacyMode)}
                     </td>
-                    <td className="py-2 text-right text-rose-600">
+                    <td className="py-2 text-right text-[#ba1a1a]">
                       {formatMoney(row.expense, baseCurrency, privacyMode)}
                     </td>
                     <td className="py-2 text-right font-bold">
                       {formatMoney(row.netSavings, baseCurrency, privacyMode)}
                     </td>
-                    <td className="py-2 text-right text-slate-500">{row.savingsRate}%</td>
+                    <td className="py-2 text-right text-[#404944]">{row.savingsRate}%</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+          <div className="wdw-card p-5">
+            <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
               {t('rep.netWorth6MoTitle')}
             </h2>
             <NetWorthHistoryChart

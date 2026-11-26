@@ -181,10 +181,10 @@ export const GoalsDebtsView: React.FC = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
           {roleCapabilities.isDependent ? t('goals.depTitle') : t('goals.adminTitle')}
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-[#404944] dark:text-[#707974]">
           {roleCapabilities.isDependent ? t('goals.depSubtitle') : t('goals.adminSubtitle')}
         </p>
       </div>
@@ -193,7 +193,7 @@ export const GoalsDebtsView: React.FC = () => {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Target className="h-5 w-5 text-emerald-500" />
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+          <h2 className="text-lg font-bold text-[#131b2e] dark:text-white">
             {t('goals.sectionHeading')}
           </h2>
         </div>
@@ -208,7 +208,7 @@ export const GoalsDebtsView: React.FC = () => {
             return (
               <div
                 key={goal.id}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+                className="flex flex-col justify-between wdw-card p-5"
               >
                 {isEditing ? (
                   <div className="space-y-2.5">
@@ -219,7 +219,7 @@ export const GoalsDebtsView: React.FC = () => {
                         onChange={(e) =>
                           setGoalDraft((d) => (d ? { ...d, name: e.target.value } : d))
                         }
-                        className="flex-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="flex-1 rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                       <input
                         type="text"
@@ -227,7 +227,7 @@ export const GoalsDebtsView: React.FC = () => {
                         onChange={(e) =>
                           setGoalDraft((d) => (d ? { ...d, icon: e.target.value } : d))
                         }
-                        className="w-11 rounded-lg border border-slate-300 text-center text-sm dark:border-slate-700 dark:bg-slate-800"
+                        className="w-11 rounded-lg border border-[#CBD5E1] text-center text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
@@ -238,7 +238,7 @@ export const GoalsDebtsView: React.FC = () => {
                         onChange={(e) =>
                           setGoalDraft((d) => (d ? { ...d, targetAmount: e.target.value } : d))
                         }
-                        className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                       <input
                         type="date"
@@ -246,7 +246,7 @@ export const GoalsDebtsView: React.FC = () => {
                         onChange={(e) =>
                           setGoalDraft((d) => (d ? { ...d, targetDate: e.target.value } : d))
                         }
-                        className="rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                     </div>
                     <select
@@ -256,7 +256,7 @@ export const GoalsDebtsView: React.FC = () => {
                           d ? { ...d, category: e.target.value as GoalCategory } : d
                         )
                       }
-                      className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {(['emergency', 'travel', 'education', 'home', 'vehicle', 'other'] as const).map(
                         (gc) => (
@@ -273,14 +273,14 @@ export const GoalsDebtsView: React.FC = () => {
                           setEditingGoalId(null);
                           setGoalDraft(null);
                         }}
-                        className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
+                        className="rounded-lg border border-[#bfc9c3]/60 px-3 py-1 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
                       >
                         {t('layout.cancel')}
                       </button>
                       <button
                         type="button"
                         onClick={() => handleSaveGoalEdit(goal)}
-                        className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                        className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                       >
                         {t('common.save')}
                       </button>
@@ -291,14 +291,14 @@ export const GoalsDebtsView: React.FC = () => {
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xl dark:bg-emerald-950/50">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#b0f0d6]/35 text-xl dark:bg-emerald-950/50">
                         {goal.icon}
                       </span>
                       <div>
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-sm font-bold text-[#131b2e] dark:text-white">
                           {entityText(goal.name)}
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-[#404944] dark:text-[#707974]">
                           {t('goals.targetLine', {
                             date: goal.targetDate,
                             cat: goalCatLabel(goal.category),
@@ -310,7 +310,7 @@ export const GoalsDebtsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => startEditGoal(goal)}
-                        className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                        className="rounded p-1 text-[#707974] hover:bg-[#eaedff] hover:text-[#0F766E] dark:hover:bg-[#1c2640]"
                         aria-label={t('goals.editGoalAria', { name: goal.name })}
                       >
                         <Edit3 className="h-3.5 w-3.5" />
@@ -318,7 +318,7 @@ export const GoalsDebtsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => deleteGoal(goal.id)}
-                        className="rounded p-1 text-slate-400 hover:text-rose-500"
+                        className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                         aria-label={t('goals.deleteGoalAria', { name: goal.name })}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -329,23 +329,23 @@ export const GoalsDebtsView: React.FC = () => {
                   <div className="mt-4">
                     <div className="mb-1 flex justify-between text-xs font-semibold">
                       <span>{formatMoney(goal.currentAmount, baseCurrency, privacyMode)}</span>
-                      <span className="text-slate-500">
+                      <span className="text-[#404944]">
                         {t('goals.ofTarget', {
                           amt: formatMoney(goal.targetAmount, baseCurrency, privacyMode),
                           pct,
                         })}
                       </span>
                     </div>
-                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#eaedff] dark:bg-[#172036]">
                       <div
-                        className="h-full rounded-full bg-emerald-500 transition-all"
+                        className="h-full rounded-full bg-[#10B981] transition-all"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
-                    <TrendingUp className="h-3.5 w-3.5 text-blue-500" />
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-[#404944] dark:text-[#bfc9c3]">
+                    <TrendingUp className="h-3.5 w-3.5 text-[#0F766E]" />
                     <span>
                       {t('goals.paceNeeded')}{' '}
                       <strong>
@@ -357,7 +357,7 @@ export const GoalsDebtsView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800">
+                <div className="mt-4 border-t border-[#F1F5F9] pt-3 dark:border-[#232f4f]">
                   {isContributing ? (
                     <div className="space-y-2">
                       <div className="flex gap-2">
@@ -366,12 +366,12 @@ export const GoalsDebtsView: React.FC = () => {
                           min="1"
                           value={contribAmount}
                           onChange={(e) => setContribAmount(e.target.value)}
-                          className="w-24 rounded-lg border border-slate-300 px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="w-24 rounded-lg border border-[#CBD5E1] px-2 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <select
                           value={contribAccount}
                           onChange={(e) => setContribAccount(e.target.value)}
-                          className="flex-1 rounded-lg border border-slate-300 px-2 py-1 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="flex-1 rounded-lg border border-[#CBD5E1] px-2 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         >
                           {state.accounts.map((a) => (
                             <option key={a.id} value={a.id}>
@@ -384,7 +384,7 @@ export const GoalsDebtsView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setContribGoalId(null)}
-                          className="text-xs text-slate-500"
+                          className="text-xs text-[#404944]"
                         >
                           {t('layout.cancel')}
                         </button>
@@ -399,7 +399,7 @@ export const GoalsDebtsView: React.FC = () => {
                             );
                             setContribGoalId(null);
                           }}
-                          className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-semibold text-white"
+                          className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white"
                         >
                           {t('goals.confirm')}
                         </button>
@@ -409,7 +409,7 @@ export const GoalsDebtsView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setContribGoalId(goal.id)}
-                      className="w-full rounded-xl bg-emerald-50 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950"
+                      className="w-full rounded-xl bg-[#b0f0d6]/35 py-2 text-xs font-bold text-[#064E3B] hover:bg-[#b0f0d6]/60 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950"
                     >
                       {t('goals.contributeBtn')}
                     </button>
@@ -424,12 +424,12 @@ export const GoalsDebtsView: React.FC = () => {
 
         {/* New Goal Form */}
         {!goalLimit.allowed && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs font-semibold text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#FCD34D] bg-[#FEF3C7] px-4 py-2.5 text-xs font-semibold text-[#904d00] dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
             <span>{t('ent.goalLimitReached', { max: goalLimit.limit ?? 3 })}</span>
             <button
               type="button"
               onClick={() => setActiveView('pricing')}
-              className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-bold text-white hover:bg-emerald-700"
+              className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-bold text-white hover:bg-[#043D2E]"
             >
               {t('ent.upgradeBtn')}
             </button>
@@ -437,7 +437,7 @@ export const GoalsDebtsView: React.FC = () => {
         )}
         <form
           onSubmit={handleAddGoal}
-          className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-6"
+          className="grid grid-cols-1 gap-3 wdw-card p-4 sm:grid-cols-6"
         >
           <input
             type="text"
@@ -445,7 +445,7 @@ export const GoalsDebtsView: React.FC = () => {
             value={goalName}
             onChange={(e) => setGoalName(e.target.value)}
             placeholder={t('goals.newNamePlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs sm:col-span-2 dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs sm:col-span-2 dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <input
             type="number"
@@ -454,19 +454,19 @@ export const GoalsDebtsView: React.FC = () => {
             value={goalTarget}
             onChange={(e) => setGoalTarget(e.target.value)}
             placeholder={t('goals.targetAmtPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <input
             type="date"
             value={goalDate}
             onChange={(e) => setGoalDate(e.target.value)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <div className="flex gap-2">
             <select
               value={goalCategory}
               onChange={(e) => setGoalCategory(e.target.value as GoalCategory)}
-              className="w-full rounded-xl border border-slate-300 px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-2 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             >
               {(['emergency', 'travel', 'education', 'home', 'vehicle', 'other'] as const).map(
                 (gc) => (
@@ -480,13 +480,13 @@ export const GoalsDebtsView: React.FC = () => {
               type="text"
               value={goalIcon}
               onChange={(e) => setGoalIcon(e.target.value)}
-              className="w-12 rounded-xl border border-slate-300 text-center text-sm dark:border-slate-700 dark:bg-slate-800"
+              className="w-12 rounded-xl border border-[#CBD5E1] text-center text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
               aria-label={t('goals.iconAria')}
             />
           </div>
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-1 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Plus className="h-4 w-4" /> {t('goals.addGoalBtn')}
           </button>
@@ -497,28 +497,28 @@ export const GoalsDebtsView: React.FC = () => {
       {!roleCapabilities.isDependent && (
         <section className="space-y-4">
           <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-rose-500" />
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+            <CreditCard className="h-5 w-5 text-[#ba1a1a]" />
+            <h2 className="text-lg font-bold text-[#131b2e] dark:text-white">
               {t('goals.debtSection')}
             </h2>
           </div>
 
           {/* Snowball vs Avalanche Simulator */}
           {state.debts.some((d) => d.currentBalance > 0) && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="wdw-card p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-base font-bold text-[#131b2e] dark:text-white">
                     {t('goals.simTitle')}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-[#404944] dark:text-[#707974]">
                     {t('goals.simDesc')}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <label
                     htmlFor="extra-debt-slider"
-                    className="text-xs font-semibold text-slate-600 dark:text-slate-300"
+                    className="text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]"
                   >
                     {t('goals.extraSliderLabel')}
                   </label>
@@ -532,7 +532,7 @@ export const GoalsDebtsView: React.FC = () => {
                     onChange={(e) => setExtraDebtPayment(Number(e.target.value))}
                     className="w-32 accent-blue-600"
                   />
-                  <span className="min-w-[72px] rounded-lg bg-blue-50 px-2.5 py-1 text-right text-xs font-extrabold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                  <span className="min-w-[72px] rounded-lg bg-[#f2f3ff] px-2.5 py-1 text-right text-xs font-extrabold text-[#064E3B] dark:bg-[#004d47]/40 dark:text-[#9cf2e8]">
                     +{t('goals.perMo', {
                       amt: formatMoney(extraDebtPayment, baseCurrency, privacyMode),
                     })}
@@ -547,51 +547,51 @@ export const GoalsDebtsView: React.FC = () => {
                     sim: debtComparison.baseline,
                     savedInterest: 0,
                     savedMonths: 0,
-                    tone: 'border-slate-200 bg-slate-50/70 dark:border-slate-800 dark:bg-slate-800/50',
+                    tone: 'border-[#bfc9c3]/60 bg-[#f2f3ff]/75 dark:border-[#232f4f] dark:bg-[#1c2640]',
                   },
                   {
                     label: t('goals.snowballCard'),
                     sim: debtComparison.snowball,
                     savedInterest: debtComparison.interestSavedSnowball,
                     savedMonths: debtComparison.monthsSavedSnowball,
-                    tone: 'border-blue-200 bg-blue-50/40 dark:border-blue-900/60 dark:bg-blue-950/20',
+                    tone: 'border-[#0F766E]/25 bg-[#f2f3ff] dark:border-[#0F766E]/50 dark:bg-[#004d47]/40',
                   },
                   {
                     label: t('goals.avalancheCard'),
                     sim: debtComparison.avalanche,
                     savedInterest: debtComparison.interestSavedAvalanche,
                     savedMonths: debtComparison.monthsSavedAvalanche,
-                    tone: 'border-emerald-200 bg-emerald-50/40 dark:border-emerald-900/60 dark:bg-emerald-950/20',
+                    tone: 'border-emerald-200 bg-[#b0f0d6]/30 dark:border-emerald-900/60 dark:bg-emerald-950/20',
                   },
                 ].map((card) => (
                   <div key={card.label} className={`rounded-xl border p-4 ${card.tone}`}>
-                    <div className="text-xs font-bold text-slate-700 dark:text-slate-200">
+                    <div className="text-xs font-bold text-[#131b2e] dark:text-[#eef0ff]">
                       {card.label}
                     </div>
                     <div className="mt-2 flex items-baseline justify-between">
-                      <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+                      <span className="font-numeric text-xl font-bold text-[#131b2e] dark:text-white">
                         {card.sim.monthsToPayoff === null
                           ? t('goals.monthsMax')
                           : t('goals.monthsVal', { m: card.sim.monthsToPayoff })}
                       </span>
-                      <span className="text-xs font-semibold text-slate-500">
+                      <span className="text-xs font-semibold text-[#404944]">
                         {t('goals.interestVal', {
                           amt: formatMoney(card.sim.totalInterestPaid, baseCurrency, privacyMode),
                         })}
                       </span>
                     </div>
                     {card.savedMonths > 0 || card.savedInterest > 0 ? (
-                      <div className="mt-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                      <div className="mt-1.5 text-xs font-semibold text-[#10B981] dark:text-emerald-400">
                         {t('goals.savesLine', {
                           months: card.savedMonths,
                           interest: formatMoney(card.savedInterest, baseCurrency, privacyMode),
                         })}
                       </div>
                     ) : (
-                      <div className="mt-1.5 text-xs text-slate-500">{t('goals.minSchedule')}</div>
+                      <div className="mt-1.5 text-xs text-[#404944]">{t('goals.minSchedule')}</div>
                     )}
                     {card.sim.payoffOrder.length > 0 && (
-                      <div className="mt-2 truncate text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="mt-2 truncate text-[11px] text-[#404944] dark:text-[#707974]">
                         {t('goals.orderLabel')}{' '}
                         {card.sim.payoffOrder
                           .map((p) => `${entityText(p.name)} (${t('goals.monthShort')} ${p.payoffMonth})`)
@@ -619,7 +619,7 @@ export const GoalsDebtsView: React.FC = () => {
               return (
                 <div
                   key={debt.id}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+                  className="wdw-card p-5"
                 >
                   {isEditingDebt ? (
                     <div className="space-y-2.5">
@@ -630,7 +630,7 @@ export const GoalsDebtsView: React.FC = () => {
                           onChange={(e) =>
                             setDebtDraft((d) => (d ? { ...d, name: e.target.value } : d))
                           }
-                          className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <input
                           type="text"
@@ -638,7 +638,7 @@ export const GoalsDebtsView: React.FC = () => {
                           onChange={(e) =>
                             setDebtDraft((d) => (d ? { ...d, lender: e.target.value } : d))
                           }
-                          className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <input
                           type="number"
@@ -649,7 +649,7 @@ export const GoalsDebtsView: React.FC = () => {
                               d ? { ...d, currentBalance: e.target.value } : d
                             )
                           }
-                          className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <div className="flex gap-2">
                           <input
@@ -661,7 +661,7 @@ export const GoalsDebtsView: React.FC = () => {
                                 d ? { ...d, interestRateApr: e.target.value } : d
                               )
                             }
-                            className="w-1/2 rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                            className="w-1/2 rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                           />
                           <input
                             type="number"
@@ -671,7 +671,7 @@ export const GoalsDebtsView: React.FC = () => {
                                 d ? { ...d, minimumPayment: e.target.value } : d
                               )
                             }
-                            className="w-1/2 rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                            className="w-1/2 rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                           />
                         </div>
                       </div>
@@ -682,14 +682,14 @@ export const GoalsDebtsView: React.FC = () => {
                             setEditingDebtId(null);
                             setDebtDraft(null);
                           }}
-                          className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
+                          className="rounded-lg border border-[#bfc9c3]/60 px-3 py-1 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
                         >
                           {t('layout.cancel')}
                         </button>
                         <button
                           type="button"
                           onClick={() => handleSaveDebtEdit(debt)}
-                          className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                          className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                         >
                           {t('common.save')}
                         </button>
@@ -699,10 +699,10 @@ export const GoalsDebtsView: React.FC = () => {
                     <>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      <h3 className="text-sm font-bold text-[#131b2e] dark:text-white">
                         {entityText(debt.name)}
                       </h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-xs text-[#404944] dark:text-[#707974]">
                         {t('goals.aprMinLine', {
                           lender: entityText(debt.lender),
                           apr: debt.interestRateApr,
@@ -714,7 +714,7 @@ export const GoalsDebtsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => startEditDebt(debt)}
-                        className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                        className="rounded p-1 text-[#707974] hover:bg-[#eaedff] hover:text-[#0F766E] dark:hover:bg-[#1c2640]"
                         aria-label={t('goals.editDebtAria', { name: debt.name })}
                       >
                         <Edit3 className="h-3.5 w-3.5" />
@@ -722,7 +722,7 @@ export const GoalsDebtsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => deleteDebt(debt.id)}
-                        className="rounded p-1 text-slate-400 hover:text-rose-500"
+                        className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                         aria-label={t('goals.deleteDebtAria', { name: debt.name })}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -732,27 +732,27 @@ export const GoalsDebtsView: React.FC = () => {
 
                   <div className="mt-4">
                     <div className="mb-1 flex justify-between text-xs font-semibold">
-                      <span className="text-rose-600 dark:text-rose-400">
+                      <span className="text-[#ba1a1a] dark:text-rose-400">
                         {t('goals.remainingDebt', {
                           amt: formatMoney(debt.currentBalance, baseCurrency, privacyMode),
                         })}
                       </span>
-                      <span className="text-slate-500">
+                      <span className="text-[#404944]">
                         {t('goals.paidPct', { pct: paidPct })} •{' '}
                         {monthsLeft === null
                           ? t('goals.payTooLow')
                           : t('goals.moLeft', { m: monthsLeft })}
                       </span>
                     </div>
-                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#eaedff] dark:bg-[#172036]">
                       <div
-                        className="h-full rounded-full bg-blue-600 transition-all"
+                        className="h-full rounded-full bg-[#064E3B] transition-all"
                         style={{ width: `${Math.max(0, Math.min(100, paidPct))}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800">
+                  <div className="mt-4 border-t border-[#F1F5F9] pt-3 dark:border-[#232f4f]">
                     {isPaying ? (
                       <div className="flex items-center gap-2">
                         <input
@@ -760,7 +760,7 @@ export const GoalsDebtsView: React.FC = () => {
                           min="1"
                           value={payAmount}
                           onChange={(e) => setPayAmount(e.target.value)}
-                          className="w-28 rounded-lg border border-slate-300 px-2.5 py-1 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="w-28 rounded-lg border border-[#CBD5E1] px-2.5 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <button
                           type="button"
@@ -773,14 +773,14 @@ export const GoalsDebtsView: React.FC = () => {
                             );
                             setPayDebtId(null);
                           }}
-                          className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white"
+                          className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white"
                         >
                           {t('goals.postPayment')}
                         </button>
                         <button
                           type="button"
                           onClick={() => setPayDebtId(null)}
-                          className="text-xs text-slate-500"
+                          className="text-xs text-[#404944]"
                         >
                           {t('layout.cancel')}
                         </button>
@@ -792,7 +792,7 @@ export const GoalsDebtsView: React.FC = () => {
                           setPayDebtId(debt.id);
                           setPayAmount(String(debt.minimumPayment));
                         }}
-                        className="rounded-xl bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:text-slate-200"
+                        className="rounded-xl bg-[#eaedff] px-3.5 py-1.5 text-xs font-bold text-[#131b2e] hover:bg-[#064E3B] hover:text-white dark:bg-[#172036] dark:text-[#eef0ff]"
                       >
                         {t('goals.recordDebtPay')}
                       </button>
@@ -807,7 +807,7 @@ export const GoalsDebtsView: React.FC = () => {
 
           <form
             onSubmit={handleAddDebt}
-            className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-6"
+            className="grid grid-cols-1 gap-3 wdw-card p-4 sm:grid-cols-6"
           >
             <input
               type="text"
@@ -815,14 +815,14 @@ export const GoalsDebtsView: React.FC = () => {
               value={debtName}
               onChange={(e) => setDebtName(e.target.value)}
               placeholder={t('goals.loanNamePlaceholder')}
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs sm:col-span-2 dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs sm:col-span-2 dark:border-[#2f3b52] dark:bg-[#172036]"
             />
             <input
               type="text"
               value={debtLender}
               onChange={(e) => setDebtLender(e.target.value)}
               placeholder={t('goals.lenderPlaceholder')}
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
             <input
               type="number"
@@ -831,7 +831,7 @@ export const GoalsDebtsView: React.FC = () => {
               value={debtBalance}
               onChange={(e) => setDebtBalance(e.target.value)}
               placeholder={t('goals.balancePlaceholder')}
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
             <div className="flex gap-2">
               <input
@@ -840,19 +840,19 @@ export const GoalsDebtsView: React.FC = () => {
                 value={debtApr}
                 onChange={(e) => setDebtApr(e.target.value)}
                 placeholder={t('goals.aprPlaceholder')}
-                className="w-1/2 rounded-xl border border-slate-300 px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-1/2 rounded-xl border border-[#CBD5E1] px-2 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
               <input
                 type="number"
                 value={debtMinPay}
                 onChange={(e) => setDebtMinPay(e.target.value)}
                 placeholder={t('goals.minMoPlaceholder')}
-                className="w-1/2 rounded-xl border border-slate-300 px-2 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-1/2 rounded-xl border border-[#CBD5E1] px-2 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </div>
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-1 rounded-xl bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+              className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#ba1a1a] px-4 py-2 text-xs font-semibold text-white hover:bg-[#93000a]"
             >
               <Plus className="h-4 w-4" /> {t('goals.addLoanBtn')}
             </button>

@@ -21,6 +21,7 @@ import {
   type ServerInvite,
 } from '../storage/syncClient';
 import { computeMemberIouBalances } from '../utils/wealth';
+import { MemberRoleAvatar } from '../components/WdwPrimitives';
 import { useI18n } from '../i18n/useI18n';
 
 export const FamilyView: React.FC = () => {
@@ -159,10 +160,10 @@ export const FamilyView: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] sm:text-[32px] sm:leading-[40px] dark:text-white">
           {t('fam.title')}
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-[#404944] dark:text-[#bfc9c3]">
           {t('fam.subtitle', { month: formatMonth(selectedMonth) })}
         </p>
       </div>
@@ -188,7 +189,7 @@ export const FamilyView: React.FC = () => {
             return (
             <div
               key={member.id}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+              className="wdw-card p-6"
             >
               {isEditing ? (
                 <div className="space-y-3">
@@ -199,7 +200,7 @@ export const FamilyView: React.FC = () => {
                       onChange={(e) =>
                         setMemberDraft((d) => (d ? { ...d, name: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <div className="flex gap-2">
                       <select
@@ -209,7 +210,7 @@ export const FamilyView: React.FC = () => {
                             d ? { ...d, role: e.target.value as MemberRole } : d
                           )
                         }
-                        className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="w-full rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       >
                         <option value="partner">{roleLabel('partner')}</option>
                         <option value="dependent">{roleLabel('dependent')}</option>
@@ -222,7 +223,7 @@ export const FamilyView: React.FC = () => {
                         onChange={(e) =>
                           setMemberDraft((d) => (d ? { ...d, avatar: e.target.value } : d))
                         }
-                        className="w-14 rounded-lg border border-slate-300 px-2 py-1.5 text-center text-sm dark:border-slate-700 dark:bg-slate-800"
+                        className="w-14 rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-center text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                     </div>
                     <input
@@ -235,7 +236,7 @@ export const FamilyView: React.FC = () => {
                         )
                       }
                       placeholder={t('fam.allowancePlaceholder')}
-                      className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="font-numeric rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <input
                       type="number"
@@ -247,7 +248,7 @@ export const FamilyView: React.FC = () => {
                         )
                       }
                       placeholder={t('fam.incomeTargetPlaceholder')}
-                      className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="font-numeric rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                   </div>
                   <div className="flex justify-end gap-2">
@@ -257,14 +258,14 @@ export const FamilyView: React.FC = () => {
                         setEditingMemberId(null);
                         setMemberDraft(null);
                       }}
-                      className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300"
+                      className="rounded-lg border border-[#CBD5E1] px-3 py-1 text-xs font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
                     >
                       {t('layout.cancel')}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleSaveMemberEdit(member)}
-                      className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                      className="wdw-btn-primary px-3 py-1 text-xs font-semibold"
                     >
                       {t('common.save')}
                     </button>
@@ -274,14 +275,17 @@ export const FamilyView: React.FC = () => {
                 <>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-2xl dark:bg-slate-800">
-                    {member.avatar}
-                  </div>
+                  <MemberRoleAvatar
+                    avatar={member.avatar}
+                    role={member.role}
+                    name={memName(member)}
+                    size="md"
+                  />
                   <div>
-                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                       {memName(member)}
                     </h2>
-                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="rounded-full bg-[#064E3B]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase text-[#064E3B] dark:bg-[#064E3B]/50 dark:text-[#b0f0d6]">
                       {roleBadge(member.role)}
                     </span>
                   </div>
@@ -290,7 +294,7 @@ export const FamilyView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => startEditMember(member)}
-                    className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                    className="rounded p-1 text-[#707974] hover:bg-[#f2f3ff] hover:text-[#064E3B] dark:hover:bg-[#1c2640]"
                     aria-label={t('fam.editAria', { name: member.name })}
                   >
                     <Edit3 className="h-4 w-4" />
@@ -299,7 +303,7 @@ export const FamilyView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => deleteMember(member.id)}
-                      className="rounded p-1 text-slate-400 hover:text-rose-500"
+                      className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                       aria-label={t('fam.removeAria', { name: member.name })}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -308,22 +312,22 @@ export const FamilyView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60">
+              <div className="wdw-surface-tier font-numeric mt-4 grid grid-cols-3 gap-2 rounded-xl p-3 text-center">
                 <div>
-                  <div className="text-[11px] text-slate-500">{t('fam.income')}</div>
-                  <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                  <div className="text-[11px] text-[#404944] dark:text-[#bfc9c3]">{t('fam.income')}</div>
+                  <div className="text-sm font-bold text-[#10B981]">
                     +{formatMoney(income, baseCurrency, privacyMode)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-slate-500">{t('fam.spent')}</div>
-                  <div className="text-sm font-bold text-rose-600 dark:text-rose-400">
+                  <div className="text-[11px] text-[#404944] dark:text-[#bfc9c3]">{t('fam.spent')}</div>
+                  <div className="text-sm font-bold text-[#904d00] dark:text-[#fe932c]">
                     -{formatMoney(expense, baseCurrency, privacyMode)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-slate-500">{t('fam.net')}</div>
-                  <div className="text-sm font-bold text-slate-900 dark:text-white">
+                  <div className="text-[11px] text-[#404944] dark:text-[#bfc9c3]">{t('fam.net')}</div>
+                  <div className="text-sm font-bold text-[#131b2e] dark:text-white">
                     {formatMoney(net, baseCurrency, privacyMode)}
                   </div>
                 </div>
@@ -331,7 +335,7 @@ export const FamilyView: React.FC = () => {
 
               <div className="mt-4">
                 <div className="mb-1 flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-[#404944] dark:text-[#bfc9c3]">
                     {t('fam.allowanceLabel')}
                   </span>
                   <div className="flex items-center gap-1.5">
@@ -345,24 +349,24 @@ export const FamilyView: React.FC = () => {
                           monthlyAllowance: parseFloat(e.target.value) || 0,
                         })
                       }
-                      className="w-20 rounded border border-slate-200 px-1.5 py-0.5 text-right text-xs font-bold dark:border-slate-700 dark:bg-slate-800"
+                      className="font-numeric w-20 rounded-lg border border-[#CBD5E1] px-1.5 py-0.5 text-right text-xs font-bold dark:border-[#2f3b52] dark:bg-[#172036]"
                       aria-label={t('fam.allowanceAria', { name: member.name })}
                     />
-                    <span className="text-[11px] font-semibold text-slate-500">
+                    <span className="font-numeric text-[11px] font-semibold text-[#404944] dark:text-[#bfc9c3]">
                       ({allowanceUsedPct}%)
                     </span>
                   </div>
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-[#eaedff] dark:bg-[#1c2640]">
                   <div
                     className={`h-full rounded-full ${
-                      allowanceUsedPct > 100 ? 'bg-rose-500' : 'bg-blue-600'
+                      allowanceUsedPct > 100 ? 'bg-[#ba1a1a]' : allowanceUsedPct > 80 ? 'bg-[#D97706]' : 'bg-[#10B981]'
                     }`}
                     style={{ width: `${Math.min(100, allowanceUsedPct)}%` }}
                   />
                 </div>
                 {incomeTargetPct !== null && member.monthlyIncomeTarget && (
-                  <p className="mt-1.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                  <p className="font-numeric mt-1.5 text-[11px] font-medium text-[#064E3B] dark:text-[#b0f0d6]">
                     {t('fam.incomeTargetLine', {
                       target: formatMoney(member.monthlyIncomeTarget, baseCurrency, privacyMode),
                       pct: incomeTargetPct,
@@ -372,9 +376,9 @@ export const FamilyView: React.FC = () => {
               </div>
 
               {(splitOwedByOthers > 0 || splitOwedToOthers > 0) && (
-                <div className="mt-3 flex items-center justify-between rounded-lg bg-violet-50 px-3 py-1.5 text-xs text-violet-800 dark:bg-violet-950/40 dark:text-violet-300">
+                <div className="mt-3 flex items-center justify-between rounded-lg bg-[#FEF3C7] px-3 py-1.5 text-xs text-[#904d00] dark:bg-[#904d00]/30 dark:text-[#ffdcc3]">
                   <span>{t('fam.splitIouBalance')}</span>
-                  <span className="font-bold">
+                  <span className="font-numeric font-bold">
                     {t('fam.owedOwes', {
                       owed: formatMoney(splitOwedByOthers, baseCurrency, privacyMode),
                       owes: formatMoney(splitOwedToOthers, baseCurrency, privacyMode),
@@ -391,20 +395,21 @@ export const FamilyView: React.FC = () => {
       </div>
 
       {/* Shared Bill Splits Settlement Center */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="wdw-card p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-violet-600" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <Users className="h-5 w-5 text-[#0F766E]" />
+            <h2 className="text-base font-semibold text-[#131b2e] dark:text-white">
               {t('fam.splitsHeading')}
             </h2>
           </div>
           {netIous.length > 0 && (
-            <label className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300">
+            <label className="flex items-center gap-1.5 text-xs font-medium text-[#404944] dark:text-[#bfc9c3]">
               <input
                 type="checkbox"
                 checked={recordIouTransfer}
                 onChange={(e) => setRecordIouTransfer(e.target.checked)}
+                className="accent-[#064E3B]"
               />
               {t('fam.logEntryToggle')}
             </label>
@@ -413,8 +418,8 @@ export const FamilyView: React.FC = () => {
 
         {/* Simplified Net IOUs */}
         {netIous.length > 0 && (
-          <div className="mb-4 space-y-2 rounded-xl border border-violet-200 bg-violet-50/50 p-3.5 dark:border-violet-900/60 dark:bg-violet-950/20">
-            <div className="text-xs font-bold uppercase tracking-wider text-violet-900 dark:text-violet-200">
+          <div className="mb-4 space-y-2 rounded-xl border border-[#FCD34D] bg-[#FEF3C7]/60 p-3.5 dark:border-[#904d00] dark:bg-[#904d00]/20">
+            <div className="label-caps text-[#904d00] dark:text-[#ffdcc3]">
               {t('fam.iouPlanHeading')}
             </div>
             {netIous.map((iou) => {
@@ -423,20 +428,20 @@ export const FamilyView: React.FC = () => {
               return (
                 <div
                   key={`${iou.fromMemberId}-${iou.toMemberId}`}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-white px-3 py-2 text-xs shadow-2xs dark:bg-slate-900"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-white px-3 py-2 text-xs shadow-2xs dark:bg-[#131b2e]"
                 >
                   <div>
-                    <span className="font-bold">
+                    <span className="font-semibold">
                       {fromMem?.avatar} {memName(fromMem)}
                     </span>{' '}
                     {t('fam.owesWord')}{' '}
-                    <span className="font-bold">
+                    <span className="font-semibold">
                       {toMem?.avatar} {memName(toMem)}
                     </span>{' '}
-                    <span className="font-extrabold text-violet-700 dark:text-violet-300">
+                    <span className="font-numeric font-bold text-[#904d00] dark:text-[#fe932c]">
                       {formatMoney(iou.netAmount, baseCurrency, privacyMode)}
                     </span>{' '}
-                    <span className="text-[11px] text-slate-500">
+                    <span className="font-numeric text-[11px] text-[#404944] dark:text-[#bfc9c3]">
                       ({iou.splitCount}{' '}
                       {iou.splitCount === 1 ? t('fam.splitSingular') : t('fam.splitPlural')})
                     </span>
@@ -448,7 +453,7 @@ export const FamilyView: React.FC = () => {
                         recordEntry: recordIouTransfer,
                       })
                     }
-                    className="inline-flex items-center gap-1 rounded-lg bg-violet-600 px-3 py-1 text-xs font-semibold text-white hover:bg-violet-700"
+                    className="wdw-btn-primary inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     {t('fam.settleAll')}
@@ -460,7 +465,7 @@ export const FamilyView: React.FC = () => {
         )}
 
         {sharedSplitTxs.length === 0 ? (
-          <p className="text-xs text-slate-500">{t('fam.noSplits')}</p>
+          <p className="text-xs text-[#404944]">{t('fam.noSplits')}</p>
         ) : (
           <div className="space-y-3">
             {sharedSplitTxs.map((tx) => {
@@ -468,14 +473,14 @@ export const FamilyView: React.FC = () => {
               return (
                 <div
                   key={tx.id}
-                  className="rounded-xl border border-slate-100 p-3.5 dark:border-slate-800"
+                  className="rounded-xl border border-[#F1F5F9] p-3.5 dark:border-[#232f4f]"
                 >
                   <div className="mb-2 flex items-center justify-between">
                     <div>
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">
+                      <span className="text-sm font-bold text-[#131b2e] dark:text-white">
                         {entityText(tx.merchant)}
                       </span>{' '}
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-[#404944]">
                         ({tx.date} •{' '}
                         {t('fam.paidBy', {
                           avatar: payer?.avatar ?? '',
@@ -484,7 +489,7 @@ export const FamilyView: React.FC = () => {
                         )
                       </span>
                     </div>
-                    <span className="text-sm font-extrabold">
+                    <span className="font-numeric text-sm font-bold">
                       {formatMoney(tx.amount, tx.currency, privacyMode)}
                     </span>
                   </div>
@@ -498,8 +503,8 @@ export const FamilyView: React.FC = () => {
                           onClick={() => settleMemberSplit(tx.id, sp.memberId)}
                           className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition ${
                             sp.settled
-                              ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
-                              : 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300'
+                              ? 'border-emerald-200 bg-[#b0f0d6]/35 text-[#064E3B] dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
+                              : 'border-[#FCD34D] bg-[#FEF3C7] text-[#904d00] dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300'
                           }`}
                         >
                           {sp.settled && <Check className="h-3 w-3" />}
@@ -523,12 +528,12 @@ export const FamilyView: React.FC = () => {
 
       {/* Add Family Member */}
       {!memberLimit.allowed && (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs font-semibold text-amber-800 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#FCD34D] bg-[#FEF3C7] px-4 py-2.5 text-xs font-semibold text-[#904d00] dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
           <span>{t('ent.memberLimitReached', { max: memberLimit.limit ?? 4 })}</span>
           <button
             type="button"
             onClick={() => setActiveView('pricing')}
-            className="rounded-lg bg-emerald-600 px-3 py-1 text-xs font-bold text-white hover:bg-emerald-700"
+            className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-bold text-white hover:bg-[#043D2E]"
           >
             {t('ent.upgradeBtn')}
           </button>
@@ -537,7 +542,7 @@ export const FamilyView: React.FC = () => {
 
       <form
         onSubmit={handleAddMember}
-        className="grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-6"
+        className="grid grid-cols-1 gap-3 wdw-card p-5 sm:grid-cols-6"
       >
         <input
           type="text"
@@ -545,12 +550,12 @@ export const FamilyView: React.FC = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={t('fam.memberNamePlaceholder')}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+          className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as MemberRole)}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+          className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
         >
           <option value="partner">{roleLabel('partner')}</option>
           <option value="dependent">{roleLabel('dependent')}</option>
@@ -562,7 +567,7 @@ export const FamilyView: React.FC = () => {
           value={avatar}
           onChange={(e) => setAvatar(e.target.value)}
           placeholder={t('fam.avatarPlaceholder')}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-center text-sm dark:border-slate-700 dark:bg-slate-800"
+          className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-center text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
         />
         <input
           type="number"
@@ -570,7 +575,7 @@ export const FamilyView: React.FC = () => {
           value={allowance}
           onChange={(e) => setAllowance(e.target.value)}
           placeholder={t('fam.allowancePlaceholder')}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+          className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
         />
         <input
           type="number"
@@ -578,11 +583,11 @@ export const FamilyView: React.FC = () => {
           value={incomeTarget}
           onChange={(e) => setIncomeTarget(e.target.value)}
           placeholder={t('fam.incomeTargetPlaceholder')}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+          className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
         />
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
         >
           <Plus className="h-4 w-4" /> {t('fam.addMemberBtn')}
         </button>
@@ -590,14 +595,14 @@ export const FamilyView: React.FC = () => {
 
       {/* Household Invite Links (Admin Only for Authenticated Cloud Sync) */}
       {roleCapabilities.canDeleteHouseholdData && authSession && !authSession.isDemo && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card p-5">
           <div className="mb-2 flex items-center gap-2">
-            <Link2 className="h-4 w-4 text-emerald-600" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <Link2 className="h-4 w-4 text-[#10B981]" />
+            <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
               {t('fam.inviteHeading')}
             </h2>
           </div>
-          <p className="mb-3 text-xs text-slate-500 dark:text-slate-400">{t('fam.inviteDesc')}</p>
+          <p className="mb-3 text-xs text-[#404944] dark:text-[#707974]">{t('fam.inviteDesc')}</p>
 
           <form
             onSubmit={(e) => void handleGenerateInvite(e)}
@@ -608,7 +613,7 @@ export const FamilyView: React.FC = () => {
               onChange={(e) =>
                 setInviteRole(e.target.value as 'partner' | 'dependent' | 'advisor')
               }
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs font-semibold dark:border-[#2f3b52] dark:bg-[#172036]"
             >
               <option value="partner">{roleLabel('partner')}</option>
               <option value="dependent">{roleLabel('dependent')}</option>
@@ -619,11 +624,11 @@ export const FamilyView: React.FC = () => {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               placeholder={t('fam.inviteEmailPlaceholder')}
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
             >
               <Link2 className="h-3.5 w-3.5" />
               {t('fam.createInviteBtn')}
@@ -631,14 +636,14 @@ export const FamilyView: React.FC = () => {
           </form>
 
           {latestInviteUrl && (
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3 py-2 text-xs dark:border-emerald-900 dark:bg-emerald-950/30">
-              <code className="truncate font-mono text-[11px] text-emerald-900 dark:text-emerald-200">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-[#b0f0d6]/30 px-3 py-2 text-xs dark:border-emerald-900 dark:bg-emerald-950/30">
+              <code className="truncate font-mono text-[11px] text-[#002117] dark:text-emerald-200">
                 {latestInviteUrl}
               </code>
               <button
                 type="button"
                 onClick={() => void handleCopyInvite()}
-                className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-emerald-700"
+                className="inline-flex items-center gap-1 rounded-lg bg-[#064E3B] px-2.5 py-1 text-[11px] font-bold text-white hover:bg-[#043D2E]"
               >
                 <Copy className="h-3 w-3" />
                 Copy
@@ -647,18 +652,18 @@ export const FamilyView: React.FC = () => {
           )}
 
           {invitesList.length > 0 && (
-            <div className="mt-3 divide-y divide-slate-100 text-xs dark:divide-slate-800">
+            <div className="mt-3 divide-y divide-[#F1F5F9] text-xs dark:divide-[#232f4f]">
               {invitesList.slice(0, 5).map((inv) => (
                 <div key={inv.code} className="flex items-center justify-between py-1.5">
-                  <span className="font-mono text-[11px] text-slate-600 dark:text-slate-300">
+                  <span className="font-mono text-[11px] text-[#404944] dark:text-[#bfc9c3]">
                     {inv.code} • {inv.role}
                     {inv.invitedEmail ? ` (${inv.invitedEmail})` : ''}
                   </span>
                   <span
                     className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                       inv.usedAt
-                        ? 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
-                        : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300'
+                        ? 'bg-[#eaedff] text-[#404944] dark:bg-[#172036] dark:text-[#bfc9c3]'
+                        : 'bg-[#b0f0d6]/35 text-[#064E3B] dark:bg-emerald-950/50 dark:text-emerald-300'
                     }`}
                   >
                     {inv.usedAt ? t('fam.inviteUsedBadge') : t('fam.inviteActiveBadge')}
@@ -671,15 +676,15 @@ export const FamilyView: React.FC = () => {
       )}
 
       {/* Household Activity Audit Feed */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="wdw-card p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-blue-600" />
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <Activity className="h-4 w-4 text-[#0F766E]" />
+            <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
               {t('fam.auditHeading')}
             </h2>
           </div>
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          <span className="rounded-full bg-[#eaedff] px-2.5 py-0.5 text-[11px] font-semibold text-[#404944] dark:bg-[#172036] dark:text-[#bfc9c3]">
             {syncStatus === 'synced'
               ? t('fam.sqliteSynced', { rev: syncRevision })
               : t('fam.localAuditLog')}
@@ -687,9 +692,9 @@ export const FamilyView: React.FC = () => {
         </div>
 
         {(state.auditLog ?? []).length === 0 ? (
-          <p className="text-xs text-slate-500">{t('fam.emptyAudit')}</p>
+          <p className="text-xs text-[#404944]">{t('fam.emptyAudit')}</p>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-[#F1F5F9] dark:divide-[#232f4f]">
             {(state.auditLog ?? []).slice(0, 12).map((entry) => (
               <div
                 key={entry.id}
@@ -698,13 +703,13 @@ export const FamilyView: React.FC = () => {
                 <div className="flex min-w-0 items-center gap-2.5">
                   <span className="text-base">{entry.memberAvatar}</span>
                   <div className="min-w-0">
-                    <span className="font-bold text-slate-900 dark:text-white">
+                    <span className="font-bold text-[#131b2e] dark:text-white">
                       {entityText(entry.memberName)}
                     </span>{' '}
-                    <span className="text-slate-600 dark:text-slate-300">{entry.summary}</span>
+                    <span className="text-[#404944] dark:text-[#bfc9c3]">{entry.summary}</span>
                   </div>
                 </div>
-                <span className="shrink-0 text-[11px] text-slate-400">
+                <span className="shrink-0 text-[11px] text-[#707974]">
                   {new Date(entry.createdAt).toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit',

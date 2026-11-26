@@ -232,30 +232,30 @@ export const CommandPalette: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/60 px-4 pt-16 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-[#131b2e]/55 px-4 pt-16 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-label={t('palette.dialogLabel')}
     >
       <div
         ref={dialogRef}
-        className="w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
+        className="wdw-card-elevated w-full max-w-xl overflow-hidden rounded-2xl"
       >
-        <div className="flex items-center gap-2.5 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-          <Search className="h-4 w-4 text-slate-400" />
+        <div className="flex items-center gap-2.5 border-b border-[#F1F5F9] px-4 py-3 dark:border-[#232f4f]">
+          <Search className="h-4 w-4 text-[#0F766E]" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
             placeholder={t('palette.placeholder')}
-            className="flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white"
+            className="flex-1 border-none bg-transparent text-sm text-[#131b2e] placeholder:text-[#707974] focus:shadow-none focus:outline-none dark:text-white"
             aria-label={t('palette.searchLabel')}
           />
           <button
             type="button"
             onClick={closeCommandPalette}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+            className="rounded-lg p-1 text-[#707974] hover:bg-[#f2f3ff] hover:text-[#131b2e] dark:hover:bg-[#1c2640]"
             aria-label={t('palette.closeLabel')}
           >
             <X className="h-4 w-4" />
@@ -264,7 +264,7 @@ export const CommandPalette: React.FC = () => {
 
         <div className="max-h-80 overflow-y-auto p-2" role="listbox">
           {items.length === 0 ? (
-            <div className="py-8 text-center text-xs text-slate-500">
+            <div className="py-8 text-center text-xs text-[#404944] dark:text-[#bfc9c3]">
               {t('palette.empty')}
             </div>
           ) : (
@@ -278,14 +278,14 @@ export const CommandPalette: React.FC = () => {
                   aria-selected={selected}
                   onMouseEnter={() => setActiveIndex(idx)}
                   onClick={item.onSelect}
-                  className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition ${
+                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition ${
                     selected
-                      ? 'bg-blue-50 text-blue-900 dark:bg-blue-950/60 dark:text-blue-100'
-                      : 'text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800/60'
+                      ? 'bg-[#064E3B]/10 text-[#064E3B] dark:bg-[#064E3B]/45 dark:text-[#b0f0d6]'
+                      : 'text-[#131b2e] hover:bg-[#f2f3ff] dark:text-[#eef0ff] dark:hover:bg-[#1c2640]'
                   }`}
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#f2f3ff] text-[#064E3B] dark:bg-[#1c2640] dark:text-[#b0f0d6]">
                       {item.id === 'act-add-tx' ? (
                         <Plus className="h-3.5 w-3.5" />
                       ) : item.id === 'act-theme' ? (
@@ -301,15 +301,15 @@ export const CommandPalette: React.FC = () => {
                       )}
                     </span>
                     <div className="min-w-0">
-                      <div className="truncate text-xs font-bold">{item.label}</div>
+                      <div className="truncate text-xs font-semibold">{item.label}</div>
                       {item.subtitle && (
-                        <div className="truncate text-[11px] text-slate-500 dark:text-slate-400">
+                        <div className="truncate text-[11px] text-[#404944] dark:text-[#bfc9c3]">
                           {item.subtitle}
                         </div>
                       )}
                     </div>
                   </div>
-                  <span className="ml-2 shrink-0 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                  <span className="ml-2 shrink-0 rounded-full bg-[#f2f3ff] px-2 py-0.5 text-[10px] font-semibold text-[#404944] dark:bg-[#1c2640] dark:text-[#bfc9c3]">
                     {item.groupLabel}
                   </span>
                 </button>
@@ -318,9 +318,9 @@ export const CommandPalette: React.FC = () => {
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-4 py-2 text-[11px] text-slate-500 dark:border-slate-800 dark:bg-slate-900/70">
+        <div className="flex items-center justify-between border-t border-[#F1F5F9] bg-[#f2f3ff]/70 px-4 py-2 text-[11px] text-[#404944] dark:border-[#232f4f] dark:bg-[#172036] dark:text-[#bfc9c3]">
           <span>{t('palette.footerHint')}</span>
-          <span>Ctrl/⌘ + K</span>
+          <span className="font-numeric font-semibold">Ctrl/⌘ + K</span>
         </div>
       </div>
     </div>

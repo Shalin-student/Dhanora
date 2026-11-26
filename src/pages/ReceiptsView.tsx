@@ -99,10 +99,10 @@ export const ReceiptsView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('rcpt.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[#404944] dark:text-[#707974]">
             {t('rcpt.subtitlePrefix')}{' '}
             <span className="font-semibold">
               {storageEngine === 'indexeddb' ? t('rcpt.engineIdb') : t('rcpt.engineFallback')}
@@ -114,39 +114,39 @@ export const ReceiptsView: React.FC = () => {
 
       {/* Vault Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+        <div className="wdw-card p-4">
+          <div className="flex items-center justify-between text-xs font-semibold text-[#404944]">
             <span>{t('rcpt.archivedCount')}</span>
-            <FileImage className="h-4 w-4 text-blue-500" />
+            <FileImage className="h-4 w-4 text-[#0F766E]" />
           </div>
-          <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+          <div className="mt-1 text-2xl font-bold text-[#131b2e] dark:text-white">
             {records.length}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+        <div className="wdw-card p-4">
+          <div className="flex items-center justify-between text-xs font-semibold text-[#404944]">
             <span>{t('rcpt.storageUsed')}</span>
             <HardDrive className="h-4 w-4 text-emerald-500" />
           </div>
-          <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+          <div className="mt-1 text-2xl font-bold text-[#131b2e] dark:text-white">
             {formatBytes(totalBytes)}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">
             {t('rcpt.missingHighSpend')}
           </div>
-          <div className="mt-1 text-2xl font-extrabold text-amber-600 dark:text-amber-400">
+          <div className="mt-1 text-2xl font-bold text-[#D97706] dark:text-amber-400">
             {missingHighSpendCount}
           </div>
         </div>
       </div>
 
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 wdw-card p-4">
+        <div className="flex gap-1 rounded-xl bg-[#eaedff] p-1 dark:bg-[#172036]">
           {(
             [
               ['with', t('rcpt.tabWith')],
@@ -160,8 +160,8 @@ export const ReceiptsView: React.FC = () => {
               onClick={() => setFilterMode(mode)}
               className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                 filterMode === mode
-                  ? 'bg-white text-blue-600 shadow-2xs dark:bg-slate-700 dark:text-white'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  ? 'bg-white text-[#0F766E] shadow-2xs dark:bg-slate-700 dark:text-white'
+                  : 'text-[#404944] hover:text-[#131b2e] dark:text-[#bfc9c3]'
               }`}
             >
               {label}
@@ -170,25 +170,25 @@ export const ReceiptsView: React.FC = () => {
         </div>
 
         <div className="relative w-full sm:w-72">
-          <Search className="pointer-events-none absolute top-2.5 left-3 h-4 w-4 text-slate-400" />
+          <Search className="pointer-events-none absolute top-2.5 left-3 h-4 w-4 text-[#707974]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('rcpt.searchPlaceholder')}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pr-3 pl-9 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="w-full rounded-xl border border-[#bfc9c3]/60 bg-[#f2f3ff] py-2 pr-3 pl-9 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
         </div>
       </div>
 
       {/* Grid */}
       {visibleTxs.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
-          <FileImage className="mx-auto mb-2 h-8 w-8 text-slate-400" />
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+        <div className="rounded-2xl border border-dashed border-[#CBD5E1] bg-white p-10 text-center dark:border-[#2f3b52] dark:bg-[#131b2e]">
+          <FileImage className="mx-auto mb-2 h-8 w-8 text-[#707974]" />
+          <p className="text-sm font-semibold text-[#131b2e] dark:text-[#eef0ff]">
             {t('rcpt.emptyTitle')}
           </p>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-[#404944]">
             {t('rcpt.emptySub')}
           </p>
         </div>
@@ -202,13 +202,13 @@ export const ReceiptsView: React.FC = () => {
               return (
                 <div
                   key={tx.id}
-                  className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900"
+                  className="flex flex-col justify-between overflow-hidden wdw-card"
                 >
                   {rec && rec.mimeType.startsWith('image/') ? (
                     <button
                       type="button"
                       onClick={() => openReceiptPreview(tx.id)}
-                      className="group relative h-44 w-full overflow-hidden bg-slate-100 dark:bg-slate-800"
+                      className="group relative h-44 w-full overflow-hidden bg-[#eaedff] dark:bg-[#172036]"
                     >
                       <img
                         src={rec.dataUrl}
@@ -221,7 +221,7 @@ export const ReceiptsView: React.FC = () => {
                       </span>
                     </button>
                   ) : (
-                    <div className="flex h-28 items-center justify-center bg-slate-50 text-xs text-slate-400 dark:bg-slate-800/60">
+                    <div className="flex h-28 items-center justify-center bg-[#f2f3ff] text-xs text-[#707974] dark:bg-[#1c2640]">
                       {rec ? rec.fileName : t('rcpt.noReceiptAttached')}
                     </div>
                   )}
@@ -229,25 +229,25 @@ export const ReceiptsView: React.FC = () => {
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <h2 className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                        <h2 className="truncate text-sm font-bold text-[#131b2e] dark:text-white">
                           {tx.merchant}
                         </h2>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-[#404944]">
                           {tx.date} • {mem?.avatar} {memName(mem)}
                         </p>
                       </div>
-                      <span className="shrink-0 text-sm font-extrabold text-slate-900 dark:text-white">
+                      <span className="shrink-0 font-numeric text-sm font-bold text-[#131b2e] dark:text-white">
                         {formatMoney(tx.amount, tx.currency, state.settings.privacyMode)}
                       </span>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
+                    <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#F1F5F9] pt-3 dark:border-[#232f4f]">
                       {tx.receiptId ? (
                         <>
                           <button
                             type="button"
                             onClick={() => openReceiptPreview(tx.id)}
-                            className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-300"
+                            className="inline-flex items-center gap-1 rounded-lg bg-[#f2f3ff] px-2.5 py-1.5 text-xs font-semibold text-[#064E3B] hover:bg-[#9cf2e8]/45 dark:bg-[#004d47]/40 dark:text-[#9cf2e8]"
                           >
                             <Eye className="h-3.5 w-3.5" />
                             {t('rcpt.inspect')}
@@ -255,14 +255,14 @@ export const ReceiptsView: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => void removeReceiptFromTransaction(tx.id)}
-                            className="inline-flex items-center gap-1 rounded-lg p-1.5 text-xs text-slate-400 hover:text-rose-600"
+                            className="inline-flex items-center gap-1 rounded-lg p-1.5 text-xs text-[#707974] hover:text-[#ba1a1a]"
                             aria-label={t('rcpt.removeReceipt', { merchant: tx.merchant })}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </>
                       ) : (
-                        <label className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <label className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#CBD5E1] py-1.5 text-xs font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]">
                           <Upload className="h-3.5 w-3.5" />
                           {t('rcpt.attachReceipt')}
                           <input
@@ -285,7 +285,7 @@ export const ReceiptsView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setVisibleLimit((n) => n + 12)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="rounded-xl border border-[#bfc9c3]/60 bg-white px-4 py-2 text-xs font-semibold text-[#131b2e] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff] dark:hover:bg-[#1c2640]"
               >
                 {t('rcpt.loadMore', { count: visibleTxs.length - visibleLimit })}
               </button>

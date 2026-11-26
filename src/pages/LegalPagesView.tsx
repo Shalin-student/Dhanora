@@ -49,14 +49,14 @@ export const LegalPagesView: React.FC<{
   const activeContent = contentMap[activePage];
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="bg-mesh-hero min-h-screen text-[#131b2e] dark:text-[#eef0ff]">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-center gap-3">
           <BrandMark size="sm" />
           <button
             type="button"
             onClick={onBackHome}
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-700 hover:text-emerald-600 dark:text-slate-200"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#131b2e] hover:text-[#064E3B] dark:text-[#eef0ff] dark:hover:text-[#b0f0d6]"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>{t('auth.backHome')}</span>
@@ -75,10 +75,10 @@ export const LegalPagesView: React.FC<{
                 key={tab.id}
                 type="button"
                 onClick={() => onSelectPage(tab.id)}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition ${
                   selected
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200'
+                    ? 'bg-[#064E3B] text-white shadow-xs dark:bg-[#0F766E]'
+                    : 'border border-[#bfc9c3]/70 bg-white text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#bfc9c3]'
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -88,19 +88,19 @@ export const LegalPagesView: React.FC<{
           })}
         </div>
 
-        <article className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-xs sm:p-8 dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4 dark:border-slate-800">
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <article className="wdw-card-elevated space-y-4 p-6 sm:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F1F5F9] pb-4 dark:border-[#232f4f]">
+            <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
               {activeContent.title}
             </h1>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <span className="rounded-full bg-[#f2f3ff] px-3 py-1 text-[11px] font-semibold text-[#404944] dark:bg-[#1c2640] dark:text-[#bfc9c3]">
               {t('legal.lastUpdated')}
             </span>
           </div>
-          <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+          <p className="text-[15px] leading-[24px] text-[#131b2e] dark:text-[#eef0ff]">
             {activeContent.p1}
           </p>
-          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+          <p className="text-[15px] leading-[24px] text-[#404944] dark:text-[#bfc9c3]">
             {activeContent.p2}
           </p>
         </article>

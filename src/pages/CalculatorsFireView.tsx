@@ -124,10 +124,10 @@ export const CalculatorsFireView: React.FC<{
     <div className="space-y-6">
       {!embedded && (
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('calc.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t('calc.subtitle')}</p>
+          <p className="text-sm text-[#404944] dark:text-[#707974]">{t('calc.subtitle')}</p>
         </div>
       )}
 
@@ -147,8 +147,8 @@ export const CalculatorsFireView: React.FC<{
             onClick={() => setTab(id)}
             className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition ${
               tab === id
-                ? 'border-emerald-600 bg-emerald-600 text-white shadow-xs'
-                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200'
+                ? 'border-[#064E3B] bg-[#064E3B] text-white shadow-xs'
+                : 'border-[#bfc9c3]/60 bg-white text-[#131b2e] hover:bg-[#f2f3ff] dark:border-[#232f4f] dark:bg-[#131b2e] dark:text-[#eef0ff]'
             }`}
           >
             <Icon className="h-3.5 w-3.5" />
@@ -159,19 +159,19 @@ export const CalculatorsFireView: React.FC<{
 
       {/* TAB 1: FIRE PLANNER */}
       {tab === 'fire' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                 {t('calc.fireHeading')}
               </h2>
-              <p className="text-xs text-slate-500">{t('calc.fireDesc')}</p>
+              <p className="text-xs text-[#404944]">{t('calc.fireDesc')}</p>
             </div>
             <span
               className={`rounded-full px-3 py-1 text-xs font-bold ${
                 fireResult.isViableToLifeExpectancy
-                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300'
-                  : 'bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300'
+                  ? 'bg-[#b0f0d6]/35 text-[#064E3B] dark:bg-emerald-950/50 dark:text-emerald-300'
+                  : 'bg-[#FEF3C7] text-[#904d00] dark:bg-amber-950/50 dark:text-amber-300'
               }`}
             >
               {fireResult.isViableToLifeExpectancy
@@ -182,68 +182,68 @@ export const CalculatorsFireView: React.FC<{
 
           <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.curAge')}
               </span>
               <input
                 type="number"
                 value={curAge}
                 onChange={(e) => setCurAge(Number(e.target.value) || 30)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.retireAge')}
               </span>
               <input
                 type="number"
                 value={retireAge}
                 onChange={(e) => setRetireAge(Number(e.target.value) || 50)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.monthlySpendToday')}
               </span>
               <input
                 type="number"
                 value={monthlySpend}
                 onChange={(e) => setMonthlySpend(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
-              <span className="text-[10px] text-slate-400">
+              <span className="text-[10px] text-[#707974]">
                 {formatIndianScaleHint(monthlySpend, language)}
               </span>
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.monthlySave')}
               </span>
               <input
                 type="number"
                 value={monthlySave}
                 onChange={(e) => setMonthlySave(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
-              <span className="text-[10px] text-slate-400">
+              <span className="text-[10px] text-[#707974]">
                 {formatIndianScaleHint(monthlySave, language)}
               </span>
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.curCorpus')}
               </span>
               <input
                 type="number"
                 value={curCorpus}
                 onChange={(e) => setCurCorpus(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.expectedReturnPct')}
               </span>
               <input
@@ -251,11 +251,11 @@ export const CalculatorsFireView: React.FC<{
                 step="0.5"
                 value={fireReturn}
                 onChange={(e) => setFireReturn(Number(e.target.value) || 8)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.inflationPct')}
               </span>
               <input
@@ -263,11 +263,11 @@ export const CalculatorsFireView: React.FC<{
                 step="0.5"
                 value={fireInflation}
                 onChange={(e) => setFireInflation(Number(e.target.value) || 5)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-600 dark:text-slate-300">
+              <span className="mb-1 block font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.postRetTaxPct')}
               </span>
               <input
@@ -275,33 +275,33 @@ export const CalculatorsFireView: React.FC<{
                 step="0.5"
                 value={postRetTax}
                 onChange={(e) => setPostRetTax(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
           </div>
 
           <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl bg-slate-50 p-3.5 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.fireTargetNeeded')}</div>
-              <div className="mt-1 text-lg font-extrabold text-slate-900 dark:text-white">
+            <div className="rounded-xl bg-[#f2f3ff] p-3.5 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.fireTargetNeeded')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#131b2e] dark:text-white">
                 {formatMoney(fireResult.requiredFireCorpus, currency, privacy)}
               </div>
             </div>
-            <div className="rounded-xl bg-slate-50 p-3.5 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">
+            <div className="rounded-xl bg-[#f2f3ff] p-3.5 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">
                 {t('calc.fireProjectedAtAge', { age: retireAge })}
               </div>
-              <div className="mt-1 text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+              <div className="mt-1 font-numeric text-lg font-bold text-[#10B981] dark:text-emerald-400">
                 {formatMoney(fireResult.corpusAtRetirement, currency, privacy)}
               </div>
             </div>
-            <div className="rounded-xl bg-slate-50 p-3.5 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.fireSurplusGap')}</div>
+            <div className="rounded-xl bg-[#f2f3ff] p-3.5 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.fireSurplusGap')}</div>
               <div
-                className={`mt-1 text-lg font-extrabold ${
+                className={`mt-1 font-numeric text-lg font-bold ${
                   fireResult.surplusAtRetirement >= 0
-                    ? 'text-emerald-600 dark:text-emerald-400'
-                    : 'text-rose-600 dark:text-rose-400'
+                    ? 'text-[#10B981] dark:text-emerald-400'
+                    : 'text-[#ba1a1a] dark:text-rose-400'
                 }`}
               >
                 {fireResult.surplusAtRetirement >= 0 ? '+' : ''}
@@ -310,9 +310,9 @@ export const CalculatorsFireView: React.FC<{
             </div>
           </div>
 
-          <div className="max-h-56 overflow-y-auto rounded-xl border border-slate-100 dark:border-slate-800">
+          <div className="max-h-56 overflow-y-auto rounded-xl border border-[#F1F5F9] dark:border-[#232f4f]">
             <table className="w-full text-left text-xs">
-              <thead className="sticky top-0 bg-slate-50 text-[11px] font-bold uppercase text-slate-500 dark:bg-slate-800">
+              <thead className="sticky top-0 bg-[#f2f3ff] text-[11px] font-bold uppercase text-[#404944] dark:bg-[#172036]">
                 <tr>
                   <th className="px-3 py-2">{t('calc.thAge')}</th>
                   <th className="px-3 py-2">{t('calc.thPhase')}</th>
@@ -320,7 +320,7 @@ export const CalculatorsFireView: React.FC<{
                   <th className="px-3 py-2 text-right">{t('calc.thEndCorpus')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-[#F1F5F9] dark:divide-[#232f4f]">
                 {fireResult.rows
                   .filter((_, idx) => idx % 5 === 0 || idx === retireAge - curAge || idx === fireResult.rows.length - 1)
                   .map((r) => (
@@ -331,7 +331,7 @@ export const CalculatorsFireView: React.FC<{
                       </td>
                       <td
                         className={`px-3 py-1.5 text-right font-semibold ${
-                          r.annualCashflow >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                          r.annualCashflow >= 0 ? 'text-[#10B981]' : 'text-[#ba1a1a]'
                         }`}
                       >
                         {r.annualCashflow >= 0 ? '+' : ''}
@@ -350,15 +350,15 @@ export const CalculatorsFireView: React.FC<{
 
       {/* TAB 2: OLD VS NEW TAX REGIME (FY 2026-27) */}
       {tab === 'tax' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">
+              <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                 {t('calc.taxHeading')}
               </h2>
-              <p className="text-xs text-slate-500">{t('calc.taxDesc')}</p>
+              <p className="text-xs text-[#404944]">{t('calc.taxDesc')}</p>
             </div>
-            <div className="rounded-xl bg-emerald-50 px-3.5 py-2 text-xs font-extrabold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+            <div className="rounded-xl bg-[#b0f0d6]/35 px-3.5 py-2 text-xs font-extrabold text-[#064E3B] dark:bg-emerald-950/50 dark:text-emerald-300">
               {taxResult.recommended === 'new'
                 ? t('calc.taxWinnerNew', {
                     amt: formatMoney(taxResult.savings, 'INR', false),
@@ -380,9 +380,9 @@ export const CalculatorsFireView: React.FC<{
                   aria-label={t('calc.grossIncome')}
                   value={grossIncome}
                   onChange={(e) => setGrossIncome(Number(e.target.value) || 0)}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
-                <span className="mt-0.5 block text-[10px] text-slate-400">
+                <span className="mt-0.5 block text-[10px] text-[#707974]">
                   {formatIndianScaleHint(grossIncome, language)}
                 </span>
               </div>
@@ -394,7 +394,7 @@ export const CalculatorsFireView: React.FC<{
                   type="number"
                   value={ded80C}
                   onChange={(e) => setDed80C(Number(e.target.value) || 0)}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
                 <span className="mt-0.5 block text-[10px] text-transparent" aria-hidden="true">
                   -
@@ -408,7 +408,7 @@ export const CalculatorsFireView: React.FC<{
                   type="number"
                   value={ded80D}
                   onChange={(e) => setDed80D(Number(e.target.value) || 0)}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
                 <span className="mt-0.5 block text-[10px] text-transparent" aria-hidden="true">
                   -
@@ -421,7 +421,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={hraEx}
                 onChange={(e) => setHraEx(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="flex flex-col justify-between text-xs">
@@ -430,7 +430,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={homeLoanInt}
                 onChange={(e) => setHomeLoanInt(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="flex flex-col justify-between text-xs">
@@ -439,7 +439,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={nps1B}
                 onChange={(e) => setNps1B(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
           </div>
@@ -448,17 +448,17 @@ export const CalculatorsFireView: React.FC<{
             <div
               className={`rounded-xl border p-4 ${
                 taxResult.recommended === 'new'
-                  ? 'border-emerald-400 bg-emerald-50/40 dark:border-emerald-800 dark:bg-emerald-950/20'
-                  : 'border-slate-200 dark:border-slate-800'
+                  ? 'border-emerald-400 bg-[#b0f0d6]/30 dark:border-emerald-800 dark:bg-emerald-950/20'
+                  : 'border-[#bfc9c3]/60 dark:border-[#232f4f]'
               }`}
             >
-              <div className="text-xs font-bold text-slate-600 dark:text-slate-300">
+              <div className="text-xs font-bold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.newRegimeLabel')}
               </div>
-              <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+              <div className="mt-1 text-2xl font-bold text-[#131b2e] dark:text-white">
                 {formatMoney(taxResult.newRegimeTax, 'INR', false)}
               </div>
-              <div className="mt-1 text-[11px] text-slate-500">
+              <div className="mt-1 text-[11px] text-[#404944]">
                 {t('calc.taxableLine', {
                   taxable: formatMoney(taxResult.newRegimeTaxableIncome, 'INR', false),
                   rate: taxResult.effectiveNewRatePct,
@@ -468,17 +468,17 @@ export const CalculatorsFireView: React.FC<{
             <div
               className={`rounded-xl border p-4 ${
                 taxResult.recommended === 'old'
-                  ? 'border-emerald-400 bg-emerald-50/40 dark:border-emerald-800 dark:bg-emerald-950/20'
-                  : 'border-slate-200 dark:border-slate-800'
+                  ? 'border-emerald-400 bg-[#b0f0d6]/30 dark:border-emerald-800 dark:bg-emerald-950/20'
+                  : 'border-[#bfc9c3]/60 dark:border-[#232f4f]'
               }`}
             >
-              <div className="text-xs font-bold text-slate-600 dark:text-slate-300">
+              <div className="text-xs font-bold text-[#404944] dark:text-[#bfc9c3]">
                 {t('calc.oldRegimeLabel')}
               </div>
-              <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+              <div className="mt-1 text-2xl font-bold text-[#131b2e] dark:text-white">
                 {formatMoney(taxResult.oldRegimeTax, 'INR', false)}
               </div>
-              <div className="mt-1 text-[11px] text-slate-500">
+              <div className="mt-1 text-[11px] text-[#404944]">
                 {t('calc.taxableLine', {
                   taxable: formatMoney(taxResult.oldRegimeTaxableIncome, 'INR', false),
                   rate: taxResult.effectiveOldRatePct,
@@ -491,8 +491,8 @@ export const CalculatorsFireView: React.FC<{
 
       {/* TAB 3: RENT VS BUY */}
       {tab === 'rent-buy' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+        <div className="wdw-card p-5">
+          <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
             {t('calc.rentBuyHeading')}
           </h2>
           <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -502,7 +502,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={homePrice}
                 onChange={(e) => setHomePrice(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -511,7 +511,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={downPct}
                 onChange={(e) => setDownPct(Number(e.target.value) || 20)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -521,7 +521,7 @@ export const CalculatorsFireView: React.FC<{
                 step="0.1"
                 value={loanRate}
                 onChange={(e) => setLoanRate(Number(e.target.value) || 8)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -530,7 +530,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={monthlyRent}
                 onChange={(e) => setMonthlyRent(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -539,26 +539,26 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={rentBuyYears}
                 onChange={(e) => setRentBuyYears(Number(e.target.value) || 10)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.estMonthlyEmi')}</div>
-              <div className="mt-1 text-lg font-extrabold">
+            <div className="rounded-xl bg-[#f2f3ff] p-4 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.estMonthlyEmi')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold">
                 {formatMoney(rentBuyResult.monthlyEmi, currency, privacy)}
               </div>
             </div>
-            <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.buyNetWealth')}</div>
-              <div className="mt-1 text-lg font-extrabold text-blue-600">
+            <div className="rounded-xl bg-[#f2f3ff] p-4 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.buyNetWealth')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#0F766E]">
                 {formatMoney(rentBuyResult.buyNetWealth, currency, privacy)}
               </div>
             </div>
-            <div className="rounded-xl bg-emerald-50/70 p-4 dark:bg-emerald-950/30">
-              <div className="text-[11px] text-slate-500">{t('calc.rentNetWealth')}</div>
-              <div className="mt-1 text-lg font-extrabold text-emerald-600">
+            <div className="rounded-xl bg-[#b0f0d6]/30 p-4 dark:bg-emerald-950/30">
+              <div className="text-[11px] text-[#404944]">{t('calc.rentNetWealth')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#10B981]">
                 {formatMoney(rentBuyResult.rentNetWealth, currency, privacy)}
               </div>
               <div className="mt-1 text-[11px] font-bold">
@@ -573,12 +573,12 @@ export const CalculatorsFireView: React.FC<{
 
       {/* TAB 4: PREPAY LOAN VS INVEST */}
       {tab === 'prepay' && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card p-5">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
               {t('calc.prepayHeading')}
             </h2>
-            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+            <span className="rounded-full bg-[#b0f0d6]/35 px-3 py-1 text-xs font-bold text-[#064E3B] dark:bg-emerald-950/50 dark:text-emerald-300">
               <Calculator className="mr-1 inline h-3.5 w-3.5" />
               {prepayResult.recommended === 'invest'
                 ? t('calc.winnerInvest')
@@ -592,7 +592,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={loanBal}
                 onChange={(e) => setLoanBal(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -602,7 +602,7 @@ export const CalculatorsFireView: React.FC<{
                 step="0.1"
                 value={loanApr}
                 onChange={(e) => setLoanApr(Number(e.target.value) || 8)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -611,7 +611,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={remMonths}
                 onChange={(e) => setRemMonths(Number(e.target.value) || 12)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -620,7 +620,7 @@ export const CalculatorsFireView: React.FC<{
                 type="number"
                 value={extraSurplus}
                 onChange={(e) => setExtraSurplus(Number(e.target.value) || 0)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
             <label className="block text-xs">
@@ -630,29 +630,29 @@ export const CalculatorsFireView: React.FC<{
                 step="0.5"
                 value={investReturn}
                 onChange={(e) => setInvestReturn(Number(e.target.value) || 10)}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
               />
             </label>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.interestSavedPrepay')}</div>
-              <div className="mt-1 text-lg font-extrabold text-blue-600">
+            <div className="rounded-xl bg-[#f2f3ff] p-4 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.interestSavedPrepay')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#0F766E]">
                 {formatMoney(prepayResult.interestSaved, currency, privacy)}
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-[#404944]">
                 {t('calc.monthsTrimmed', { m: prepayResult.monthsSaved })}
               </div>
             </div>
-            <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/70">
-              <div className="text-[11px] text-slate-500">{t('calc.postTaxInvestGains')}</div>
-              <div className="mt-1 text-lg font-extrabold text-emerald-600">
+            <div className="rounded-xl bg-[#f2f3ff] p-4 dark:bg-[#1c2640]">
+              <div className="text-[11px] text-[#404944]">{t('calc.postTaxInvestGains')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#10B981]">
                 {formatMoney(prepayResult.postTaxInvestGain, currency, privacy)}
               </div>
             </div>
-            <div className="rounded-xl bg-emerald-50/70 p-4 dark:bg-emerald-950/30">
-              <div className="text-[11px] text-slate-500">{t('calc.netAdvantage')}</div>
-              <div className="mt-1 text-lg font-extrabold text-emerald-700 dark:text-emerald-300">
+            <div className="rounded-xl bg-[#b0f0d6]/30 p-4 dark:bg-emerald-950/30">
+              <div className="text-[11px] text-[#404944]">{t('calc.netAdvantage')}</div>
+              <div className="mt-1 font-numeric text-lg font-bold text-[#064E3B] dark:text-emerald-300">
                 +{formatMoney(prepayResult.netAdvantage, currency, privacy)}
               </div>
             </div>

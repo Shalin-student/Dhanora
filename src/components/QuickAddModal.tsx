@@ -223,23 +223,23 @@ export const QuickAddModal: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#131b2e]/55 p-4 backdrop-blur-xs"
       role="dialog"
       aria-modal="true"
       aria-labelledby="quick-add-title"
     >
       <div
         ref={modalRef}
-        className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card-elevated max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl p-6"
       >
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 id="quick-add-title" className="text-lg font-bold text-slate-900 dark:text-white">
+            <h2 id="quick-add-title" className="text-lg font-bold text-[#131b2e] dark:text-white">
               {editingTransaction ? t('qa.editTitle') : t('qa.newTitle')}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-[#404944] dark:text-[#bfc9c3]">
               {t('qa.tipPrefix')}{' '}
-              <kbd className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] dark:bg-slate-800">
+              <kbd className="font-numeric rounded bg-[#f2f3ff] px-1.5 py-0.5 text-[11px] font-semibold dark:bg-[#1c2640]">
                 N
               </kbd>{' '}
               {t('qa.tipSuffix')}
@@ -248,7 +248,7 @@ export const QuickAddModal: React.FC = () => {
           <button
             type="button"
             onClick={closeQuickAdd}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="rounded-lg p-1.5 text-[#707974] hover:bg-[#f2f3ff] dark:hover:bg-[#1c2640]"
             aria-label={t('a11y.closeModal')}
           >
             <X className="h-5 w-5" />
@@ -256,7 +256,7 @@ export const QuickAddModal: React.FC = () => {
         </div>
 
         {/* Type Tabs */}
-        <div className="mb-5 grid grid-cols-3 gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+        <div className="mb-5 grid grid-cols-3 gap-2 rounded-xl bg-[#f2f3ff] p-1 dark:bg-[#172036]">
           {(['expense', 'income', 'transfer'] as TransactionType[]).map((txT) => {
             const active = type === txT;
             return (
@@ -267,11 +267,11 @@ export const QuickAddModal: React.FC = () => {
                 className={`rounded-lg py-2 text-sm font-semibold capitalize transition ${
                   active
                     ? txT === 'income'
-                      ? 'bg-emerald-600 text-white shadow-xs'
+                      ? 'bg-[#064E3B] text-white shadow-xs'
                       : txT === 'expense'
-                      ? 'bg-rose-600 text-white shadow-xs'
-                      : 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                      ? 'bg-[#904d00] text-white shadow-xs'
+                      : 'bg-[#0F766E] text-white shadow-xs'
+                    : 'text-[#404944] hover:text-[#131b2e] dark:text-[#bfc9c3] dark:hover:text-white'
                 }`}
               >
                 {txTypeLabel(txT)}
@@ -281,7 +281,7 @@ export const QuickAddModal: React.FC = () => {
         </div>
 
         {error && (
-          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300">
+          <div className="mb-4 rounded-lg border border-[#ba1a1a]/30 bg-[#ffdad6] px-3 py-2 text-xs font-medium text-[#93000a]">
             {error}
           </div>
         )}
@@ -289,32 +289,37 @@ export const QuickAddModal: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.amount')}
               </label>
-              <input
-                type="text"
-                inputMode="decimal"
-                required
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-lg font-bold text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white"
-              />
+              <div className="relative">
+                <span className="font-numeric pointer-events-none absolute top-2.5 left-3.5 text-base font-semibold text-[#64748B]">
+                  {CURRENCY_META[currency]?.symbol ?? '₹'}
+                </span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  required
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="font-numeric min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white py-2.5 pr-3.5 pl-9 text-lg font-bold text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
+                />
+              </div>
               {formatIndianScaleHint(parseAmountShorthand(amount), language) && (
-                <p className="mt-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <p className="font-numeric mt-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
                   ≈ {formatIndianScaleHint(parseAmountShorthand(amount), language)}
                 </p>
               )}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.currency')}
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium dark:border-slate-700 dark:bg-slate-800"
+                className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2.5 text-sm font-medium text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               >
                 {Object.entries(CURRENCY_META).map(([code, meta]) => (
                   <option key={code} value={code}>
@@ -327,7 +332,7 @@ export const QuickAddModal: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {type === 'income'
                   ? t('qa.sourceLabel')
                   : type === 'transfer'
@@ -356,16 +361,16 @@ export const QuickAddModal: React.FC = () => {
                   }
                 }}
                 placeholder={type === 'income' ? t('qa.incomePlaceholder') : t('qa.expensePlaceholder')}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               />
               {matchedRulePattern && (
-                <p className="mt-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                <p className="mt-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
                   {t('qa.autoMatchedRule', { pattern: matchedRulePattern })}
                 </p>
               )}
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.date')}
               </label>
               <input
@@ -373,20 +378,20 @@ export const QuickAddModal: React.FC = () => {
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="font-numeric min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {type === 'transfer' ? t('qa.fromAccount') : t('qa.account')}
               </label>
               <select
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               >
                 {availableAccounts.map((a) => (
                   <option key={a.id} value={a.id}>
@@ -398,13 +403,13 @@ export const QuickAddModal: React.FC = () => {
 
             {type === 'transfer' ? (
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                   {t('qa.toAccount')}
                 </label>
                 <select
                   value={toAccountId}
                   onChange={(e) => setToAccountId(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                  className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
                 >
                   {availableAccounts.map((a) => (
                     <option key={a.id} value={a.id}>
@@ -415,7 +420,7 @@ export const QuickAddModal: React.FC = () => {
               </div>
             ) : (
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                   {t('qa.category')}
                 </label>
                 <select
@@ -425,7 +430,7 @@ export const QuickAddModal: React.FC = () => {
                     setCategoryManuallyChosen(true);
                     setMatchedRulePattern(null);
                   }}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                  className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
                 >
                   {filteredCategories.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -437,14 +442,14 @@ export const QuickAddModal: React.FC = () => {
             )}
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.member')}
               </label>
               <select
                 value={memberId}
                 disabled={roleCapabilities.isDependent}
                 onChange={(e) => setMemberId(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm disabled:opacity-75 dark:border-slate-700 dark:bg-slate-800"
+                className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] disabled:opacity-75 dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               >
                 {availableMembers.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -476,8 +481,8 @@ export const QuickAddModal: React.FC = () => {
                 }}
                 className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
                   enableCategorySplit
-                    ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
+                    ? 'border-[#0F766E] bg-[#9cf2e8]/30 text-[#003430] dark:bg-[#004d47]/50 dark:text-[#9cf2e8]'
+                    : 'border-[#CBD5E1] text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]'
                 }`}
               >
                 <Split className="h-3.5 w-3.5" />
@@ -492,8 +497,8 @@ export const QuickAddModal: React.FC = () => {
                 }}
                 className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
                   enableMemberSplit
-                    ? 'border-violet-500 bg-violet-50 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300'
-                    : 'border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
+                    ? 'border-[#D97706] bg-[#FEF3C7] text-[#904d00] dark:bg-[#904d00]/40 dark:text-[#ffdcc3]'
+                    : 'border-[#CBD5E1] text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]'
                 }`}
               >
                 <Users className="h-3.5 w-3.5" />
@@ -503,15 +508,15 @@ export const QuickAddModal: React.FC = () => {
           )}
 
           {enableCategorySplit && type === 'expense' && (
-            <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-3 dark:border-blue-900/50 dark:bg-blue-950/20">
+            <div className="rounded-xl border border-[#0F766E]/25 bg-[#9cf2e8]/20 p-3 dark:border-[#0F766E]/40 dark:bg-[#004d47]/25">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-bold text-blue-900 dark:text-blue-200">
+                <span className="text-xs font-bold text-[#003430] dark:text-[#9cf2e8]">
                   {t('qa.catSplitHeading')}
                 </span>
                 <button
                   type="button"
                   onClick={handleAddCategorySplitRow}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F766E] hover:underline dark:text-[#6ac0b6]"
                 >
                   <Plus className="h-3.5 w-3.5" /> {t('qa.addRow')}
                 </button>
@@ -528,7 +533,7 @@ export const QuickAddModal: React.FC = () => {
                           )
                         )
                       }
-                      className="flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="flex-1 rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {filteredCategories.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -547,14 +552,14 @@ export const QuickAddModal: React.FC = () => {
                           )
                         )
                       }
-                      className="w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="font-numeric w-28 rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <button
                       type="button"
                       onClick={() =>
                         setCategorySplits((prev) => prev.filter((_, idx) => idx !== i))
                       }
-                      className="rounded p-1 text-slate-400 hover:text-rose-500"
+                      className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                       aria-label={t('qa.removeSplitRow')}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -566,15 +571,15 @@ export const QuickAddModal: React.FC = () => {
           )}
 
           {enableMemberSplit && type === 'expense' && (
-            <div className="rounded-xl border border-violet-200 bg-violet-50/50 p-3 dark:border-violet-900/50 dark:bg-violet-950/20">
+            <div className="rounded-xl border border-[#D97706]/30 bg-[#FEF3C7]/60 p-3 dark:border-[#904d00]/50 dark:bg-[#904d00]/20">
               <div className="mb-2 flex items-center justify-between">
-                <span className="text-xs font-bold text-violet-900 dark:text-violet-200">
+                <span className="text-xs font-bold text-[#904d00] dark:text-[#ffdcc3]">
                   {t('qa.memberShareHeading')}
                 </span>
                 <button
                   type="button"
                   onClick={handleEqualMemberSplit}
-                  className="text-xs font-semibold text-violet-600 hover:underline"
+                  className="text-xs font-semibold text-[#904d00] hover:underline dark:text-[#fe932c]"
                 >
                   {t('qa.splitEqually')}
                 </button>
@@ -585,7 +590,7 @@ export const QuickAddModal: React.FC = () => {
                   return (
                     <div
                       key={sp.memberId}
-                      className="flex items-center justify-between gap-2 rounded-lg bg-white px-2.5 py-1.5 dark:bg-slate-800"
+                      className="flex items-center justify-between gap-2 rounded-lg bg-white px-2.5 py-1.5 dark:bg-[#172036]"
                     >
                       <span className="text-xs font-medium">
                         {mem?.avatar} {memName(mem)}
@@ -601,7 +606,7 @@ export const QuickAddModal: React.FC = () => {
                             )
                           )
                         }
-                        className="w-24 rounded border border-slate-200 px-2 py-1 text-right text-xs dark:border-slate-700 dark:bg-slate-900"
+                        className="font-numeric w-24 rounded-md border border-[#CBD5E1] px-2 py-1 text-right text-xs dark:border-[#2f3b52] dark:bg-[#131b2e]"
                       />
                     </div>
                   );
@@ -612,7 +617,7 @@ export const QuickAddModal: React.FC = () => {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.tags')}
               </label>
               <input
@@ -620,23 +625,23 @@ export const QuickAddModal: React.FC = () => {
                 value={tagsText}
                 onChange={(e) => setTagsText(e.target.value)}
                 placeholder={t('qa.tagsPlaceholder')}
-                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('qa.statusReceipt')}
               </label>
               <div className="flex items-center gap-2">
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value as TransactionStatus)}
-                  className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                  className="min-h-[44px] rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
                 >
                   <option value="cleared">{txStatusLabel('cleared')}</option>
                   <option value="pending">{txStatusLabel('pending')}</option>
                 </select>
-                <label className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-300 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                <label className="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-dashed border-[#CBD5E1] px-3 py-2 text-xs font-medium text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]">
                   <Upload className="h-3.5 w-3.5" />
                   <span className="truncate">
                     {receiptName
@@ -655,7 +660,7 @@ export const QuickAddModal: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
               {t('qa.notes')}
             </label>
             <textarea
@@ -663,7 +668,7 @@ export const QuickAddModal: React.FC = () => {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder={t('qa.notesPlaceholder')}
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-lg border border-[#CBD5E1] bg-white px-3 py-2 text-sm text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
             />
           </div>
 
@@ -671,13 +676,13 @@ export const QuickAddModal: React.FC = () => {
             <button
               type="button"
               onClick={closeQuickAdd}
-              className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="rounded-lg border border-[#CBD5E1] px-4 py-2 text-sm font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]"
             >
               {t('layout.cancel')}
             </button>
             <button
               type="submit"
-              className="rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+              className="wdw-btn-primary px-5 py-2 text-sm font-semibold shadow-sm"
             >
               {editingTransaction ? t('qa.saveChanges') : t('qa.saveTx')}
             </button>

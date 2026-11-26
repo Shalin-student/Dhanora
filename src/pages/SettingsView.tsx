@@ -137,38 +137,38 @@ export const SettingsView: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
           {t('set.title')}
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-[#404944] dark:text-[#707974]">
           {t('set.subtitle')}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* General & Currency */}
-        <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="space-y-4 wdw-card p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
+            <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
               {t('set.householdSection')}
             </h2>
             <LanguageToggle variant="pill" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
               {t('set.householdNameLabel')}
             </label>
             <input
               type="text"
               value={state.settings.householdName}
               onChange={(e) => updateSettings({ householdName: e.target.value })}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('set.baseCurrencyLabel')}
               </label>
               <select
@@ -176,7 +176,7 @@ export const SettingsView: React.FC = () => {
                 onChange={(e) =>
                   updateSettings({ baseCurrency: e.target.value as CurrencyCode })
                 }
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
               >
                 {Object.entries(CURRENCY_META).map(([code, meta]) => (
                   <option key={code} value={code}>
@@ -187,13 +187,13 @@ export const SettingsView: React.FC = () => {
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <label className="mb-1 block text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('set.themeModeLabel')}
               </label>
               <select
                 value={state.settings.theme}
                 onChange={(e) => updateSettings({ theme: e.target.value as ThemeMode })}
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-800"
+                className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-sm dark:border-[#2f3b52] dark:bg-[#172036]"
               >
                 <option value="light">{t('set.themeLight')}</option>
                 <option value="dark">{t('set.themeDark')}</option>
@@ -203,14 +203,14 @@ export const SettingsView: React.FC = () => {
           </div>
 
           <div>
-            <div className="mb-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <div className="mb-2 text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
               {t('set.ratesHeading')}
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {(Object.keys(CURRENCY_META) as CurrencyCode[]).map((code) => (
                 <div
                   key={code}
-                  className="flex items-center justify-between rounded-xl border border-slate-200 px-2.5 py-1.5 text-xs dark:border-slate-700"
+                  className="flex items-center justify-between rounded-xl border border-[#bfc9c3]/60 px-2.5 py-1.5 text-xs dark:border-[#2f3b52]"
                 >
                   <span className="font-bold">{code}</span>
                   <input
@@ -235,17 +235,17 @@ export const SettingsView: React.FC = () => {
         </div>
 
         {/* Security & Data */}
-        <div className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="space-y-5 wdw-card p-5">
           <div>
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Lock className="h-4 w-4 text-blue-600" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <Lock className="h-4 w-4 text-[#0F766E]" />
+                <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                   {t('set.pinSection')}
                 </h2>
               </div>
               {state.settings.pinEnabled && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#b0f0d6]/60 px-2.5 py-0.5 text-[10px] font-bold text-[#064E3B] dark:bg-emerald-950 dark:text-emerald-300">
                   <ShieldCheck className="h-3 w-3" />
                   {t('set.shaActive')}
                 </span>
@@ -253,12 +253,12 @@ export const SettingsView: React.FC = () => {
             </div>
 
             {pinErr && (
-              <div className="mb-2 rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">
+              <div className="mb-2 rounded-lg bg-[#ffdad6]/70 px-3 py-1.5 text-xs font-semibold text-[#93000a] dark:bg-rose-950/40 dark:text-rose-300">
                 {pinErr}
               </div>
             )}
             {pinMsg && (
-              <div className="mb-2 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <div className="mb-2 rounded-lg bg-[#b0f0d6]/35 px-3 py-1.5 text-xs font-semibold text-[#064E3B] dark:bg-emerald-950/40 dark:text-emerald-300">
                 {pinMsg}
               </div>
             )}
@@ -277,7 +277,7 @@ export const SettingsView: React.FC = () => {
                       : t('set.pinPlaceholderSet')
                   }
                   aria-label={t('set.pinAriaNew')}
-                  className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold tracking-widest dark:border-slate-700 dark:bg-slate-800"
+                  className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs font-semibold tracking-widest dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
                 <input
                   type="password"
@@ -287,13 +287,13 @@ export const SettingsView: React.FC = () => {
                   onChange={(e) => setConfirmPin(e.target.value)}
                   placeholder={t('set.pinPlaceholderConfirm')}
                   aria-label={t('set.pinAriaConfirm')}
-                  className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold tracking-widest dark:border-slate-700 dark:bg-slate-800"
+                  className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs font-semibold tracking-widest dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  <label className="text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
                     {t('set.autoLockLabel')}
                   </label>
                   <select
@@ -302,7 +302,7 @@ export const SettingsView: React.FC = () => {
                     onChange={(e) =>
                       updateSettings({ autoLockMinutes: Number(e.target.value) || 0 })
                     }
-                    className="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="rounded-xl border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                   >
                     <option value={0}>{t('set.off')}</option>
                     <option value={1}>{t('set.minN', { m: 1 })}</option>
@@ -320,14 +320,14 @@ export const SettingsView: React.FC = () => {
                         disableHouseholdPin();
                         setPinMsg('');
                       }}
-                      className="rounded-xl border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 dark:border-rose-900 dark:text-rose-300"
+                      className="rounded-xl border border-rose-200 px-3 py-1.5 text-xs font-semibold text-[#93000a] hover:bg-[#ffdad6]/70 dark:border-rose-900 dark:text-rose-300"
                     >
                       {t('set.disablePin')}
                     </button>
                   )}
                   <button
                     type="submit"
-                    className="rounded-xl bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+                    className="rounded-xl bg-[#064E3B] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#043D2E]"
                   >
                     {state.settings.pinEnabled ? t('set.updatePin') : t('set.enablePin')}
                   </button>
@@ -337,19 +337,19 @@ export const SettingsView: React.FC = () => {
           </div>
 
           {/* Multi-Device SQLite Sync */}
-          <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
+          <div className="border-t border-[#F1F5F9] pt-4 dark:border-[#232f4f]">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Cloud className="h-4 w-4 text-blue-600" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <Cloud className="h-4 w-4 text-[#0F766E]" />
+                <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                   {t('set.syncHeading')}
                 </h2>
               </div>
               <span
                 className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase ${
                   syncStatus === 'synced'
-                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                    : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+                    ? 'bg-[#b0f0d6]/60 text-[#064E3B] dark:bg-emerald-950 dark:text-emerald-300'
+                    : 'bg-[#eaedff] text-[#404944] dark:bg-[#172036] dark:text-[#bfc9c3]'
                 }`}
               >
                 {syncStatus === 'synced'
@@ -359,7 +359,7 @@ export const SettingsView: React.FC = () => {
             </div>
 
             <div className="space-y-2.5">
-              <label className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold dark:bg-slate-800/60">
+              <label className="flex items-center justify-between rounded-xl bg-[#f2f3ff] px-3 py-2 text-xs font-semibold dark:bg-[#1c2640]">
                 <span>{t('set.syncEnableToggle')}</span>
                 <input
                   type="checkbox"
@@ -375,7 +375,7 @@ export const SettingsView: React.FC = () => {
                   onChange={(e) => updateSettings({ syncServerUrl: e.target.value })}
                   placeholder={t('set.syncUrlPlaceholder')}
                   aria-label={t('set.syncUrlAria')}
-                  className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
                 <input
                   type="password"
@@ -383,12 +383,12 @@ export const SettingsView: React.FC = () => {
                   onChange={(e) => updateSettings({ syncKey: e.target.value })}
                   placeholder={t('set.syncKeyPlaceholder')}
                   aria-label={t('set.syncKeyAria')}
-                  className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                 />
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-[#404944]">
                   {lastSyncedAt
                     ? t('set.lastSynced', { time: new Date(lastSyncedAt).toLocaleTimeString() })
                     : t('set.serverHint')}
@@ -397,7 +397,7 @@ export const SettingsView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => void syncNow(false)}
-                    className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="inline-flex items-center gap-1 rounded-xl border border-[#bfc9c3]/60 px-3 py-1.5 text-xs font-semibold hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:hover:bg-[#1c2640]"
                   >
                     <RefreshCw className="h-3.5 w-3.5" />
                     {t('set.syncNow')}
@@ -415,41 +415,41 @@ export const SettingsView: React.FC = () => {
           </div>
 
           {/* Storage Diagnostics & Backup */}
-          <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
+          <div className="border-t border-[#F1F5F9] pt-4 dark:border-[#232f4f]">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <HardDrive className="h-4 w-4 text-emerald-600" />
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <HardDrive className="h-4 w-4 text-[#10B981]" />
+                <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
                   {t('set.storageHeading')}
                 </h2>
               </div>
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+              <span className="rounded-full bg-[#eaedff] px-2.5 py-0.5 text-[10px] font-bold uppercase text-[#404944] dark:bg-[#172036] dark:text-[#bfc9c3]">
                 {storageEngine === 'indexeddb' ? 'IndexedDB' : t('rcpt.engineFallback')}
               </span>
             </div>
 
-            <div className="mb-3 grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-center text-xs dark:bg-slate-800/60">
+            <div className="mb-3 grid grid-cols-3 gap-2 rounded-xl bg-[#f2f3ff] p-3 text-center text-xs dark:bg-[#1c2640]">
               <div>
-                <div className="text-[11px] text-slate-500">{t('set.statTransactions')}</div>
+                <div className="text-[11px] text-[#404944]">{t('set.statTransactions')}</div>
                 <div className="font-bold">{state.transactions.length}</div>
               </div>
               <div>
-                <div className="text-[11px] text-slate-500">{t('set.statReceipts')}</div>
+                <div className="text-[11px] text-[#404944]">{t('set.statReceipts')}</div>
                 <div className="font-bold">{receiptStats.count}</div>
               </div>
               <div>
-                <div className="text-[11px] text-slate-500">{t('set.statSize')}</div>
+                <div className="text-[11px] text-[#404944]">{t('set.statSize')}</div>
                 <div className="font-bold">{formatBytes(receiptStats.totalBytes)}</div>
               </div>
             </div>
 
             {restoreMsg && (
-              <div className="mb-3 rounded-xl bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-800 dark:bg-blue-950/50 dark:text-blue-200">
+              <div className="mb-3 rounded-xl bg-[#f2f3ff] px-3 py-2 text-xs font-semibold text-[#003430] dark:bg-[#004d47]/40 dark:text-[#b0f0d6]">
                 {restoreMsg}
               </div>
             )}
 
-            <label className="mb-3 flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+            <label className="mb-3 flex items-center gap-2 text-xs font-medium text-[#404944] dark:text-[#bfc9c3]">
               <input
                 type="checkbox"
                 checked={includeReceipts}
@@ -462,13 +462,13 @@ export const SettingsView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => void handleExportBackup()}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
               >
                 <Download className="h-3.5 w-3.5" />
                 {t('set.downloadJson')}
               </button>
 
-              <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
+              <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#bfc9c3]/60 px-3.5 py-2 text-xs font-semibold hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:hover:bg-[#1c2640]">
                 <Upload className="h-3.5 w-3.5" />
                 {t('set.restoreJson')}
                 <input
@@ -482,7 +482,7 @@ export const SettingsView: React.FC = () => {
               <button
                 type="button"
                 onClick={resetToDemo}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfc9c3]/60 px-3.5 py-2 text-xs font-semibold text-[#131b2e] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#eef0ff] dark:hover:bg-[#1c2640]"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
                 {t('set.loadDemo')}
@@ -492,7 +492,7 @@ export const SettingsView: React.FC = () => {
                 <button
                   type="button"
                   onClick={clearAllData}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-[#ffdad6]/70 px-3.5 py-2 text-xs font-semibold text-[#93000a] hover:bg-rose-100 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   {t('set.clearBlank')}
@@ -502,16 +502,16 @@ export const SettingsView: React.FC = () => {
 
             {roleCapabilities.canDeleteHouseholdData && authSession && !authSession.isDemo && (
               <div className="mt-5 border-t border-rose-200 pt-4 dark:border-rose-900/50">
-                <div className="text-xs font-bold text-rose-700 dark:text-rose-400">
+                <div className="text-xs font-bold text-[#93000a] dark:text-rose-400">
                   {t('set.dangerDeleteHeading')}
                 </div>
-                <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+                <p className="mt-0.5 text-[11px] text-[#404944] dark:text-[#707974]">
                   {t('set.dangerDeleteDesc')}
                 </p>
                 <button
                   type="button"
                   onClick={() => void deleteHouseholdAccount()}
-                  className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-3.5 py-2 text-xs font-bold text-white hover:bg-rose-700"
+                  className="mt-2.5 inline-flex items-center gap-1.5 rounded-xl bg-[#ba1a1a] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#93000a]"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   {t('set.deleteAccountBtn')}

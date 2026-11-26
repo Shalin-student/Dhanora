@@ -25,34 +25,34 @@ export const CashflowChart: React.FC<{
   return (
     <div className="w-full">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-4 text-xs font-medium text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-4 text-xs font-medium text-[#404944] dark:text-[#bfc9c3]">
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-emerald-500" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#064E3B] dark:bg-[#10B981]" />
             {t('charts.income')}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-sm bg-rose-500" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#D97706]" />
             {t('charts.expenses')}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="rounded bg-slate-200 px-1 text-[10px] font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200">
+            <span className="rounded bg-[#eaedff] px-1 text-[10px] font-bold text-[#131b2e] dark:bg-[#232f4f] dark:text-[#eef0ff]">
               {t('charts.net')}
             </span>
             {t('charts.netCashflowTop')}
           </span>
         </div>
         {hoveredIdx !== null && data[hoveredIdx] && (
-          <div className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs dark:border-slate-700 dark:bg-slate-800">
+          <div className="font-numeric rounded-lg border border-[#bfc9c3]/60 bg-[#f2f3ff] px-2.5 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]">
             <span className="font-semibold">{data[hoveredIdx].label}:</span>{' '}
-            <span className="text-emerald-600 dark:text-emerald-400">
+            <span className="text-[#10B981]">
               +{formatMoney(data[hoveredIdx].income, currency, privacyMode)}
             </span>{' '}
             /{' '}
-            <span className="text-rose-600 dark:text-rose-400">
+            <span className="text-[#D97706]">
               -{formatMoney(data[hoveredIdx].expense, currency, privacyMode)}
             </span>{' '}
             ({t('charts.net')}{' '}
-            <span className="font-semibold text-blue-600 dark:text-blue-400">
+            <span className="font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
               {formatMoney(data[hoveredIdx].net, currency, privacyMode)}
             </span>
             )
@@ -76,25 +76,25 @@ export const CashflowChart: React.FC<{
               onMouseEnter={() => setHoveredIdx(idx)}
               onMouseLeave={() => setHoveredIdx(null)}
               className={`group flex h-full flex-col items-center justify-end rounded-xl p-1.5 transition ${
-                isHovered ? 'bg-slate-100/80 dark:bg-slate-800/70' : ''
+                isHovered ? 'bg-[#f2f3ff] dark:bg-[#1c2640]' : ''
               }`}
             >
-              <div className="mb-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+              <div className="font-numeric mb-1 text-[10px] font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {formatMoney(point.net, currency, privacyMode, true)}
               </div>
               <div className="flex h-40 w-full items-end justify-center gap-1.5">
                 <div
-                  className="w-3.5 rounded-t-md bg-emerald-500/90 transition-all duration-300 group-hover:bg-emerald-500 sm:w-5"
+                  className="w-3.5 rounded-t-md bg-[#064E3B] transition-all duration-300 group-hover:bg-[#10B981] sm:w-5 dark:bg-[#10B981]"
                   style={{ height: `${Math.max(incPct, 4)}%` }}
                   title={`${t('charts.income')}: ${formatMoney(point.income, currency, privacyMode)}`}
                 />
                 <div
-                  className="w-3.5 rounded-t-md bg-rose-500/90 transition-all duration-300 group-hover:bg-rose-500 sm:w-5"
+                  className="w-3.5 rounded-t-md bg-[#D97706]/90 transition-all duration-300 group-hover:bg-[#fe932c] sm:w-5"
                   style={{ height: `${Math.max(expPct, 4)}%` }}
                   title={`${t('charts.expenses')}: ${formatMoney(point.expense, currency, privacyMode)}`}
                 />
               </div>
-              <span className="mt-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+              <span className="mt-2 text-xs font-medium text-[#404944] dark:text-[#bfc9c3]">
                 {point.label}
               </span>
             </div>
@@ -171,14 +171,14 @@ export const CategoryDonutChart: React.FC<{
           })}
         </svg>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
-          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-medium text-[#404944] dark:text-[#bfc9c3]">
             {activeSlice ? activeSlice.label : resolvedCenter}
           </span>
-          <span className="mt-0.5 text-sm font-bold text-slate-900 dark:text-white">
+          <span className="font-numeric mt-0.5 text-sm font-bold text-[#131b2e] dark:text-white">
             {formatMoney(activeSlice ? activeSlice.value : total, currency, privacyMode, true)}
           </span>
           {activeSlice && total > 0 && (
-            <span className="text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+            <span className="font-numeric text-[11px] font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
               {Math.round((activeSlice.value / total) * 100)}%
             </span>
           )}
@@ -277,7 +277,7 @@ export const CashflowForecastChart: React.FC<{
           <span>{points[points.length - 1].label}</span>
         </div>
         {activePoint ? (
-          <div className="rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-900 dark:border-blue-900 dark:bg-blue-950/60 dark:text-blue-200">
+          <div className="font-numeric rounded-lg border border-[#0F766E]/30 bg-[#9cf2e8]/30 px-2.5 py-1 text-xs font-semibold text-[#003430] dark:border-[#0F766E] dark:bg-[#004d47]/50 dark:text-[#9cf2e8]">
             {activePoint.label}: {formatMoney(activePoint.balance, currency, privacyMode)}
             {activePoint.events.length > 0 && (
               <span className="ml-1.5 font-normal">
@@ -286,7 +286,7 @@ export const CashflowForecastChart: React.FC<{
             )}
           </div>
         ) : (
-          <span className="text-[11px] text-slate-400">
+          <span className="text-[11px] text-[#707974]">
             {t('charts.hoverForecast')}
           </span>
         )}
@@ -300,8 +300,8 @@ export const CashflowForecastChart: React.FC<{
       >
         <defs>
           <linearGradient id="forecastArea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2563eb" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="#2563eb" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="#0F766E" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#0F766E" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
@@ -312,7 +312,7 @@ export const CashflowForecastChart: React.FC<{
               y1={thresholdY}
               x2={width - padX}
               y2={thresholdY}
-              stroke="#f59e0b"
+              stroke="#D97706"
               strokeDasharray="4 4"
               strokeWidth="1.2"
             />
@@ -320,7 +320,7 @@ export const CashflowForecastChart: React.FC<{
               x={padX + 4}
               y={Math.max(12, thresholdY - 4)}
               fontSize="10"
-              fill="#d97706"
+              fill="#D97706"
               fontWeight="600"
             >
               {t('charts.buffer', { amt: formatMoney(lowThreshold, currency, privacyMode, true) })}
@@ -329,7 +329,7 @@ export const CashflowForecastChart: React.FC<{
         )}
 
         <path d={areaPath} fill="url(#forecastArea)" />
-        <path d={linePath} fill="none" stroke="#2563eb" strokeWidth="2.5" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke="#0F766E" strokeWidth="2.5" strokeLinejoin="round" />
 
         {eventIndices.map((idx) => {
           const pt = points[idx];
@@ -397,23 +397,23 @@ export const NetWorthHistoryChart: React.FC<{
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div className="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-4 text-[#404944] dark:text-[#bfc9c3]">
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-violet-600" />
+            <span className="h-2.5 w-2.5 rounded-full bg-[#064E3B] dark:bg-[#80bea6]" />
             {t('charts.netWorth')}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="h-0.5 w-3.5 bg-emerald-500" />
+            <span className="h-0.5 w-3.5 bg-[#10B981]" />
             {t('charts.assets')}
           </span>
         </div>
         {active && (
-          <div className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold dark:bg-slate-800">
+          <div className="font-numeric rounded-lg bg-[#f2f3ff] px-2.5 py-1 text-xs font-semibold dark:bg-[#172036]">
             {active.label}:{' '}
-            <span className="text-violet-600 dark:text-violet-400">
+            <span className="text-[#064E3B] dark:text-[#b0f0d6]">
               {formatMoney(active.netWorth, currency, privacyMode)}
             </span>{' '}
-            <span className="text-slate-500">
+            <span className="text-[#404944] dark:text-[#bfc9c3]">
               ({t('charts.assets')} {formatMoney(active.assets, currency, privacyMode, true)})
             </span>
           </div>
@@ -428,8 +428,8 @@ export const NetWorthHistoryChart: React.FC<{
       >
         <defs>
           <linearGradient id="netWorthArea" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.24" />
-            <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="#064E3B" stopOpacity="0.24" />
+            <stop offset="100%" stopColor="#064E3B" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
@@ -441,7 +441,7 @@ export const NetWorthHistoryChart: React.FC<{
           strokeWidth="1.6"
           strokeDasharray="4 4"
         />
-        <path d={netPath} fill="none" stroke="#7c3aed" strokeWidth="2.8" strokeLinejoin="round" />
+        <path d={netPath} fill="none" stroke="#064E3B" strokeWidth="2.8" strokeLinejoin="round" />
 
         {points.map((pt, idx) => (
           <g key={pt.month}>
@@ -449,7 +449,7 @@ export const NetWorthHistoryChart: React.FC<{
               cx={toX(idx)}
               cy={toY(pt.netWorth)}
               r={hoverIdx === idx ? 5.5 : 4}
-              fill="#7c3aed"
+              fill="#064E3B"
               stroke="#ffffff"
               strokeWidth="1.5"
               className="cursor-pointer"

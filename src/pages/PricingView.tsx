@@ -333,21 +333,21 @@ export const PricingView: React.FC<{
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-[#131b2e] sm:text-[32px] sm:leading-[40px] dark:text-white">
             {t('price.title')}
           </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t('price.subtitle')}</p>
+          <p className="mt-1 text-sm text-[#404944] dark:text-[#bfc9c3]">{t('price.subtitle')}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex rounded-lg border border-[#bfc9c3]/70 bg-white p-1 dark:border-[#2f3b52] dark:bg-[#131b2e]">
             <button
               type="button"
               onClick={() => setBilling('yearly')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                 billing === 'yearly'
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-slate-600 dark:text-slate-300'
+                  ? 'bg-[#064E3B] text-white'
+                  : 'text-[#404944] dark:text-[#bfc9c3]'
               }`}
             >
               {t('price.yearlyBtn')}
@@ -355,26 +355,26 @@ export const PricingView: React.FC<{
             <button
               type="button"
               onClick={() => setBilling('monthly')}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+              className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                 billing === 'monthly'
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-slate-600 dark:text-slate-300'
+                  ? 'bg-[#064E3B] text-white'
+                  : 'text-[#404944] dark:text-[#bfc9c3]'
               }`}
             >
               {t('price.monthlyBtn')}
             </button>
           </div>
 
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex rounded-lg border border-[#bfc9c3]/70 bg-white p-1 dark:border-[#2f3b52] dark:bg-[#131b2e]">
             {(['INR', 'USD'] as const).map((cur) => (
               <button
                 key={cur}
                 type="button"
                 onClick={() => setPriceCurrency(cur)}
-                className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
+                className={`font-numeric rounded-md px-2.5 py-1.5 text-xs font-bold transition ${
                   priceCurrency === cur
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                    : 'text-slate-600 dark:text-slate-300'
+                    ? 'bg-[#131b2e] text-white dark:bg-[#eef0ff] dark:text-[#131b2e]'
+                    : 'text-[#404944] dark:text-[#bfc9c3]'
                 }`}
               >
                 {cur}
@@ -385,10 +385,10 @@ export const PricingView: React.FC<{
       </div>
 
       {!embedded && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs">
           {priceCurrency === 'INR' && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-semibold text-slate-600 dark:text-slate-300">
+              <span className="font-semibold text-[#404944] dark:text-[#bfc9c3]">
                 {t('price.gstLabel')}
               </span>
               <input
@@ -397,13 +397,13 @@ export const PricingView: React.FC<{
                 onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
                 placeholder="24AABCU9603R1ZM"
                 maxLength={15}
-                className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-xs uppercase dark:border-slate-700 dark:bg-slate-800"
+                className="font-numeric w-44 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs uppercase text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
               />
             </div>
           )}
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold text-slate-600 dark:text-slate-300">
+            <span className="font-semibold text-[#404944] dark:text-[#bfc9c3]">
               {t('price.promoLabel')}
             </span>
             <input
@@ -413,17 +413,17 @@ export const PricingView: React.FC<{
               placeholder={t('price.promoPlaceholder')}
               aria-label={t('price.promoLabel')}
               maxLength={24}
-              className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-xs uppercase dark:border-slate-700 dark:bg-slate-800"
+              className="font-numeric w-44 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs uppercase text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
             />
             <button
               type="button"
               onClick={() => void handleApplyPromo()}
-              className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900"
+              className="wdw-btn-primary px-3 py-1.5 text-xs font-semibold"
             >
               {t('price.promoApplyBtn')}
             </button>
             {appliedPromo && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#b0f0d6]/50 px-2.5 py-1 text-[11px] font-semibold text-[#064E3B] dark:bg-[#064E3B]/50 dark:text-[#b0f0d6]">
                 {t('price.promoApplied', {
                   code: appliedPromo.code,
                   pct: appliedPromo.discountPct,
@@ -441,7 +441,7 @@ export const PricingView: React.FC<{
               </span>
             )}
             {promoError && (
-              <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400">
+              <span className="text-[11px] font-semibold text-[#ba1a1a]">
                 {promoError}
               </span>
             )}
@@ -456,33 +456,33 @@ export const PricingView: React.FC<{
           return (
             <div
               key={tier.id}
-              className={`relative flex flex-col justify-between rounded-2xl border p-6 shadow-xs transition ${
+              className={`relative flex flex-col justify-between p-6 transition ${
                 tier.featured
-                  ? 'border-emerald-500 bg-gradient-to-b from-emerald-50/60 to-white shadow-md dark:border-emerald-700 dark:from-emerald-950/30 dark:to-slate-900'
-                  : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                  ? 'wdw-card-elevated border-2 border-[#064E3B] bg-gradient-to-b from-[#b0f0d6]/25 via-white to-white dark:border-[#80bea6] dark:from-[#064E3B]/30 dark:via-[#131b2e] dark:to-[#131b2e]'
+                  : 'wdw-card'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-slate-900 dark:text-white">
-                    <Icon className="h-4 w-4 text-emerald-600" />
+                  <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#131b2e] dark:text-white">
+                    <Icon className="h-4 w-4 text-[#064E3B] dark:text-[#80bea6]" />
                     {t(tier.nameKey)}
                   </span>
                   {tier.badge && (
-                    <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                    <span className="rounded-full bg-[#FEF3C7] px-2.5 py-0.5 text-[10px] font-bold uppercase text-[#904d00] ring-1 ring-[#FCD34D]">
                       {tier.badge}
                     </span>
                   )}
                 </div>
-                <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+                <p className="mt-1.5 text-xs text-[#404944] dark:text-[#bfc9c3]">
                   {t(tier.descKey)}
                 </p>
 
                 <div className="mt-4 flex items-baseline gap-1.5">
-                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                  <span className="font-numeric text-3xl font-bold text-[#131b2e] dark:text-white">
                     {priceText(tier.id)}
                   </span>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-[#404944] dark:text-[#bfc9c3]">
                     {tier.id === 'free'
                       ? t('price.forever')
                       : billing === 'yearly'
@@ -491,15 +491,15 @@ export const PricingView: React.FC<{
                   </span>
                 </div>
                 {tier.id === 'plus' && billing === 'yearly' && (
-                  <p className="mt-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">
+                  <p className="mt-1 text-[11px] font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
                     {priceCurrency === 'INR' ? t('price.introInrNote') : t('price.introUsdNote')}
                   </p>
                 )}
 
-                <ul className="mt-5 space-y-2.5 text-xs text-slate-700 dark:text-slate-200">
+                <ul className="mt-5 space-y-2.5 text-xs text-[#131b2e] dark:text-[#eef0ff]">
                   {tier.features.map((feat) => (
                     <li key={feat} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#10B981]" />
                       <span>{feat}</span>
                     </li>
                   ))}
@@ -512,12 +512,12 @@ export const PricingView: React.FC<{
                     type="button"
                     disabled={isCurrent || busyTier === tier.id}
                     onClick={() => void handleChoose(tier.id)}
-                    className={`w-full rounded-xl py-2.5 text-xs font-bold transition ${
+                    className={`w-full py-2.5 text-xs font-semibold transition ${
                       isCurrent
-                        ? 'cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
+                        ? 'cursor-default rounded-lg border border-[#10B981]/40 bg-[#b0f0d6]/30 text-[#064E3B] dark:border-[#0F766E] dark:bg-[#064E3B]/40 dark:text-[#b0f0d6]'
                         : tier.featured
-                        ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                        : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
+                        ? 'wdw-btn-primary'
+                        : 'rounded-lg bg-[#283044] text-white hover:bg-[#131b2e] dark:bg-[#eef0ff] dark:text-[#131b2e] dark:hover:bg-white'
                     }`}
                   >
                     {isCurrent
@@ -535,10 +535,10 @@ export const PricingView: React.FC<{
                     type="button"
                     disabled={busyTier === tier.id}
                     onClick={() => void handlePaidCheckout(tier.id as 'plus' | 'advisor')}
-                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition disabled:opacity-60 ${
+                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs font-semibold transition disabled:opacity-60 ${
                       tier.id === 'advisor'
-                        ? 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
-                        : 'border border-emerald-300 bg-white text-emerald-700 hover:bg-emerald-50 dark:border-emerald-800 dark:bg-slate-800 dark:text-emerald-300'
+                        ? 'wdw-btn-primary'
+                        : 'wdw-btn-secondary'
                     }`}
                   >
                     <CreditCard className="h-3.5 w-3.5" />
@@ -553,33 +553,33 @@ export const PricingView: React.FC<{
 
       {/* Billing History & GST Invoices */}
       {!embedded && authSession && !authSession.isDemo && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="wdw-card p-6">
           <div className="mb-3 flex items-center gap-2">
-            <Receipt className="h-4 w-4 text-emerald-600" />
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+            <Receipt className="h-4 w-4 text-[#064E3B] dark:text-[#b0f0d6]" />
+            <h3 className="text-sm font-semibold text-[#131b2e] dark:text-white">
               {t('price.invoicesHeading')}
             </h3>
           </div>
           {invoices.length === 0 ? (
-            <p className="text-xs text-slate-500">{t('price.noInvoices')}</p>
+            <p className="text-xs text-[#404944] dark:text-[#bfc9c3]">{t('price.noInvoices')}</p>
           ) : (
-            <div className="divide-y divide-slate-100 text-xs dark:divide-slate-800">
+            <div className="divide-y divide-[#F1F5F9] text-xs dark:divide-[#232f4f]">
               {invoices.map((inv) => (
                 <div key={inv.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
                   <div>
-                    <span className="font-bold uppercase text-slate-900 dark:text-white">
+                    <span className="font-semibold uppercase text-[#131b2e] dark:text-white">
                       {inv.planTier} ({inv.billingCycle})
                     </span>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="font-numeric text-[11px] text-[#404944] dark:text-[#bfc9c3]">
                       {inv.createdAt.slice(0, 10)} • {inv.provider}
                       {inv.gstNumber ? ` • GSTIN ${inv.gstNumber}` : ''}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 dark:text-white">
+                    <span className="font-numeric font-bold text-[#131b2e] dark:text-white">
                       {formatInvoiceMinorAmount(inv.amountMinor, inv.currency)}
                     </span>
-                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                    <span className="rounded-full bg-[#b0f0d6]/50 px-2 py-0.5 text-[10px] font-bold uppercase text-[#064E3B] dark:bg-[#064E3B]/50 dark:text-[#b0f0d6]">
                       {inv.status}
                     </span>
                   </div>
@@ -595,27 +595,27 @@ export const PricingView: React.FC<{
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#131b2e]/60 p-4 backdrop-blur-xs"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+          <div className="wdw-card-elevated w-full max-w-md rounded-2xl p-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-extrabold text-slate-900 dark:text-white">
+              <span className="text-sm font-bold text-[#131b2e] dark:text-white">
                 {sandboxModal.planName} ({sandboxModal.billingCycle})
               </span>
               <button
                 type="button"
                 onClick={() => setSandboxModal(null)}
-                className="rounded-lg p-1 text-slate-400 hover:text-slate-600"
+                className="rounded-lg p-1 text-[#707974] hover:text-[#131b2e]"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+            <div className="mt-3 rounded-xl border border-[#FCD34D] bg-[#FEF3C7] p-3 text-xs text-[#904d00]">
               {t('price.sandboxBadge')}
             </div>
             <div className="mt-4 flex items-baseline justify-between text-xs">
-              <span className="text-slate-500">Order {sandboxModal.orderId}</span>
-              <span className="text-xl font-extrabold text-slate-900 dark:text-white">
+              <span className="font-numeric text-[#404944] dark:text-[#bfc9c3]">Order {sandboxModal.orderId}</span>
+              <span className="font-numeric text-xl font-bold text-[#131b2e] dark:text-white">
                 {formatInvoiceMinorAmount(sandboxModal.amountMinor, sandboxModal.currency)}
               </span>
             </div>
@@ -623,14 +623,14 @@ export const PricingView: React.FC<{
               <button
                 type="button"
                 onClick={() => void handleConfirmSandbox()}
-                className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-700"
+                className="wdw-btn-primary flex-1 py-2.5 text-xs font-semibold"
               >
                 {t('price.sandboxConfirmBtn')}
               </button>
               <button
                 type="button"
                 onClick={() => setSandboxModal(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
+                className="rounded-lg border border-[#CBD5E1] px-4 py-2.5 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
               >
                 {t('price.cancelCheckoutBtn')}
               </button>
@@ -639,26 +639,26 @@ export const PricingView: React.FC<{
         </div>
       )}
 
-      {/* Canva-Style Side-by-Side Comparison Matrix */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="border-b border-slate-100 px-5 py-3.5 dark:border-slate-800">
-          <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
+      {/* Side-by-Side Comparison Matrix */}
+      <div className="wdw-card overflow-hidden">
+        <div className="border-b border-[#F1F5F9] px-5 py-3.5 dark:border-[#232f4f]">
+          <h3 className="text-sm font-semibold text-[#131b2e] dark:text-white">
             {t('price.matrixTitle')}
           </h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+              <tr className="label-caps border-b border-[#F1F5F9] bg-[#f2f3ff] text-[#404944] dark:border-[#232f4f] dark:bg-[#172036] dark:text-[#bfc9c3]">
                 <th className="px-5 py-3">{t('price.colFeature')}</th>
                 <th className="px-4 py-3 text-center">{t('price.freeName')}</th>
-                <th className="px-4 py-3 text-center text-emerald-700 dark:text-emerald-400">
+                <th className="px-4 py-3 text-center text-[#064E3B] dark:text-[#b0f0d6]">
                   {t('price.plusName')}
                 </th>
                 <th className="px-4 py-3 text-center">{t('price.advisorName')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-[#F1F5F9] dark:divide-[#232f4f]">
               {[
                 { label: t('price.rowTx'), free: t('price.unlimited'), plus: t('price.unlimited'), adv: t('price.unlimited') },
                 { label: t('price.rowGoals'), free: t('price.upTo3Goals'), plus: t('price.unlimited'), adv: t('price.unlimited') },
@@ -668,17 +668,17 @@ export const PricingView: React.FC<{
                 { label: t('price.rowDebt'), free: '—', plus: t('price.included'), adv: t('price.included') },
                 { label: t('price.rowAdvisor'), free: t('price.ownerOnly'), plus: t('price.ownerOnly'), adv: t('price.isolatedAdvisor') },
               ].map((row) => (
-                <tr key={row.label} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
-                  <td className="px-5 py-3 font-semibold text-slate-800 dark:text-slate-200">
+                <tr key={row.label} className="hover:bg-[#f2f3ff]/60 dark:hover:bg-[#1c2640]/40">
+                  <td className="px-5 py-3 font-semibold text-[#131b2e] dark:text-[#eef0ff]">
                     {row.label}
                   </td>
-                  <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">
+                  <td className="px-4 py-3 text-center text-[#404944] dark:text-[#bfc9c3]">
                     {row.free}
                   </td>
-                  <td className="px-4 py-3 text-center font-bold text-emerald-700 dark:text-emerald-400">
+                  <td className="px-4 py-3 text-center font-semibold text-[#064E3B] dark:text-[#b0f0d6]">
                     {row.plus}
                   </td>
-                  <td className="px-4 py-3 text-center font-semibold text-slate-700 dark:text-slate-200">
+                  <td className="px-4 py-3 text-center font-semibold text-[#131b2e] dark:text-[#eef0ff]">
                     {row.adv}
                   </td>
                 </tr>
@@ -688,9 +688,9 @@ export const PricingView: React.FC<{
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-3.5 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300">
-        <span className="inline-flex items-center gap-2 font-semibold">
-          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+      <div className="wdw-surface-tier flex flex-wrap items-center justify-between gap-3 rounded-2xl px-5 py-3.5 text-xs text-[#404944] dark:text-[#bfc9c3]">
+        <span className="inline-flex items-center gap-2 font-semibold text-[#131b2e] dark:text-white">
+          <ShieldCheck className="h-4 w-4 text-[#064E3B] dark:text-[#80bea6]" />
           {t('price.guaranteeLine')}
         </span>
         <span className="font-medium">{t('price.razorpayBadge')}</span>

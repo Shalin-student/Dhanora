@@ -109,19 +109,20 @@ export const AccountsView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] sm:text-[32px] sm:leading-[40px] dark:text-white">
             {t('acc.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[#404944] dark:text-[#bfc9c3]">
             {t('acc.subtitle')}
           </p>
         </div>
         {archivedCount > 0 && (
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#bfc9c3]/70 bg-white px-3 py-1.5 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#bfc9c3]">
             <input
               type="checkbox"
               checked={showArchived}
               onChange={(e) => setShowArchived(e.target.checked)}
+              className="accent-[#064E3B]"
             />
             {t('acc.showArchived', { count: archivedCount })}
           </label>
@@ -130,37 +131,37 @@ export const AccountsView: React.FC = () => {
 
       {/* Net worth summary cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold uppercase text-slate-500">{t('acc.totalAssets')}</div>
-          <div className="mt-1 text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+        <div className="wdw-card p-6">
+          <div className="label-caps text-[#404944] dark:text-[#bfc9c3]">{t('acc.totalAssets')}</div>
+          <div className="font-numeric mt-1.5 text-2xl font-bold text-[#10B981]">
             {formatMoney(netWorth.assets, baseCurrency, privacyMode)}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold uppercase text-slate-500">
+        <div className="wdw-card p-6">
+          <div className="label-caps text-[#404944] dark:text-[#bfc9c3]">
             {t('acc.totalLiabilities')}
           </div>
-          <div className="mt-1 text-2xl font-extrabold text-rose-600 dark:text-rose-400">
+          <div className="font-numeric mt-1.5 text-2xl font-bold text-[#904d00] dark:text-[#fe932c]">
             {formatMoney(netWorth.liabilities, baseCurrency, privacyMode)}
           </div>
         </div>
-        <div className="rounded-2xl border border-blue-200 bg-blue-50/50 p-5 dark:border-blue-900 dark:bg-blue-950/30">
-          <div className="text-xs font-semibold uppercase text-blue-700 dark:text-blue-300">
+        <div className="wdw-hero-vault p-6">
+          <div className="label-caps text-[#A7F3D0]">
             {t('acc.householdNetWorth')}
           </div>
-          <div className="mt-1 text-2xl font-extrabold text-blue-900 dark:text-white">
+          <div className="font-numeric mt-1.5 text-2xl font-bold text-white">
             {formatMoney(netWorth.netWorth, baseCurrency, privacyMode)}
           </div>
         </div>
       </div>
 
       {/* 6-Month Net Worth History */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="wdw-card p-6">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+          <h2 className="text-base font-semibold text-[#131b2e] dark:text-white">
             {t('acc.historyTitle')}
           </h2>
-          <span className="text-xs text-slate-500 dark:text-slate-400">
+          <span className="text-xs text-[#404944] dark:text-[#bfc9c3]">
             {t('acc.historySub')}
           </span>
         </div>
@@ -194,8 +195,8 @@ export const AccountsView: React.FC = () => {
               key={acc.id}
               className={`rounded-2xl border p-5 shadow-xs ${
                 acc.isArchived
-                  ? 'border-slate-200/70 bg-slate-50/80 opacity-75 dark:border-slate-800 dark:bg-slate-900/50'
-                  : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                  ? 'border-[#bfc9c3]/60/70 bg-[#f2f3ff]/75 opacity-75 dark:border-[#232f4f] dark:bg-[#131b2e]/90'
+                  : 'border-[#bfc9c3]/60 bg-white dark:border-[#232f4f] dark:bg-[#131b2e]'
               }`}
             >
               {isEditing ? (
@@ -206,7 +207,7 @@ export const AccountsView: React.FC = () => {
                     onChange={(e) =>
                       setEditDraft((d) => (d ? { ...d, name: e.target.value } : d))
                     }
-                    className="w-full rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="w-full rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     <select
@@ -216,7 +217,7 @@ export const AccountsView: React.FC = () => {
                           d ? { ...d, type: e.target.value as AccountType } : d
                         )
                       }
-                      className="rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {ACCOUNT_TYPES.map((k) => (
                         <option key={k} value={k}>
@@ -231,7 +232,7 @@ export const AccountsView: React.FC = () => {
                         setEditDraft((d) => (d ? { ...d, institution: e.target.value } : d))
                       }
                       placeholder={t('acc.instPlaceholder')}
-                      className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <input
                       type="number"
@@ -241,14 +242,14 @@ export const AccountsView: React.FC = () => {
                         setEditDraft((d) => (d ? { ...d, initialBalance: e.target.value } : d))
                       }
                       placeholder={t('acc.openingPlaceholder')}
-                      className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <select
                       value={editDraft.ownerId}
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, ownerId: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {state.members.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -263,7 +264,7 @@ export const AccountsView: React.FC = () => {
                           d ? { ...d, currency: e.target.value as CurrencyCode } : d
                         )
                       }
-                      className="rounded-lg border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {Object.keys(CURRENCY_META).map((c) => (
                         <option key={c} value={c}>
@@ -279,7 +280,7 @@ export const AccountsView: React.FC = () => {
                           setEditDraft((d) => (d ? { ...d, creditLimit: e.target.value } : d))
                         }
                         placeholder={t('acc.creditLimitPlaceholder')}
-                        className="rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="rounded-lg border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                     )}
                   </div>
@@ -290,14 +291,14 @@ export const AccountsView: React.FC = () => {
                         setEditingAccountId(null);
                         setEditDraft(null);
                       }}
-                      className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300"
+                      className="rounded-lg border border-[#bfc9c3]/60 px-3 py-1 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
                     >
                       {t('layout.cancel')}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleSaveAccountEdit(acc)}
-                      className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                      className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                     >
                       {t('acc.saveChanges')}
                     </button>
@@ -321,16 +322,16 @@ export const AccountsView: React.FC = () => {
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                      <h3 className="text-sm font-bold text-[#131b2e] dark:text-white">
                         {accName(acc)}
                       </h3>
                       {acc.isArchived && (
-                        <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold uppercase text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                        <span className="rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#404944] dark:bg-slate-700 dark:text-[#bfc9c3]">
                           {t('acc.archivedBadge')}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-[#404944] dark:text-[#707974]">
                       {accountTypeLabel(acc.type)} • {entityText(acc.institution)}
                     </p>
                   </div>
@@ -339,7 +340,7 @@ export const AccountsView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => startEditAccount(acc)}
-                    className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                    className="rounded p-1 text-[#707974] hover:bg-[#eaedff] hover:text-[#0F766E] dark:hover:bg-[#1c2640]"
                     aria-label={t('acc.editAria', { name: acc.name })}
                   >
                     <Edit3 className="h-3.5 w-3.5" />
@@ -347,7 +348,7 @@ export const AccountsView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => upsertAccount({ ...acc, isArchived: !acc.isArchived })}
-                    className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-amber-600 dark:hover:bg-slate-800"
+                    className="rounded p-1 text-[#707974] hover:bg-[#eaedff] hover:text-[#D97706] dark:hover:bg-[#1c2640]"
                     aria-label={
                       acc.isArchived
                         ? t('acc.unarchiveAria', { name: acc.name })
@@ -363,7 +364,7 @@ export const AccountsView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => deleteAccount(acc.id)}
-                    className="rounded p-1 text-slate-400 hover:text-rose-500"
+                    className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                     aria-label={t('acc.deleteAria', { name: acc.name })}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -373,22 +374,22 @@ export const AccountsView: React.FC = () => {
 
               <div className="mt-4 flex items-baseline justify-between">
                 <span
-                  className={`text-xl font-extrabold ${
+                  className={`font-numeric text-xl font-bold ${
                     bal < 0
-                      ? 'text-rose-600 dark:text-rose-400'
-                      : 'text-slate-900 dark:text-white'
+                      ? 'text-[#ba1a1a] dark:text-rose-400'
+                      : 'text-[#131b2e] dark:text-white'
                   }`}
                 >
                   {formatMoney(bal, acc.currency, privacyMode)}
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-[#404944]">
                   {owner?.avatar} {memName(owner)}
                 </span>
               </div>
 
               {utilization !== null && (
                 <div className="mt-3">
-                  <div className="mb-1 flex justify-between text-[11px] text-slate-500">
+                  <div className="mb-1 flex justify-between text-[11px] text-[#404944]">
                     <span>{t('acc.creditUtil')}</span>
                     <span>
                       {t('acc.utilOf', {
@@ -397,10 +398,10 @@ export const AccountsView: React.FC = () => {
                       })}
                     </span>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#eaedff] dark:bg-[#172036]">
                     <div
                       className={`h-full rounded-full ${
-                        utilization > 30 ? 'bg-amber-500' : 'bg-emerald-500'
+                        utilization > 30 ? 'bg-[#D97706]' : 'bg-[#10B981]'
                       }`}
                       style={{ width: `${utilization}%` }}
                     />
@@ -408,27 +409,27 @@ export const AccountsView: React.FC = () => {
                 </div>
               )}
 
-              <div className="mt-3 border-t border-slate-100 pt-2.5 dark:border-slate-800">
+              <div className="mt-3 border-t border-[#F1F5F9] pt-2.5 dark:border-[#232f4f]">
                 {isReconciling ? (
-                  <div className="space-y-2 rounded-xl bg-slate-50 p-2.5 text-xs dark:bg-slate-800/70">
-                    <div className="flex items-center justify-between font-bold text-slate-700 dark:text-slate-200">
+                  <div className="space-y-2 rounded-xl bg-[#f2f3ff] p-2.5 text-xs dark:bg-[#1c2640]">
+                    <div className="flex items-center justify-between font-bold text-[#131b2e] dark:text-[#eef0ff]">
                       <span>{t('acc.reconcileTitle')}</span>
                       <button
                         type="button"
                         onClick={() => setReconcilingAccountId(null)}
-                        className="text-[11px] font-semibold text-slate-500 hover:underline"
+                        className="text-[11px] font-semibold text-[#404944] hover:underline"
                       >
                         {t('layout.cancel')}
                       </button>
                     </div>
-                    <div className="flex justify-between text-[11px] text-slate-500">
+                    <div className="flex justify-between text-[11px] text-[#404944]">
                       <span>{t('acc.clearedBal')}</span>
-                      <span className="font-semibold text-slate-800 dark:text-slate-200">
+                      <span className="font-semibold text-[#131b2e] dark:text-[#eef0ff]">
                         {formatMoney(clearedBal, acc.currency, privacyMode)}
                       </span>
                     </div>
                     {pendingDelta !== 0 && (
-                      <div className="flex justify-between text-[11px] text-amber-600 dark:text-amber-400">
+                      <div className="flex justify-between text-[11px] text-[#D97706] dark:text-amber-400">
                         <span>{t('acc.pendingBal')}</span>
                         <span className="font-semibold">
                           {pendingDelta > 0 ? '+' : ''}
@@ -443,17 +444,17 @@ export const AccountsView: React.FC = () => {
                       onChange={(e) => setStmtBalanceInput(e.target.value)}
                       placeholder={t('acc.stmtBalPlaceholder')}
                       aria-label={t('acc.stmtBalAria')}
-                      className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-900"
+                      className="w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#131b2e]"
                     />
                     {reconcileDiff !== null && (
                       <div className="flex items-center justify-between gap-2 pt-0.5">
-                        <span className="text-[11px] text-slate-600 dark:text-slate-300">
+                        <span className="text-[11px] text-[#404944] dark:text-[#bfc9c3]">
                           {t('acc.diffLabel')}{' '}
                           <strong
                             className={
                               Math.abs(reconcileDiff) < 0.01
-                                ? 'text-emerald-600'
-                                : 'text-amber-600'
+                                ? 'text-[#10B981]'
+                                : 'text-[#D97706]'
                             }
                           >
                             {Math.abs(reconcileDiff) < 0.01
@@ -472,7 +473,7 @@ export const AccountsView: React.FC = () => {
                               reconcileAccountBalance(acc.id, parsedStmt);
                               setReconcilingAccountId(null);
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-blue-700"
+                            className="inline-flex items-center gap-1 rounded-lg bg-[#064E3B] px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-[#043D2E]"
                           >
                             <CheckCircle2 className="h-3 w-3" />
                             {t('acc.createAdjBtn')}
@@ -488,7 +489,7 @@ export const AccountsView: React.FC = () => {
                       setReconcilingAccountId(acc.id);
                       setStmtBalanceInput(String(clearedBal));
                     }}
-                    className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-600 hover:underline dark:text-blue-400"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#0F766E] hover:underline dark:text-[#6ac0b6]"
                   >
                     <Scale className="h-3.5 w-3.5" />
                     {t('acc.reconcileBtn')}
@@ -505,9 +506,9 @@ export const AccountsView: React.FC = () => {
       {/* Add Account Form */}
       <form
         onSubmit={handleAddAccount}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card p-5"
       >
-        <h2 className="mb-4 text-base font-bold text-slate-900 dark:text-white">
+        <h2 className="mb-4 text-base font-bold text-[#131b2e] dark:text-white">
           {t('acc.addFormTitle')}
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -517,12 +518,12 @@ export const AccountsView: React.FC = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t('acc.namePlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value as AccountType)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {ACCOUNT_TYPES.map((k) => (
               <option key={k} value={k}>
@@ -535,7 +536,7 @@ export const AccountsView: React.FC = () => {
             value={institution}
             onChange={(e) => setInstitution(e.target.value)}
             placeholder={t('acc.instPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <input
             type="number"
@@ -543,12 +544,12 @@ export const AccountsView: React.FC = () => {
             value={initialBalance}
             onChange={(e) => setInitialBalance(e.target.value)}
             placeholder={t('acc.openingPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={ownerId}
             onChange={(e) => setOwnerId(e.target.value)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.members.map((m) => (
               <option key={m.id} value={m.id}>
@@ -559,7 +560,7 @@ export const AccountsView: React.FC = () => {
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {Object.keys(CURRENCY_META).map((c) => (
               <option key={c} value={c}>
@@ -573,12 +574,12 @@ export const AccountsView: React.FC = () => {
               value={creditLimit}
               onChange={(e) => setCreditLimit(e.target.value)}
               placeholder={t('acc.creditLimitPlaceholder')}
-              className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           )}
           <button
             type="submit"
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Plus className="h-4 w-4" /> {t('acc.addAccountBtn')}
           </button>

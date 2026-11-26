@@ -125,10 +125,10 @@ export const BillsView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('bills.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[#404944] dark:text-[#707974]">
             {t('bills.subtitle')}
           </p>
         </div>
@@ -137,20 +137,20 @@ export const BillsView: React.FC = () => {
           <button
             type="button"
             onClick={() => runAutoPostNow()}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950/50 dark:text-blue-300"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#0F766E]/25 bg-[#f2f3ff] px-3.5 py-2 text-xs font-semibold text-[#064E3B] hover:bg-[#9cf2e8]/45 dark:border-[#0F766E]/50 dark:bg-[#004d47]/40 dark:text-[#9cf2e8]"
           >
             <Sparkles className="h-3.5 w-3.5" />
             {t('bills.runAutoPosts')}
           </button>
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-slate-900">
-            <div className="text-[11px] font-semibold text-slate-500">{t('bills.estIncome')}</div>
-            <div className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400">
+          <div className="rounded-2xl border border-[#bfc9c3]/60 bg-white px-4 py-2 dark:border-[#232f4f] dark:bg-[#131b2e]">
+            <div className="text-[11px] font-semibold text-[#404944]">{t('bills.estIncome')}</div>
+            <div className="font-numeric text-sm font-bold text-[#10B981] dark:text-emerald-400">
               +{formatMoney(monthlyRecurringIncome, baseCurrency, privacyMode)}
             </div>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-slate-900">
-            <div className="text-[11px] font-semibold text-slate-500">{t('bills.estBills')}</div>
-            <div className="text-sm font-extrabold text-rose-600 dark:text-rose-400">
+          <div className="rounded-2xl border border-[#bfc9c3]/60 bg-white px-4 py-2 dark:border-[#232f4f] dark:bg-[#131b2e]">
+            <div className="text-[11px] font-semibold text-[#404944]">{t('bills.estBills')}</div>
+            <div className="font-numeric text-sm font-bold text-[#ba1a1a] dark:text-rose-400">
               -{formatMoney(monthlyRecurringBills, baseCurrency, privacyMode)}
             </div>
           </div>
@@ -160,9 +160,9 @@ export const BillsView: React.FC = () => {
       {/* Add Recurring Rule */}
       <form
         onSubmit={handleAddRule}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card p-5"
       >
-        <h2 className="mb-4 text-base font-bold text-slate-900 dark:text-white">
+        <h2 className="mb-4 text-base font-bold text-[#131b2e] dark:text-white">
           {t('bills.formTitle')}
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -172,12 +172,12 @@ export const BillsView: React.FC = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t('bills.titlePlaceholder')}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value as TransactionType)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             <option value="expense">{t('bills.optExpense')}</option>
             <option value="income">{t('bills.optIncome')}</option>
@@ -190,12 +190,12 @@ export const BillsView: React.FC = () => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder={t('bills.amountPlaceholder')}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as RecurrenceFrequency)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {(['weekly', 'biweekly', 'monthly', 'quarterly', 'yearly'] as const).map((f) => (
               <option key={f} value={f}>
@@ -207,12 +207,12 @@ export const BillsView: React.FC = () => {
             type="date"
             value={nextDueDate}
             onChange={(e) => setNextDueDate(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -223,7 +223,7 @@ export const BillsView: React.FC = () => {
           <select
             value={accountId}
             onChange={(e) => setAccountId(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.accounts.map((a) => (
               <option key={a.id} value={a.id}>
@@ -234,7 +234,7 @@ export const BillsView: React.FC = () => {
           <select
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] bg-white px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.members.map((m) => (
               <option key={m.id} value={m.id}>
@@ -245,7 +245,7 @@ export const BillsView: React.FC = () => {
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+          <label className="flex items-center gap-2 text-xs font-medium text-[#404944] dark:text-[#bfc9c3]">
             <input
               type="checkbox"
               checked={autoPost}
@@ -255,7 +255,7 @@ export const BillsView: React.FC = () => {
           </label>
           <button
             type="submit"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Plus className="h-4 w-4" />
             {t('bills.addSchedule')}
@@ -277,8 +277,8 @@ export const BillsView: React.FC = () => {
               key={rule.id}
               className={`rounded-2xl border p-4 shadow-xs transition ${
                 rule.isActive
-                  ? 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
-                  : 'border-slate-200/70 bg-slate-50 opacity-70 dark:border-slate-800 dark:bg-slate-900/40'
+                  ? 'border-[#bfc9c3]/60 bg-white dark:border-[#232f4f] dark:bg-[#131b2e]'
+                  : 'border-[#bfc9c3]/60/70 bg-[#f2f3ff] opacity-70 dark:border-[#232f4f] dark:bg-[#131b2e]/90'
               }`}
             >
               {isEditing ? (
@@ -290,7 +290,7 @@ export const BillsView: React.FC = () => {
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, title: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <div className="flex gap-2">
                       <select
@@ -300,7 +300,7 @@ export const BillsView: React.FC = () => {
                             d ? { ...d, type: e.target.value as TransactionType } : d
                           )
                         }
-                        className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       >
                         <option value="expense">{t('bills.optExpense')}</option>
                         <option value="income">{t('bills.optIncome')}</option>
@@ -313,7 +313,7 @@ export const BillsView: React.FC = () => {
                         onChange={(e) =>
                           setEditDraft((d) => (d ? { ...d, amount: e.target.value } : d))
                         }
-                        className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                        className="w-full rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                       />
                     </div>
                     <select
@@ -323,7 +323,7 @@ export const BillsView: React.FC = () => {
                           d ? { ...d, frequency: e.target.value as RecurrenceFrequency } : d
                         )
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {(['weekly', 'biweekly', 'monthly', 'quarterly', 'yearly'] as const).map((f) => (
                         <option key={f} value={f}>
@@ -337,14 +337,14 @@ export const BillsView: React.FC = () => {
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, nextDueDate: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <select
                       value={editDraft.categoryId}
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, categoryId: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {state.categories.map((c) => (
                         <option key={c.id} value={c.id}>
@@ -357,7 +357,7 @@ export const BillsView: React.FC = () => {
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, accountId: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {state.accounts.map((a) => (
                         <option key={a.id} value={a.id}>
@@ -370,7 +370,7 @@ export const BillsView: React.FC = () => {
                       onChange={(e) =>
                         setEditDraft((d) => (d ? { ...d, memberId: e.target.value } : d))
                       }
-                      className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     >
                       {state.members.map((m) => (
                         <option key={m.id} value={m.id}>
@@ -378,7 +378,7 @@ export const BillsView: React.FC = () => {
                         </option>
                       ))}
                     </select>
-                    <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                    <label className="flex items-center gap-2 text-xs text-[#404944] dark:text-[#bfc9c3]">
                       <input
                         type="checkbox"
                         checked={editDraft.autoPost}
@@ -396,14 +396,14 @@ export const BillsView: React.FC = () => {
                         setEditingRuleId(null);
                         setEditDraft(null);
                       }}
-                      className="rounded-lg border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300"
+                      className="rounded-lg border border-[#bfc9c3]/60 px-3 py-1 text-xs font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3]"
                     >
                       {t('layout.cancel')}
                     </button>
                     <button
                       type="button"
                       onClick={() => handleSaveRuleEdit(rule)}
-                      className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                      className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                     >
                       {t('common.save')}
                     </button>
@@ -413,24 +413,24 @@ export const BillsView: React.FC = () => {
                 <>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-lg dark:bg-slate-800">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#eaedff] text-lg dark:bg-[#172036]">
                         {cat?.icon ?? <CalendarClock className="h-5 w-5" />}
                       </div>
                       <div>
-                        <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+                        <div className="flex items-center gap-2 text-sm font-bold text-[#131b2e] dark:text-white">
                           <span>{entityText(rule.title)}</span>
                           {isOverdue && (
-                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-[#904d00] dark:bg-amber-950 dark:text-amber-300">
                               {t('bills.dueBadge')}
                             </span>
                           )}
                           {rule.autoPost && (
-                            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                            <span className="rounded-full bg-[#9cf2e8]/45 px-2 py-0.5 text-[10px] font-bold text-[#064E3B] dark:bg-[#004d47]/50 dark:text-[#9cf2e8]">
                               {t('bills.autopayBadge')}
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-slate-500 dark:text-slate-400">
+                        <div className="text-xs text-[#404944] dark:text-[#707974]">
                           {t('bills.nextLine', {
                             date: rule.nextDueDate,
                             freq: freqLabel(rule.frequency),
@@ -441,10 +441,10 @@ export const BillsView: React.FC = () => {
                       </div>
                     </div>
                     <div
-                      className={`text-base font-extrabold ${
+                      className={`font-numeric text-base font-bold ${
                         rule.type === 'income'
-                          ? 'text-emerald-600 dark:text-emerald-400'
-                          : 'text-slate-900 dark:text-white'
+                          ? 'text-[#10B981] dark:text-emerald-400'
+                          : 'text-[#131b2e] dark:text-white'
                       }`}
                     >
                       {rule.type === 'income' ? '+' : '-'}
@@ -452,8 +452,8 @@ export const BillsView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 dark:border-slate-800">
-                    <span className="text-[11px] text-slate-500">
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#F1F5F9] pt-3 dark:border-[#232f4f]">
+                    <span className="text-[11px] text-[#404944]">
                       {rule.lastPostedDate
                         ? t('bills.lastPosted', { date: rule.lastPostedDate })
                         : t('bills.notYetPosted')}
@@ -462,7 +462,7 @@ export const BillsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => startEditRule(rule)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                        className="rounded-lg p-1.5 text-[#707974] hover:bg-[#eaedff] hover:text-[#0F766E] dark:hover:bg-[#1c2640]"
                         aria-label={t('bills.editAria', { title: rule.title })}
                       >
                         <Edit3 className="h-3.5 w-3.5" />
@@ -470,7 +470,7 @@ export const BillsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => upsertRecurring({ ...rule, isActive: !rule.isActive })}
-                        className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                        className="inline-flex items-center gap-1 rounded-lg border border-[#bfc9c3]/60 px-2.5 py-1 text-xs font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]"
                       >
                         {rule.isActive ? (
                           <>
@@ -485,7 +485,7 @@ export const BillsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => postRecurringDue(rule.id)}
-                        className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                        className="inline-flex items-center gap-1 rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                       >
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         {t('bills.postNow')}
@@ -493,7 +493,7 @@ export const BillsView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => deleteRecurring(rule.id)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:text-rose-600"
+                        className="rounded-lg p-1.5 text-[#707974] hover:text-[#ba1a1a]"
                         aria-label={t('bills.deleteAria', { title: rule.title })}
                       >
                         <Trash2 className="h-3.5 w-3.5" />

@@ -10,7 +10,7 @@ export const BrandMark: React.FC<{
 
   return (
     <span
-      className={`inline-flex shrink-0 items-center justify-center bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white shadow-sm ring-1 ring-inset ring-white/20 ${dims} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center bg-gradient-to-br from-[#003527] via-[#064E3B] to-[#0F766E] text-[#b0f0d6] shadow-sm ring-1 ring-inset ring-white/20 ${dims} ${className}`}
       aria-hidden="true"
     >
       <svg

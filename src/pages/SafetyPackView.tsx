@@ -131,15 +131,15 @@ export const SafetyPackView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('safe.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t('safe.subtitle')}</p>
+          <p className="text-sm text-[#404944] dark:text-[#707974]">{t('safe.subtitle')}</p>
         </div>
         <button
           type="button"
           onClick={() => window.print()}
-          className="no-print inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+          className="no-print inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
         >
           <Printer className="h-4 w-4" />
           {t('safe.printPackBtn')}
@@ -148,12 +148,12 @@ export const SafetyPackView: React.FC = () => {
 
       {/* Term & Health Adequacy Summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">{t('safe.termNeeded')}</div>
-          <div className="mt-1 text-xl font-extrabold text-slate-900 dark:text-white">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">{t('safe.termNeeded')}</div>
+          <div className="mt-1 font-numeric text-xl font-bold text-[#131b2e] dark:text-white">
             {formatMoney(adequacy.recommendedTermCover, baseCurrency, privacyMode)}
           </div>
-          <label className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <label className="mt-2 flex items-center justify-between text-[11px] text-[#404944]">
             <span>{t('safe.supportYearsLabel', { y: supportYears })}</span>
             <input
               type="range"
@@ -165,25 +165,25 @@ export const SafetyPackView: React.FC = () => {
             />
           </label>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">{t('safe.termHeld')}</div>
-          <div className="mt-1 text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">{t('safe.termHeld')}</div>
+          <div className="mt-1 font-numeric text-xl font-bold text-[#10B981] dark:text-emerald-400">
             {formatMoney(adequacy.currentTermCover, baseCurrency, privacyMode)}
           </div>
         </div>
         <div
           className={`rounded-2xl border p-4 ${
             adequacy.termGap > 0
-              ? 'border-rose-200 bg-rose-50/50 dark:border-rose-900 dark:bg-rose-950/30'
-              : 'border-emerald-200 bg-emerald-50/50 dark:border-emerald-900 dark:bg-emerald-950/30'
+              ? 'border-rose-200 bg-[#ffdad6]/50 dark:border-rose-900 dark:bg-rose-950/30'
+              : 'border-emerald-200 bg-[#b0f0d6]/30 dark:border-emerald-900 dark:bg-emerald-950/30'
           }`}
         >
-          <div className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+          <div className="text-xs font-semibold text-[#404944] dark:text-[#bfc9c3]">
             {t('safe.protectionGap')}
           </div>
           <div
-            className={`mt-1 text-xl font-extrabold ${
-              adequacy.termGap > 0 ? 'text-rose-600' : 'text-emerald-600'
+            className={`mt-1 font-numeric text-xl font-bold ${
+              adequacy.termGap > 0 ? 'text-[#ba1a1a]' : 'text-[#10B981]'
             }`}
           >
             {adequacy.termGap === 0
@@ -191,12 +191,12 @@ export const SafetyPackView: React.FC = () => {
               : formatMoney(adequacy.termGap, baseCurrency, privacyMode)}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-            <HeartPulse className="h-3.5 w-3.5 text-blue-600" />
+        <div className="wdw-card p-4">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#404944]">
+            <HeartPulse className="h-3.5 w-3.5 text-[#0F766E]" />
             {t('safe.healthHeld')}
           </div>
-          <div className="mt-1 text-xl font-extrabold text-blue-600 dark:text-blue-400">
+          <div className="mt-1 font-numeric text-xl font-bold text-[#0F766E] dark:text-[#6ac0b6]">
             {formatMoney(adequacy.currentHealthCover, baseCurrency, privacyMode)}
           </div>
         </div>
@@ -205,7 +205,7 @@ export const SafetyPackView: React.FC = () => {
       {/* Nominee Gap Audit */}
       <div
         data-testid="nominee-audit-section"
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card p-5"
       >
         <div className="mb-3 flex items-center gap-2">
           {adequacy.missingNomineeAccounts.length + adequacy.missingNomineePolicies.length > 0 ? (
@@ -213,13 +213,13 @@ export const SafetyPackView: React.FC = () => {
           ) : (
             <ShieldCheck className="h-5 w-5 text-emerald-500" />
           )}
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+          <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
             {t('safe.nomineeAuditTitle')}
           </h2>
         </div>
 
         {adequacy.missingNomineeAccounts.length + adequacy.missingNomineePolicies.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+          <div className="flex items-center gap-2 rounded-xl bg-[#b0f0d6]/35 px-3.5 py-2.5 text-xs font-semibold text-[#064E3B] dark:bg-emerald-950/30 dark:text-emerald-300">
             <CheckCircle2 className="h-4 w-4" />
             {t('safe.allNomineesSet')}
           </div>
@@ -228,10 +228,10 @@ export const SafetyPackView: React.FC = () => {
             {adequacy.missingNomineeAccounts.map((acc) => (
               <div
                 key={acc.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/50 px-3.5 py-2.5 text-xs dark:border-amber-900/60 dark:bg-amber-950/20"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#FCD34D] bg-[#FEF3C7]/70 px-3.5 py-2.5 text-xs dark:border-amber-900/60 dark:bg-amber-950/20"
               >
-                <div className="flex items-center gap-2 font-semibold text-amber-900 dark:text-amber-200">
-                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <div className="flex items-center gap-2 font-semibold text-[#663500] dark:text-amber-200">
+                  <AlertTriangle className="h-4 w-4 text-[#D97706]" />
                   <span>
                     {accName(acc)} — {t('safe.missingNomineeLabel')}
                   </span>
@@ -244,7 +244,7 @@ export const SafetyPackView: React.FC = () => {
                       setNomineeEdits((prev) => ({ ...prev, [acc.id]: e.target.value }))
                     }
                     placeholder={t('safe.nomineePlaceholder')}
-                    className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                   />
                   <button
                     type="button"
@@ -253,7 +253,7 @@ export const SafetyPackView: React.FC = () => {
                       if (!val) return;
                       upsertAccount({ ...acc, nomineeName: val });
                     }}
-                    className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                    className="rounded-lg bg-[#064E3B] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                   >
                     {t('safe.assignNomineeBtn')}
                   </button>
@@ -265,10 +265,10 @@ export const SafetyPackView: React.FC = () => {
               return (
                 <div
                   key={editKey}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/50 px-3.5 py-2.5 text-xs dark:border-amber-900/60 dark:bg-amber-950/20"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#FCD34D] bg-[#FEF3C7]/70 px-3.5 py-2.5 text-xs dark:border-amber-900/60 dark:bg-amber-950/20"
                 >
-                  <div className="flex items-center gap-2 font-semibold text-amber-900 dark:text-amber-200">
-                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <div className="flex items-center gap-2 font-semibold text-[#663500] dark:text-amber-200">
+                    <AlertTriangle className="h-4 w-4 text-[#D97706]" />
                     <span>
                       {entityText(pol.name)} — {t('safe.missingNomineeLabel')}
                     </span>
@@ -281,7 +281,7 @@ export const SafetyPackView: React.FC = () => {
                         setNomineeEdits((prev) => ({ ...prev, [editKey]: e.target.value }))
                       }
                       placeholder={t('safe.nomineePlaceholder')}
-                      className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs dark:border-slate-700 dark:bg-slate-800"
+                      className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                     />
                     <button
                       type="button"
@@ -290,7 +290,7 @@ export const SafetyPackView: React.FC = () => {
                         if (!val) return;
                         upsertPolicy({ ...pol, nomineeName: val });
                       }}
-                      className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700"
+                      className="rounded-lg bg-[#064E3B] px-2.5 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                     >
                       {t('safe.assignNomineeBtn')}
                     </button>
@@ -303,8 +303,8 @@ export const SafetyPackView: React.FC = () => {
       </div>
 
       {/* Insurance Policies Manager */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+      <div className="wdw-card p-5">
+        <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
           {t('safe.policiesHeading')}
         </h2>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -313,22 +313,22 @@ export const SafetyPackView: React.FC = () => {
             return (
               <div
                 key={p.id}
-                className="flex items-start justify-between gap-3 rounded-xl border border-slate-100 p-3.5 dark:border-slate-800"
+                className="flex items-start justify-between gap-3 rounded-xl border border-[#F1F5F9] p-3.5 dark:border-[#232f4f]"
               >
                 <div>
-                  <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-[#131b2e] dark:text-white">
                     <span>{entityText(p.name)}</span>
-                    <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold uppercase text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                    <span className="rounded bg-[#f2f3ff] px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#064E3B] dark:bg-[#004d47]/40 dark:text-[#9cf2e8]">
                       {policyTypeLabel(p.type)}
                     </span>
                   </div>
-                  <div className="mt-0.5 text-xs text-slate-500">
+                  <div className="mt-0.5 text-xs text-[#404944]">
                     {p.insurer} • {memName(insured)} •{' '}
                     {p.nomineeName
                       ? t('safe.nomineeTag', { name: p.nomineeName })
                       : t('safe.missingNomineeLabel')}
                   </div>
-                  <div className="mt-1 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="mt-1 text-xs font-semibold text-[#131b2e] dark:text-[#bfc9c3]">
                     {t('safe.coverPremiumLine', {
                       cover: formatMoney(p.coverAmount, p.currency, privacyMode),
                       prem: formatMoney(p.annualPremium, p.currency, privacyMode),
@@ -339,7 +339,7 @@ export const SafetyPackView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => deletePolicy(p.id)}
-                  className="rounded p-1 text-slate-400 hover:text-rose-500"
+                  className="rounded p-1 text-[#707974] hover:text-[#ba1a1a]"
                   aria-label={t('safe.deletePolicyAria', { name: p.name })}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -351,7 +351,7 @@ export const SafetyPackView: React.FC = () => {
 
         <form
           onSubmit={handleAddPolicy}
-          className="mt-4 grid grid-cols-1 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-4 dark:border-slate-800"
+          className="mt-4 grid grid-cols-1 gap-2 border-t border-[#F1F5F9] pt-4 sm:grid-cols-4 dark:border-[#232f4f]"
         >
           <input
             type="text"
@@ -359,19 +359,19 @@ export const SafetyPackView: React.FC = () => {
             value={polName}
             onChange={(e) => setPolName(e.target.value)}
             placeholder={t('safe.polNamePlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <input
             type="text"
             value={polInsurer}
             onChange={(e) => setPolInsurer(e.target.value)}
             placeholder={t('safe.insurerPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={polType}
             onChange={(e) => setPolType(e.target.value as InsuranceType)}
-            className="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {(['term', 'health', 'endowment', 'vehicle'] as const).map((pt) => (
               <option key={pt} value={pt}>
@@ -386,7 +386,7 @@ export const SafetyPackView: React.FC = () => {
             value={polCover}
             onChange={(e) => setPolCover(e.target.value)}
             placeholder={t('safe.coverPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <input
             type="number"
@@ -394,12 +394,12 @@ export const SafetyPackView: React.FC = () => {
             value={polPremium}
             onChange={(e) => setPolPremium(e.target.value)}
             placeholder={t('safe.premPlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             value={polMember}
             onChange={(e) => setPolMember(e.target.value)}
-            className="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.members.map((m) => (
               <option key={m.id} value={m.id}>
@@ -412,18 +412,18 @@ export const SafetyPackView: React.FC = () => {
             value={polNominee}
             onChange={(e) => setPolNominee(e.target.value)}
             placeholder={t('safe.nomineePlaceholder')}
-            className="rounded-xl border border-slate-300 px-3 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <div className="flex gap-2">
             <input
               type="date"
               value={polRenewal}
               onChange={(e) => setPolRenewal(e.target.value)}
-              className="flex-1 rounded-xl border border-slate-300 px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="flex-1 rounded-xl border border-[#CBD5E1] px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
             <button
               type="submit"
-              className="inline-flex items-center gap-1 rounded-xl bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+              className="inline-flex items-center gap-1 rounded-xl bg-[#064E3B] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#043D2E]"
             >
               <Plus className="h-3.5 w-3.5" />
               {t('safe.addPolicyBtn')}
@@ -435,20 +435,20 @@ export const SafetyPackView: React.FC = () => {
       {/* Emergency "If Something Happens to Me" Pack */}
       <form
         onSubmit={handleSaveEmergency}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card p-5"
       >
         <div className="mb-2 flex items-center gap-2">
-          <FileText className="h-5 w-5 text-emerald-600" />
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+          <FileText className="h-5 w-5 text-[#10B981]" />
+          <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
             {t('safe.emergencyHeading')}
           </h2>
         </div>
-        <p className="mb-4 rounded-xl bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+        <p className="mb-4 rounded-xl bg-[#FEF3C7] px-3 py-2 text-xs font-medium text-[#904d00] dark:bg-amber-950/30 dark:text-amber-200">
           {t('safe.neverPasswordsGuard')}
         </p>
 
         {safetyErr && (
-          <p className="mb-3 rounded-lg bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">
+          <p className="mb-3 rounded-lg bg-[#ffdad6]/70 px-3 py-2 text-xs font-semibold text-[#93000a] dark:bg-rose-950/40 dark:text-rose-300">
             {safetyErr}
           </p>
         )}
@@ -460,7 +460,7 @@ export const SafetyPackView: React.FC = () => {
               type="text"
               value={willLocation}
               onChange={(e) => setWillLocation(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           </label>
           <label className="block text-xs">
@@ -469,7 +469,7 @@ export const SafetyPackView: React.FC = () => {
               type="text"
               value={bankLockerInfo}
               onChange={(e) => setBankLockerInfo(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           </label>
           <label className="block text-xs">
@@ -478,7 +478,7 @@ export const SafetyPackView: React.FC = () => {
               type="text"
               value={advisorContact}
               onChange={(e) => setAdvisorContact(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           </label>
           <label className="block text-xs">
@@ -487,14 +487,14 @@ export const SafetyPackView: React.FC = () => {
               type="text"
               value={nomineeNotes}
               onChange={(e) => setNomineeNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+              className="w-full rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
             />
           </label>
         </div>
         <div className="mt-4 flex justify-end">
           <button
             type="submit"
-            className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
+            className="rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             {t('safe.saveEmergencyBtn')}
           </button>

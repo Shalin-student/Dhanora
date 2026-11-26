@@ -105,10 +105,10 @@ export const AutomationView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#131b2e] dark:text-white">
             {t('auto.title')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-[#404944] dark:text-[#707974]">
             {t('auto.subtitle', { month: formatMonth(selectedMonth) })}
           </p>
         </div>
@@ -117,15 +117,15 @@ export const AutomationView: React.FC = () => {
           <button
             type="button"
             onClick={() => runAutoPostNow()}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfc9c3]/60 bg-white px-3.5 py-2 text-xs font-semibold text-[#131b2e] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff] dark:hover:bg-[#1c2640]"
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <Sparkles className="h-3.5 w-3.5 text-[#0F766E]" />
             {t('auto.runAutoCount', { count: dueAutoPostCount })}
           </button>
           <button
             type="button"
             onClick={() => applyRulesToExistingTransactions()}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Wand2 className="h-3.5 w-3.5" />
             {t('auto.applyRules')}
@@ -135,40 +135,40 @@ export const AutomationView: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">{t('auto.activeRules')}</div>
-          <div className="mt-1 text-2xl font-extrabold text-slate-900 dark:text-white">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">{t('auto.activeRules')}</div>
+          <div className="mt-1 text-2xl font-bold text-[#131b2e] dark:text-white">
             {(state.rules ?? []).filter((r) => r.isActive).length}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">{t('auto.autopaySchedules')}</div>
-          <div className="mt-1 text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">{t('auto.autopaySchedules')}</div>
+          <div className="mt-1 text-2xl font-bold text-[#10B981] dark:text-emerald-400">
             {autoPostRules.length}{' '}
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-[#404944]">
               {t('auto.dueNow', { count: dueAutoPostCount })}
             </span>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div className="text-xs font-semibold text-slate-500">{t('auto.activeAlerts')}</div>
-          <div className="mt-1 text-2xl font-extrabold text-amber-600 dark:text-amber-400">
+        <div className="wdw-card p-4">
+          <div className="text-xs font-semibold text-[#404944]">{t('auto.activeAlerts')}</div>
+          <div className="mt-1 text-2xl font-bold text-[#D97706] dark:text-amber-400">
             {alerts.length}
           </div>
         </div>
       </div>
 
       {/* Financial Alerts */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <section className="wdw-card p-5">
         <div className="mb-3 flex items-center gap-2">
           <BellRing className="h-4 w-4 text-amber-500" />
-          <h2 className="text-base font-bold text-slate-900 dark:text-white">
+          <h2 className="text-base font-bold text-[#131b2e] dark:text-white">
             {t('auto.alertsTitle')}
           </h2>
         </div>
 
         {alerts.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-3.5 py-3 text-xs font-medium text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+          <div className="flex items-center gap-2 rounded-xl bg-[#b0f0d6]/35 px-3.5 py-3 text-xs font-medium text-[#064E3B] dark:bg-emerald-950/30 dark:text-emerald-300">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             {t('auto.noAlerts', { month: formatMonth(selectedMonth) })}
           </div>
@@ -179,20 +179,20 @@ export const AutomationView: React.FC = () => {
                 key={alert.id}
                 className={`flex items-start gap-3 rounded-xl border p-3.5 ${
                   alert.severity === 'warning'
-                    ? 'border-amber-200 bg-amber-50/70 dark:border-amber-900/60 dark:bg-amber-950/20'
-                    : 'border-blue-200 bg-blue-50/70 dark:border-blue-900/60 dark:bg-blue-950/20'
+                    ? 'border-[#FCD34D] bg-[#FEF3C7]/70 dark:border-amber-900/60 dark:bg-amber-950/20'
+                    : 'border-[#0F766E]/25 bg-[#f2f3ff] dark:border-[#0F766E]/50 dark:bg-[#004d47]/40'
                 }`}
               >
                 <AlertTriangle
                   className={`mt-0.5 h-4 w-4 shrink-0 ${
-                    alert.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'
+                    alert.severity === 'warning' ? 'text-[#D97706]' : 'text-[#0F766E]'
                   }`}
                 />
                 <div>
-                  <div className="text-xs font-bold text-slate-900 dark:text-white">
+                  <div className="text-xs font-bold text-[#131b2e] dark:text-white">
                     {alert.title}
                   </div>
-                  <div className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="mt-0.5 text-xs text-[#404944] dark:text-[#bfc9c3]">
                     {alert.detail}
                   </div>
                 </div>
@@ -205,9 +205,9 @@ export const AutomationView: React.FC = () => {
       {/* Add Merchant Rule */}
       <form
         onSubmit={handleAddRule}
-        className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card p-5"
       >
-        <h2 className="mb-4 text-base font-bold text-slate-900 dark:text-white">
+        <h2 className="mb-4 text-base font-bold text-[#131b2e] dark:text-white">
           {t('auto.createRuleTitle')}
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -218,13 +218,13 @@ export const AutomationView: React.FC = () => {
             onChange={(e) => setPattern(e.target.value)}
             placeholder={t('auto.patternPlaceholder')}
             aria-label={t('auto.patternAria')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
           <select
             aria-label={t('auto.matchAria')}
             value={matchType}
             onChange={(e) => setMatchType(e.target.value as RuleMatchType)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             <option value="contains">{matchTypeLabel('contains')}</option>
             <option value="startsWith">{matchTypeLabel('startsWith')}</option>
@@ -234,7 +234,7 @@ export const AutomationView: React.FC = () => {
             aria-label={t('auto.catAria')}
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             {state.categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -246,7 +246,7 @@ export const AutomationView: React.FC = () => {
             aria-label={t('auto.memberAria')}
             value={memberId}
             onChange={(e) => setMemberId(e.target.value)}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           >
             <option value="">{t('auto.keepMember')}</option>
             {state.members.map((m) => (
@@ -261,14 +261,14 @@ export const AutomationView: React.FC = () => {
             onChange={(e) => setTagsText(e.target.value)}
             placeholder={t('auto.tagsPlaceholder')}
             aria-label={t('auto.tagsAria')}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+            className="rounded-xl border border-[#CBD5E1] px-3 py-2 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
           />
         </div>
 
         <div className="mt-4 flex justify-end">
           <button
             type="submit"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#064E3B] px-4 py-2 text-xs font-semibold text-white hover:bg-[#043D2E]"
           >
             <Plus className="h-4 w-4" />
             {t('auto.addRule')}
@@ -277,14 +277,14 @@ export const AutomationView: React.FC = () => {
       </form>
 
       {/* Existing Rules */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-        <h2 className="mb-3 text-base font-bold text-slate-900 dark:text-white">
+      <div className="wdw-card p-5">
+        <h2 className="mb-3 text-base font-bold text-[#131b2e] dark:text-white">
           {t('auto.configuredRules')}
         </h2>
         {(state.rules ?? []).length === 0 ? (
-          <p className="text-xs text-slate-500">{t('auto.noRules')}</p>
+          <p className="text-xs text-[#404944]">{t('auto.noRules')}</p>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-[#F1F5F9] dark:divide-[#232f4f]">
             {(state.rules ?? []).map((rule) => {
               const cat = state.categories.find((c) => c.id === rule.categoryId);
               const mem = rule.memberId
@@ -298,7 +298,7 @@ export const AutomationView: React.FC = () => {
                   className={`py-3 ${rule.isActive ? '' : 'opacity-60'}`}
                 >
                   {isEditing ? (
-                    <div className="space-y-2 rounded-xl border border-blue-200 bg-blue-50/40 p-3 dark:border-blue-900 dark:bg-blue-950/20">
+                    <div className="space-y-2 rounded-xl border border-[#0F766E]/25 bg-[#f2f3ff] p-3 dark:border-[#0F766E]/50 dark:bg-[#004d47]/40">
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
                         <input
                           type="text"
@@ -306,7 +306,7 @@ export const AutomationView: React.FC = () => {
                           onChange={(e) =>
                             setRuleDraft((d) => (d ? { ...d, pattern: e.target.value } : d))
                           }
-                          className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                         <select
                           value={ruleDraft.matchType}
@@ -315,7 +315,7 @@ export const AutomationView: React.FC = () => {
                               d ? { ...d, matchType: e.target.value as RuleMatchType } : d
                             )
                           }
-                          className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         >
                           <option value="contains">{matchTypeLabel('contains')}</option>
                           <option value="startsWith">{matchTypeLabel('startsWith')}</option>
@@ -326,7 +326,7 @@ export const AutomationView: React.FC = () => {
                           onChange={(e) =>
                             setRuleDraft((d) => (d ? { ...d, categoryId: e.target.value } : d))
                           }
-                          className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         >
                           {state.categories.map((c) => (
                             <option key={c.id} value={c.id}>
@@ -339,7 +339,7 @@ export const AutomationView: React.FC = () => {
                           onChange={(e) =>
                             setRuleDraft((d) => (d ? { ...d, memberId: e.target.value } : d))
                           }
-                          className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] bg-white px-2 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         >
                           <option value="">{t('auto.keepMember')}</option>
                           {state.members.map((m) => (
@@ -355,7 +355,7 @@ export const AutomationView: React.FC = () => {
                             setRuleDraft((d) => (d ? { ...d, tagsText: e.target.value } : d))
                           }
                           placeholder={t('auto.tagsPlaceholder')}
-                          className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                          className="rounded-lg border border-[#CBD5E1] bg-white px-2.5 py-1.5 text-xs dark:border-[#2f3b52] dark:bg-[#172036]"
                         />
                       </div>
                       <div className="flex justify-end gap-2">
@@ -365,14 +365,14 @@ export const AutomationView: React.FC = () => {
                             setEditingRuleId(null);
                             setRuleDraft(null);
                           }}
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                          className="rounded-lg border border-[#bfc9c3]/60 bg-white px-3 py-1 text-xs font-semibold text-[#404944] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-[#bfc9c3]"
                         >
                           {t('layout.cancel')}
                         </button>
                         <button
                           type="button"
                           onClick={() => handleSaveRuleEdit(rule)}
-                          className="rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700"
+                          className="rounded-lg bg-[#064E3B] px-3 py-1 text-xs font-semibold text-white hover:bg-[#043D2E]"
                         >
                           {t('common.save')}
                         </button>
@@ -382,25 +382,25 @@ export const AutomationView: React.FC = () => {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="space-y-0.5">
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                          <span className="rounded bg-slate-100 px-2 py-0.5 font-semibold uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                          <span className="rounded bg-[#eaedff] px-2 py-0.5 font-semibold uppercase text-[#404944] dark:bg-[#172036] dark:text-[#bfc9c3]">
                             {matchTypeLabel(rule.matchType)}
                           </span>
-                          <span className="text-sm font-bold text-slate-900 dark:text-white">
+                          <span className="text-sm font-bold text-[#131b2e] dark:text-white">
                             &ldquo;{rule.pattern}&rdquo;
                           </span>
-                          <span className="text-slate-400">→</span>
-                          <span className="font-semibold text-blue-600 dark:text-blue-400">
+                          <span className="text-[#707974]">→</span>
+                          <span className="font-semibold text-[#0F766E] dark:text-[#6ac0b6]">
                             {cat?.icon} {catName(cat)}
                           </span>
                           {mem && (
-                            <span className="rounded bg-violet-50 px-2 py-0.5 text-[11px] font-semibold text-violet-700 dark:bg-violet-950/40 dark:text-violet-300">
+                            <span className="rounded bg-[#eaedff]/70 px-2 py-0.5 text-[11px] font-semibold text-[#004d47] dark:bg-violet-950/40 dark:text-[#9cf2e8]">
                               {mem.avatar} {memName(mem)}
                             </span>
                           )}
                           {rule.tags?.map((tag) => (
                             <span
                               key={tag}
-                              className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] dark:bg-slate-800"
+                              className="rounded bg-[#eaedff] px-1.5 py-0.5 text-[10px] dark:bg-[#172036]"
                             >
                               #{tag}
                             </span>
@@ -412,7 +412,7 @@ export const AutomationView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => startEditRule(rule)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-blue-600 dark:hover:bg-slate-800"
+                          className="rounded-lg p-1.5 text-[#707974] hover:bg-[#eaedff] hover:text-[#0F766E] dark:hover:bg-[#1c2640]"
                           aria-label={t('auto.editRuleAria', { pattern: rule.pattern })}
                         >
                           <Edit3 className="h-3.5 w-3.5" />
@@ -420,7 +420,7 @@ export const AutomationView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => upsertRule({ ...rule, isActive: !rule.isActive })}
-                          className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                          className="inline-flex items-center gap-1 rounded-lg border border-[#bfc9c3]/60 px-2.5 py-1 text-xs font-semibold text-[#404944] hover:bg-[#f2f3ff] dark:border-[#2f3b52] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640]"
                         >
                           {rule.isActive ? (
                             <>
@@ -435,7 +435,7 @@ export const AutomationView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => deleteRule(rule.id)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:text-rose-600"
+                          className="rounded-lg p-1.5 text-[#707974] hover:text-[#ba1a1a]"
                           aria-label={t('auto.deleteRuleAria', { pattern: rule.pattern })}
                         >
                           <Trash2 className="h-3.5 w-3.5" />

@@ -52,11 +52,11 @@ const ViewLoadingFallback: React.FC = () => {
   const { t } = useI18n();
   return (
     <div className="space-y-4 py-4" role="status" aria-label={t('a11y.loadingView')}>
-      <div className="h-8 w-64 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
+      <div className="h-8 w-64 animate-pulse rounded-xl bg-[#eaedff] dark:bg-[#1c2640]" />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="h-24 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800" />
-        <div className="h-24 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800" />
-        <div className="h-24 animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800" />
+        <div className="h-24 animate-pulse rounded-2xl bg-[#eaedff] dark:bg-[#1c2640]" />
+        <div className="h-24 animate-pulse rounded-2xl bg-[#eaedff] dark:bg-[#1c2640]" />
+        <div className="h-24 animate-pulse rounded-2xl bg-[#eaedff] dark:bg-[#1c2640]" />
       </div>
     </div>
   );
@@ -80,23 +80,23 @@ const PinLockScreen: React.FC = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950">
+    <div className="bg-mesh-hero relative flex min-h-screen items-center justify-center p-4">
       <div className="fixed top-4 right-4">
         <LanguageToggle variant="pill" />
       </div>
       <form
         onSubmit={(e) => void handleSubmit(e)}
-        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-xl dark:border-slate-800 dark:bg-slate-900"
+        className="wdw-card-elevated w-full max-w-sm p-6 text-center sm:p-7"
       >
-        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#064E3B]/10 text-[#064E3B] dark:bg-[#064E3B]/40 dark:text-[#b0f0d6]">
           <Lock className="h-6 w-6" />
         </div>
-        <h1 className="text-lg font-extrabold text-slate-900 dark:text-white">
+        <h1 className="text-lg font-bold text-[#131b2e] dark:text-[#eef0ff]">
           {entityText(state.settings.householdName)}
         </h1>
-        <p className="mt-1 text-xs text-slate-500">{t('lock.prompt')}</p>
+        <p className="mt-1 text-xs text-[#404944] dark:text-[#bfc9c3]">{t('lock.prompt')}</p>
 
-        {err && <p className="mt-3 text-xs font-semibold text-rose-600">{err}</p>}
+        {err && <p className="mt-3 text-xs font-semibold text-[#ba1a1a]">{err}</p>}
 
         <input
           type="password"
@@ -108,13 +108,13 @@ const PinLockScreen: React.FC = () => {
           }}
           placeholder={t('lock.placeholder')}
           aria-label={t('lock.ariaInput')}
-          className="mt-4 w-full rounded-xl border border-slate-300 px-4 py-2.5 text-center text-lg font-bold tracking-widest dark:border-slate-700 dark:bg-slate-800"
+          className="font-numeric mt-4 min-h-[44px] w-full rounded-lg border border-[#CBD5E1] bg-white px-4 py-2.5 text-center text-lg font-bold tracking-widest text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#172036] dark:text-white"
           autoFocus
         />
         <button
           type="submit"
           disabled={verifying}
-          className="mt-4 w-full rounded-xl bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+          className="wdw-btn-primary mt-4 min-h-[44px] w-full py-2.5 text-sm font-semibold disabled:opacity-60"
         >
           {verifying ? t('lock.verifying') : t('lock.unlock')}
         </button>
