@@ -224,7 +224,7 @@ export const DICT_SAAS = {
   'price.forever': { en: 'forever', gu: 'કાયમ' },
   'price.perYear': { en: '/ year', gu: '/ વર્ષ' },
   'price.perMonth': { en: '/ month', gu: '/ મહિનો' },
-  'price.introInrNote': { en: 'First-year intro rate • Renews at ₹1,199/yr', gu: 'પ્રથમ વર્ષ વિશેષ દર • ત્યારબાદ ₹1,199/વર્ષ' },
+  'price.introInrNote': { en: 'Live test offer (₹1) • Standard rate ₹799/yr', gu: 'લાઇવ ટેસ્ટ ઓફર (₹1) • નિયમિત દર ₹799/વર્ષ' },
   'price.introUsdNote': { en: 'First-year intro rate • Renews at $19/yr', gu: 'પ્રથમ વર્ષ વિશેષ દર • ત્યારબાદ $19/વર્ષ' },
   'price.f1': { en: 'Unlimited daily transactions & budgets', gu: 'અમર્યાદિત દૈનિક વ્યવહારો અને બજેટ' },
   'price.f2': { en: 'All Tax, FIRE & Rent/Buy calculators', gu: 'બધા ટેક્સ, FIRE અને લોન કેલ્ક્યુલેટર' },

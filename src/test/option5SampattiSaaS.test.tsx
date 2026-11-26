@@ -107,7 +107,7 @@ describe('Commercial SaaS Landing, Pricing, Role Sign-Up/Sign-In, Calculators & 
     expect(screen.getByText('Everything in one calm family plan')).toBeInTheDocument();
 
     // Embedded Pricing switches currency INR <-> USD
-    expect(screen.getByText('₹799')).toBeInTheDocument();
+    expect(screen.getByText('₹1')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'USD' }));
     expect(screen.getByText('$15')).toBeInTheDocument();
 

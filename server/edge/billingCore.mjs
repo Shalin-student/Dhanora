@@ -2,13 +2,13 @@ export const PLAN_CATALOG = {
   plus: {
     tier: 'plus',
     name: 'Family Plus',
-    INR: { monthly: 14900, yearly: 79900 },
+    INR: { monthly: 100, yearly: 100 },
     USD: { monthly: 250, yearly: 1500 },
   },
   advisor: {
     tier: 'advisor',
     name: 'Advisor Practice',
-    INR: { monthly: 49900, yearly: 499900 },
+    INR: { monthly: 200, yearly: 200 },
     USD: { monthly: 800, yearly: 7900 },
   },
 };

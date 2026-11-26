@@ -626,7 +626,7 @@ export async function onRequest(context) {
           planTier: tier,
           billingCycle,
           currency: 'INR',
-          amountMinor: pendingOrder?.amountMinor ?? price?.amountMinor ?? 79900,
+          amountMinor: pendingOrder?.amountMinor ?? price?.amountMinor ?? 100,
           gstNumber: body?.gstNumber ? String(body.gstNumber).trim() : null,
           status: 'paid',
         });
@@ -658,7 +658,7 @@ export async function onRequest(context) {
           planTier: tier,
           billingCycle,
           currency,
-          amountMinor: price?.amountMinor ?? 79900,
+          amountMinor: price?.amountMinor ?? 100,
           gstNumber: body?.gstNumber ? String(body.gstNumber).trim() : null,
           status: 'sandbox_paid',
         });

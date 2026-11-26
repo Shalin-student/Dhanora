@@ -84,11 +84,11 @@ export const PricingView: React.FC<{
   const priceText = (tier: PlanTier) => {
     if (tier === 'free') return priceCurrency === 'INR' ? '₹0' : '$0';
     if (tier === 'plus') {
-      if (billing === 'yearly') return priceCurrency === 'INR' ? '₹799' : '$15';
-      return priceCurrency === 'INR' ? '₹149' : '$2.50';
+      if (billing === 'yearly') return priceCurrency === 'INR' ? '₹1' : '$15';
+      return priceCurrency === 'INR' ? '₹1' : '$2.50';
     }
-    if (billing === 'yearly') return priceCurrency === 'INR' ? '₹4,999' : '$79';
-    return priceCurrency === 'INR' ? '₹499' : '$8';
+    if (billing === 'yearly') return priceCurrency === 'INR' ? '₹2' : '$79';
+    return priceCurrency === 'INR' ? '₹2' : '$8';
   };
 
   const handleChoose = async (tier: PlanTier) => {

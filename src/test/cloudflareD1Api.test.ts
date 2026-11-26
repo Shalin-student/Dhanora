@@ -269,7 +269,7 @@ describe('Cloudflare Pages Functions + D1 Backend Integration', () => {
     // 3. Razorpay Order API + D1 billing_orders binding
     globalThis.fetch = vi.fn(async (input) => {
       expect(String(input)).toBe('https://api.razorpay.com/v1/orders');
-      return new Response(JSON.stringify({ id: 'order_rzp_live_101', amount: 79900 }), {
+      return new Response(JSON.stringify({ id: 'order_rzp_live_101', amount: 100 }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -300,7 +300,7 @@ describe('Cloudflare Pages Functions + D1 Backend Integration', () => {
       mode: 'live',
       keyId: 'rzp_live_demo_key',
       orderId: 'order_rzp_live_101',
-      amountMinor: 79900,
+      amountMinor: 100,
     });
 
     // 4. Verify signature prevents tampering AND enforces original server order tier ('plus' even if attacker sends 'advisor')
@@ -340,7 +340,7 @@ describe('Cloudflare Pages Functions + D1 Backend Integration', () => {
             id: 'pay_wh_303',
             order_id: 'order_wh_303',
             currency: 'INR',
-            amount: 499900,
+            amount: 200,
             notes: {
               householdId: session.householdId,
               tier: 'advisor',
