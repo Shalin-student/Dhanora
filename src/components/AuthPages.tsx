@@ -17,27 +17,38 @@ import {
 import { useFinance } from '../store/FinanceContext';
 import type { AccountRole, CurrencyCode, PlanTier } from '../types/finance';
 import { DEMO_ACCOUNT_PRESETS, evaluatePasswordStrength } from '../utils/auth';
-import { inspectServerInvite } from '../storage/syncClient';
+import { inspectServerInvite, confirmPasswordReset, requestPasswordReset } from '../storage/syncClient';
 import { LanguageToggle } from './LanguageToggle';
 import { BrandMark } from './BrandMark';
 import { useI18n } from '../i18n/useI18n';
 
-export type AuthScreenMode = 'signin' | 'signup';
+export type AuthScreenMode = 'signin' | 'signup' | 'forgot' | 'reset';
 
 export const AuthPages: React.FC<{
   initialMode?: AuthScreenMode;
   initialPlan?: PlanTier;
   initialInviteCode?: string;
+  initialResetToken?: string;
   onBackHome: () => void;
-}> = ({ initialMode = 'signin', initialPlan = 'free', initialInviteCode, onBackHome }) => {
-  const { signInWithCredentials, signUpWithAccount, enterGuestDemo } = useFinance();
+}> = ({
+  initialMode = 'signin',
+  initialPlan = 'free',
+  initialInviteCode,
+  initialResetToken,
+  onBackHome,
+}) => {
+  const { signInWithCredentials, signUpWithAccount, enterGuestDemo, getAuthSyncConfig } =
+    useFinance();
   const { t, roleLabel } = useI18n();
 
-  const [mode, setMode] = useState<AuthScreenMode>(initialMode);
+  const [mode, setMode] = useState<AuthScreenMode>(initialResetToken ? 'reset' : initialMode);
   const [name, setName] = useState('');
   const [householdName, setHouseholdName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [resetToken, setResetToken] = useState(initialResetToken ?? '');
+  const [newPassword, setNewPassword] = useState('');
+  const [infoMsg, setInfoMsg] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [role, setRole] = useState<AccountRole>('admin');
   const [baseCurrency, setBaseCurrency] = useState<CurrencyCode>('INR');
@@ -92,6 +103,48 @@ export const AuthPages: React.FC<{
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+    setInfoMsg('');
+
+    if (mode === 'forgot') {
+      if (!email.trim().includes('@')) {
+        setErrorMsg(t('auth.errInvalidFields'));
+        return;
+      }
+      setSubmitting(true);
+      const res = await requestPasswordReset(email.trim(), getAuthSyncConfig());
+      setSubmitting(false);
+      if (res?.ok) {
+        setInfoMsg(
+          res.delivery === 'email_not_configured' ? t('auth.resetNoEmailNote') : t('auth.resetSentMsg')
+        );
+      } else {
+        setInfoMsg(t('auth.resetNoEmailNote'));
+      }
+      return;
+    }
+
+    if (mode === 'reset') {
+      if (newPassword.length < 6 || !resetToken.trim()) {
+        setErrorMsg(t('auth.errResetInvalid'));
+        return;
+      }
+      setSubmitting(true);
+      const res = await confirmPasswordReset(
+        { token: resetToken.trim(), newPassword },
+        getAuthSyncConfig()
+      );
+      setSubmitting(false);
+      if (!res?.ok) {
+        setErrorMsg(t('auth.errResetInvalid'));
+        return;
+      }
+      setInfoMsg(t('auth.pwUpdatedMsg'));
+      setMode('signin');
+      setPassword('');
+      setNewPassword('');
+      return;
+    }
+
     if (mode === 'signup' && (!consentPrivacy || !consentTerms)) {
       setErrorMsg(t('auth.errConsentRequired'));
       return;
@@ -271,6 +324,7 @@ export const AuthPages: React.FC<{
               onClick={() => {
                 setMode('signin');
                 setErrorMsg('');
+                setInfoMsg('');
               }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition ${
                 mode === 'signin'
@@ -286,6 +340,7 @@ export const AuthPages: React.FC<{
               onClick={() => {
                 setMode('signup');
                 setErrorMsg('');
+                setInfoMsg('');
               }}
               className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-bold transition ${
                 mode === 'signup'
@@ -298,10 +353,16 @@ export const AuthPages: React.FC<{
             </button>
           </div>
 
-          {intendedUpgrade && (
+          {intendedUpgrade && mode !== 'forgot' && mode !== 'reset' && (
             <div className="mb-4 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/70 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300">
               <Sparkles className="h-3.5 w-3.5 shrink-0" />
               <span>{t('auth.pendingUpgradeBanner', { plan: intendedPlanName })}</span>
+            </div>
+          )}
+
+          {infoMsg && (
+            <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300">
+              {infoMsg}
             </div>
           )}
 
@@ -311,6 +372,99 @@ export const AuthPages: React.FC<{
             </div>
           )}
 
+          {(mode === 'forgot' || mode === 'reset') ? (
+            <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
+              <div>
+                <h2 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  {t('auth.forgotTitle')}
+                </h2>
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  {t('auth.forgotSub')}
+                </p>
+              </div>
+
+              {mode === 'forgot' ? (
+                <label className="block text-xs">
+                  <span className="mb-1 block font-semibold text-slate-700 dark:text-slate-200">
+                    {t('auth.emailLabel')}
+                  </span>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  />
+                </label>
+              ) : (
+                <>
+                  <label className="block text-xs">
+                    <span className="mb-1 block font-semibold text-slate-700 dark:text-slate-200">
+                      {t('auth.resetTokenLabel')}
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      value={resetToken}
+                      onChange={(e) => setResetToken(e.target.value)}
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-mono dark:border-slate-700 dark:bg-slate-800"
+                    />
+                  </label>
+                  <label className="block text-xs">
+                    <span className="mb-1 block font-semibold text-slate-700 dark:text-slate-200">
+                      {t('auth.newPwLabel')}
+                    </span>
+                    <input
+                      type="password"
+                      required
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder={t('auth.passwordPlaceholder')}
+                      className="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    />
+                  </label>
+                </>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-xl bg-emerald-600 py-2.5 text-sm font-bold text-white shadow-xs hover:bg-emerald-700 disabled:opacity-60"
+              >
+                {submitting
+                  ? t('lock.verifying')
+                  : mode === 'forgot'
+                  ? t('auth.sendResetBtn')
+                  : t('auth.updatePwBtn')}
+              </button>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('signin');
+                    setErrorMsg('');
+                  }}
+                  className="font-semibold text-slate-600 hover:text-emerald-600 dark:text-slate-300"
+                >
+                  {t('auth.backToSignIn')}
+                </button>
+                {mode === 'forgot' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('reset');
+                      setErrorMsg('');
+                    }}
+                    className="font-semibold text-emerald-700 hover:underline dark:text-emerald-400"
+                  >
+                    {t('auth.haveTokenBtn')}
+                  </button>
+                )}
+              </div>
+            </form>
+          ) : (
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
             {mode === 'signup' && (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -356,13 +510,27 @@ export const AuthPages: React.FC<{
               />
             </label>
 
-            <label className="block text-xs">
-              <span className="mb-1 block font-semibold text-slate-700 dark:text-slate-200">
-                {t('auth.passwordLabel')}
-              </span>
+            <div className="block text-xs">
+              <div className="mb-1 flex items-center justify-between font-semibold text-slate-700 dark:text-slate-200">
+                <label htmlFor="auth-password-input">{t('auth.passwordLabel')}</label>
+                {mode === 'signin' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('forgot');
+                      setErrorMsg('');
+                      setInfoMsg('');
+                    }}
+                    className="text-[11px] font-semibold text-emerald-700 hover:underline dark:text-emerald-400"
+                  >
+                    {t('auth.forgotPwLink')}
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock className="pointer-events-none absolute top-2.5 left-3 h-3.5 w-3.5 text-slate-400" />
                 <input
+                  id="auth-password-input"
                   type={showPw ? 'text' : 'password'}
                   required
                   value={password}
@@ -398,7 +566,7 @@ export const AuthPages: React.FC<{
                   </span>
                 </div>
               )}
-            </label>
+            </div>
 
             {mode === 'signup' && (
               <>
@@ -515,6 +683,7 @@ export const AuthPages: React.FC<{
                 : t('auth.createAccountBtn')}
             </button>
           </form>
+          )}
 
           <div className="mt-5 border-t border-slate-100 pt-4 text-center dark:border-slate-800">
             <button

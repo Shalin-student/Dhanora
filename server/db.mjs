@@ -118,6 +118,28 @@ export function createSyncDatabase(dbPath) {
       status TEXT NOT NULL,
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS password_resets (
+      token_hash TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      email TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      used_at TEXT,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS feedback_messages (
+      id TEXT PRIMARY KEY,
+      household_id TEXT,
+      user_id TEXT,
+      user_email TEXT,
+      user_name TEXT,
+      category TEXT NOT NULL,
+      message TEXT NOT NULL,
+      page_view TEXT,
+      status TEXT NOT NULL DEFAULT 'open',
+      created_at TEXT NOT NULL
+    );
   `);
 
   // Safe non-destructive schema upgrades for pre-existing local SQLite databases
@@ -503,6 +525,73 @@ export function createSyncDatabase(dbPath) {
     return { ok: true };
   }
 
+  function createPasswordResetToken(email, ttlMinutes = 30) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!cleanEmail) return null;
+    const user = getUserByEmailStmt.get(cleanEmail);
+    if (!user) return null;
+    const rawToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = hashSessionToken(rawToken);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + ttlMinutes * 60000).toISOString();
+    db.prepare(
+      `INSERT INTO password_resets (token_hash, user_id, email, expires_at, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    ).run(tokenHash, user.id, user.email, expiresAt, now.toISOString());
+    return { token: rawToken, email: user.email, name: user.name, expiresAt };
+  }
+
+  function consumePasswordResetToken({ token, newPassword }) {
+    const cleanToken = String(token || '').trim();
+    if (!cleanToken) return { ok: false, error: 'INVALID_OR_EXPIRED_RESET_TOKEN' };
+    const tokenHash = hashSessionToken(cleanToken);
+    const row = db
+      .prepare(
+        `SELECT token_hash AS tokenHash, user_id AS userId, expires_at AS expiresAt, used_at AS usedAt
+         FROM password_resets WHERE token_hash = ?`
+      )
+      .get(tokenHash);
+    if (!row || row.usedAt || Date.parse(row.expiresAt) < Date.now()) {
+      return { ok: false, error: 'INVALID_OR_EXPIRED_RESET_TOKEN' };
+    }
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = hashUserPassword(newPassword, salt);
+    db.prepare('UPDATE password_resets SET used_at = ? WHERE token_hash = ?').run(nowIso(), tokenHash);
+    updateUserPwStmt.run(hash, salt, row.userId);
+    deleteUserSessionsStmt.run(row.userId);
+    return { ok: true };
+  }
+
+  function saveFeedback({ householdId, userId, userEmail, userName, category, message, pageView }) {
+    const id = `fb-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+    const now = nowIso();
+    db.prepare(
+      `INSERT INTO feedback_messages (id, household_id, user_id, user_email, user_name, category, message, page_view, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`
+    ).run(
+      id,
+      householdId ?? null,
+      userId ?? null,
+      userEmail ?? null,
+      userName ?? null,
+      String(category || 'general').slice(0, 40),
+      String(message || '').trim().slice(0, 4000),
+      pageView ?? null,
+      now
+    );
+    return { id, createdAt: now };
+  }
+
+  function listFeedback(householdId) {
+    if (!householdId) return [];
+    return db
+      .prepare(
+        `SELECT id, category, message, page_view AS pageView, status, created_at AS createdAt
+         FROM feedback_messages WHERE household_id = ? ORDER BY created_at DESC LIMIT 20`
+      )
+      .all(householdId);
+  }
+
   function getHousehold(householdId) {
     return getHouseholdStmt.get(householdId) ?? null;
   }
@@ -790,6 +879,10 @@ export function createSyncDatabase(dbPath) {
     createUser,
     verifyUserLogin,
     rotateUserPassword,
+    createPasswordResetToken,
+    consumePasswordResetToken,
+    saveFeedback,
+    listFeedback,
     createSession,
     getSessionByToken,
     deleteSessionByToken,

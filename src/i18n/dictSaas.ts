@@ -659,4 +659,67 @@ export const DICT_SAAS = {
   'onb.step3': { en: 'Create 1 goal or monthly SIP', gu: '1 બચત લક્ષ્ય કે SIP ઉમેરો' },
   'onb.step4': { en: 'Assign nominee & review Safety Pack', gu: 'નોમિની અને વીમા સુરક્ષા ઉમેરો' },
   'onb.dismiss': { en: 'Hide checklist', gu: 'સૂચિ છુપાવો' },
+
+  // Plan B: Password Recovery, Promo Codes & Feedback Box
+  'auth.forgotPwLink': { en: 'Forgot password?', gu: 'પાસવર્ડ ભૂલી ગયા?' },
+  'auth.forgotTitle': { en: 'Reset your household password', gu: 'પાસવર્ડ રીસેટ કરો' },
+  'auth.forgotSub': {
+    en: 'Enter your registered email and we will send a 30-minute single-use reset link.',
+    gu: 'તમારો રજિસ્ટર્ડ ઇમેઇલ દાખલ કરો — અમે 30 મિનિટની રીસેટ લિંક મોકલીશું.',
+  },
+  'auth.sendResetBtn': { en: 'Send Reset Link', gu: 'રીસેટ લિંક મોકલો' },
+  'auth.resetSentMsg': {
+    en: 'If an account matches that email, a password reset link is on the way.',
+    gu: 'જો આ ઇમેઇલ નોંધાયેલ હશે, તો રીસેટ લિંક મોકલી દેવામાં આવી છે.',
+  },
+  'auth.resetNoEmailNote': {
+    en: 'Reset email requires cloud DB & email config. Paste a reset token below if you received one, or contact support.',
+    gu: 'ઇમેઇલ રીસેટ માટે ક્લાઉડ સેવા જરૂરી છે. ટોકન મળ્યું હોય તો નીચે દાખલ કરો અથવા સપોર્ટનો સંપર્ક કરો.',
+  },
+  'auth.haveTokenBtn': { en: 'Already have a reset token?', gu: 'પહેલેથી રીસેટ ટોકન છે?' },
+  'auth.resetTokenLabel': { en: 'Reset Token', gu: 'રીસેટ ટોકન' },
+  'auth.newPwLabel': { en: 'New Password', gu: 'નવો પાસવર્ડ' },
+  'auth.updatePwBtn': { en: 'Save New Password', gu: 'નવો પાસવર્ડ સાચવો' },
+  'auth.pwUpdatedMsg': {
+    en: 'Password updated cleanly! Sign in with your new password.',
+    gu: 'પાસવર્ડ બદલાઈ ગયો છે! હવે નવા પાસવર્ડથી સાઇન ઇન કરો.',
+  },
+  'auth.errResetInvalid': {
+    en: 'Reset link or token is invalid or expired. Request a fresh one.',
+    gu: 'રીસેટ ટોકન અમાન્ય કે સમયસીમા સમાપ્ત છે. ફરી વિનંતી કરો.',
+  },
+  'auth.backToSignIn': { en: 'Back to Sign In', gu: 'સાઇન ઇન પર પાછા' },
+
+  'price.promoLabel': { en: 'Promo / Coupon Code', gu: 'પ્રોમો / કૂપન કોડ' },
+  'price.promoPlaceholder': { en: 'e.g. STUDENT50 or EARLY30', gu: 'દા.ત. STUDENT50' },
+  'price.promoApplyBtn': { en: 'Apply', gu: 'લાગુ કરો' },
+  'price.promoApplied': { en: '{code} applied ({pct}% off)', gu: '{code} લાગુ થયું ({pct}% છૂટ)' },
+  'price.promoInvalid': {
+    en: 'Invalid promo code. Try STUDENT50, EARLY30, or FAMILY20.',
+    gu: 'અમાન્ય કૂપન કોડ. STUDENT50 અથવા EARLY30 અજમાવો.',
+  },
+  'price.promoRemove': { en: 'Remove', gu: 'દૂર કરો' },
+
+  'fb.openBtn': { en: 'Feedback & Support', gu: 'પ્રતિભાવ અને સપોર્ટ' },
+  'fb.title': { en: 'Send Feedback or Report Issue', gu: 'પ્રતિભાવ કે સમસ્યા મોકલો' },
+  'fb.sub': {
+    en: 'Goes directly to the HearthLedger team inbox & database.',
+    gu: 'તમારો સંદેશ સીધો HearthLedger ટીમને મળે છે.',
+  },
+  'fb.catLabel': { en: 'Topic', gu: 'વિષય' },
+  'fb.catBug': { en: 'Bug / Error', gu: 'ભૂલ / સમસ્યા' },
+  'fb.catFeature': { en: 'Feature Request', gu: 'નવી સુવિધા સૂચન' },
+  'fb.catBilling': { en: 'Billing / Refund', gu: 'બિલિંગ / રિફંડ' },
+  'fb.catGeneral': { en: 'General Question', gu: 'સામાન્ય પ્રશ્ન' },
+  'fb.msgPlaceholder': {
+    en: 'Describe what worked well, any bug you saw, or a feature you want next...',
+    gu: 'તમારો અનુભવ, કોઈ ભૂલ અથવા નવી સુવિધા વિશે લખો...',
+  },
+  'fb.submitBtn': { en: 'Send Feedback', gu: 'સંદેશ મોકલો' },
+  'fb.sentToast': { en: 'Thanks! Your feedback has been saved.', gu: 'આભાર! તમારો પ્રતિભાવ મળી ગયો છે.' },
+  'fb.errShort': { en: 'Please write at least a short message first.', gu: 'કૃપા કરીને થોડું વધુ વિગતથી લખો.' },
+  'fb.directMailNote': {
+    en: 'Or email shalinpatel1102@gmail.com directly',
+    gu: 'અથવા સીધો shalinpatel1102@gmail.com પર મેઇલ કરો',
+  },
 } satisfies Record<string, BilingualEntry>;

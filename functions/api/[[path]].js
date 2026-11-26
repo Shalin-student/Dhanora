@@ -2,11 +2,19 @@ import {
   computePlanExpiryIso,
   createGatewayCheckout,
   getPlanPriceMinor,
+  resolvePromoDiscount,
   verifyRazorpayPaymentSignatureWeb,
   verifyRazorpayWebhookSignatureWeb,
   verifyStripeWebhookSignatureWeb,
 } from '../../server/edge/billingCore.mjs';
 import { createD1Store, ensureD1Schema } from '../../server/edge/d1Store.mjs';
+import {
+  buildFeedbackAlertEmail,
+  buildInviteEmail,
+  buildPasswordResetEmail,
+  buildReceiptEmail,
+  sendTransactionalEmail,
+} from '../../server/edge/emailCore.mjs';
 
 const SESSION_COOKIE_NAME = 'hl_session';
 const rateBuckets = new Map();
@@ -180,6 +188,13 @@ export async function onRequest(context) {
   const disableRateLimit = env.DISABLE_RATE_LIMIT === 'true';
   const syncKey = env.HEARTHLEDGER_SYNC_KEY || '';
   const requireAuthForSync = env.REQUIRE_AUTH_FOR_SYNC !== 'false';
+  const scheduleBg = async (promise) => {
+    if (typeof context?.waitUntil === 'function') {
+      context.waitUntil(promise);
+    } else {
+      await promise;
+    }
+  };
 
   async function resolveSession() {
     const token = extractSessionToken(request);
@@ -464,6 +479,50 @@ export async function onRequest(context) {
       );
     }
 
+    if (method === 'POST' && pathname === '/api/auth/forgot-password') {
+      if (!checkRateLimit(`forgot:${clientIp}`, 10, 60_000, disableRateLimit)) {
+        return jsonResponse(request, env, 429, { error: 'RATE_LIMITED' });
+      }
+      const body = await readJsonBody(request, 16 * 1024);
+      const email = String(body?.email ?? '').trim().toLowerCase();
+      if (!email.includes('@')) {
+        return jsonResponse(request, env, 400, { error: 'INVALID_EMAIL' });
+      }
+      const createdReset = await store.createPasswordResetToken(email, 30);
+      let delivery = env.RESEND_API_KEY ? 'email_queued' : 'email_not_configured';
+      if (createdReset && env.RESEND_API_KEY) {
+        const origin = resolveRequestOrigin(request, env);
+        const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(createdReset.token)}`;
+        const mail = buildPasswordResetEmail({ name: createdReset.name, resetUrl });
+        await scheduleBg(
+          sendTransactionalEmail({
+            to: createdReset.email,
+            subject: mail.subject,
+            html: mail.html,
+            env,
+          })
+        );
+      }
+      return jsonResponse(request, env, 200, { ok: true, delivery });
+    }
+
+    if (method === 'POST' && pathname === '/api/auth/reset-password') {
+      if (!checkRateLimit(`reset:${clientIp}`, 15, 60_000, disableRateLimit)) {
+        return jsonResponse(request, env, 429, { error: 'RATE_LIMITED' });
+      }
+      const body = await readJsonBody(request, 16 * 1024);
+      const token = String(body?.token ?? '').trim();
+      const newPassword = String(body?.newPassword ?? '');
+      if (newPassword.length < 6) {
+        return jsonResponse(request, env, 400, { error: 'PASSWORD_TOO_SHORT' });
+      }
+      const resReset = await store.consumePasswordResetToken({ token, newPassword });
+      if (!resReset.ok) {
+        return jsonResponse(request, env, 400, { error: resReset.error });
+      }
+      return jsonResponse(request, env, 200, { ok: true });
+    }
+
     if (method === 'DELETE' && pathname === '/api/account') {
       const session = await resolveSession();
       if (!session) {
@@ -505,11 +564,80 @@ export async function onRequest(context) {
           createdByUserId: session.userId,
         });
         const origin = resolveRequestOrigin(request, env);
+        const inviteUrl = `${origin}/invite?code=${encodeURIComponent(inv.code)}`;
+        if (inv.invitedEmail && env.RESEND_API_KEY) {
+          const mail = buildInviteEmail({
+            householdName: session.householdName,
+            role: inv.role,
+            inviteUrl,
+          });
+          await scheduleBg(
+            sendTransactionalEmail({
+              to: inv.invitedEmail,
+              subject: mail.subject,
+              html: mail.html,
+              env,
+            })
+          );
+        }
         return jsonResponse(request, env, 200, {
           ok: true,
           invite: inv,
-          inviteUrl: `${origin}/invite?code=${encodeURIComponent(inv.code)}`,
+          inviteUrl,
         });
+      }
+    }
+
+    // 5b. In-App Support & User Feedback
+    if (pathname === '/api/feedback') {
+      const session = await resolveSession();
+      if (method === 'GET') {
+        if (!session) return jsonResponse(request, env, 401, { error: 'AUTH_REQUIRED' });
+        return jsonResponse(request, env, 200, {
+          feedback: await store.listFeedback(session.householdId),
+        });
+      }
+      if (method === 'POST') {
+        if (!checkRateLimit(`feedback:${clientIp}`, 15, 60_000, disableRateLimit)) {
+          return jsonResponse(request, env, 429, { error: 'RATE_LIMITED' });
+        }
+        const body = await readJsonBody(request, 32 * 1024);
+        const message = String(body?.message ?? '').trim();
+        if (message.length < 4) {
+          return jsonResponse(request, env, 400, { error: 'FEEDBACK_TOO_SHORT' });
+        }
+        const category = String(body?.category ?? 'general').trim();
+        const userEmail = session?.email || (body?.email ? String(body.email).trim() : null);
+        const userName = session?.name || (body?.name ? String(body.name).trim() : 'Guest User');
+        const saved = await store.saveFeedback({
+          householdId: session?.householdId ?? null,
+          userId: session?.userId ?? null,
+          userEmail,
+          userName,
+          category,
+          message,
+          pageView: body?.pageView ? String(body.pageView) : null,
+        });
+        const alertTo = env.SUPPORT_ALERT_EMAIL || 'shalinpatel1102@gmail.com';
+        if (env.RESEND_API_KEY) {
+          const mail = buildFeedbackAlertEmail({
+            userName,
+            userEmail,
+            category,
+            message,
+            pageView: body?.pageView,
+          });
+          await scheduleBg(
+            sendTransactionalEmail({
+              to: alertTo,
+              replyTo: userEmail || undefined,
+              subject: mail.subject,
+              html: mail.html,
+              env,
+            })
+          );
+        }
+        return jsonResponse(request, env, 200, { ok: true, id: saved.id });
       }
     }
 
@@ -547,6 +675,27 @@ export async function onRequest(context) {
         return jsonResponse(request, env, 200, { ok: true, household: updated });
       }
 
+      if (method === 'POST' && pathname === '/api/billing/validate-promo') {
+        const body = await readJsonBody(request, 16 * 1024);
+        const tier = body?.tier === 'advisor' ? 'advisor' : 'plus';
+        const billingCycle = body?.billingCycle === 'monthly' ? 'monthly' : 'yearly';
+        const currency = body?.currency === 'USD' ? 'USD' : 'INR';
+        const pricing = getPlanPriceMinor(tier, currency, billingCycle);
+        if (!pricing) {
+          return jsonResponse(request, env, 400, { error: 'INVALID_PLAN_TIER' });
+        }
+        const promo = resolvePromoDiscount({
+          promoCode: body?.promoCode,
+          amountMinor: pricing.amountMinor,
+          currency: pricing.currency,
+          env,
+        });
+        if (!promo.valid) {
+          return jsonResponse(request, env, 404, { error: 'INVALID_PROMO_CODE' });
+        }
+        return jsonResponse(request, env, 200, { ok: true, promo });
+      }
+
       if (method === 'POST' && pathname === '/api/billing/checkout') {
         const body = await readJsonBody(request, 32 * 1024);
         const tier = body?.tier === 'advisor' ? 'advisor' : 'plus';
@@ -560,6 +709,7 @@ export async function onRequest(context) {
           billingCycle,
           currency,
           gstNumber: body?.gstNumber ? String(body.gstNumber).trim() : '',
+          promoCode: body?.promoCode ? String(body.promoCode).trim() : '',
           baseUrl: origin,
           env: { NODE_ENV: 'production', ...env },
         });
@@ -630,6 +780,24 @@ export async function onRequest(context) {
           gstNumber: body?.gstNumber ? String(body.gstNumber).trim() : null,
           status: 'paid',
         });
+        if (env.RESEND_API_KEY && session.email) {
+          const paidMinor = pendingOrder?.amountMinor ?? price?.amountMinor ?? 100;
+          const mail = buildReceiptEmail({
+            householdName: session.householdName,
+            planName: tier === 'advisor' ? 'Advisor Practice' : 'Family Plus',
+            billingCycle,
+            amountDisplay: `₹${(paidMinor / 100).toFixed(2).replace(/\.00$/, '')}`,
+            paymentId,
+          });
+          await scheduleBg(
+            sendTransactionalEmail({
+              to: session.email,
+              subject: mail.subject,
+              html: mail.html,
+              env,
+            })
+          );
+        }
         return jsonResponse(request, env, 200, { ok: true, household: updated });
       }
 

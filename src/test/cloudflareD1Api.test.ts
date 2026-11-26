@@ -376,4 +376,194 @@ describe('Cloudflare Pages Functions + D1 Backend Integration', () => {
     expect(invJson.household.planTier).toBe('advisor');
     expect(invJson.invoices).toHaveLength(2);
   });
+
+  it('handles forgot-password reset flow via Resend, invalidates old sessions, validates promo codes, and stores feedback', async () => {
+    const db = freshDb();
+    let capturedResetToken = '';
+    const emailCalls: Array<{ url: string; body: Record<string, unknown> }> = [];
+
+    globalThis.fetch = vi.fn(async (input, init) => {
+      const url = String(input);
+      const parsedBody = init?.body ? JSON.parse(String(init.body)) : {};
+      emailCalls.push({ url, body: parsedBody });
+      if (url === 'https://api.resend.com/emails') {
+        const html = String(parsedBody.html || '');
+        const match = html.match(/token=([a-f0-9]+)/i);
+        if (match) capturedResetToken = match[1];
+        return new Response(JSON.stringify({ id: 'email_test_123' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      if (url === 'https://api.razorpay.com/v1/orders') {
+        return new Response(
+          JSON.stringify({ id: 'order_promo_101', amount: parsedBody.amount }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      return new Response('{}', { status: 404 });
+    }) as typeof fetch;
+
+    const envVars = {
+      RESEND_API_KEY: 're_test_key_123',
+      RAZORPAY_KEY_ID: 'rzp_live_demo',
+      RAZORPAY_KEY_SECRET: 'rzp_secret_demo',
+    };
+
+    // 1. Signup + capture old session cookie
+    const signup = await callEdgeApi(
+      db,
+      '/api/auth/signup',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Meera Desai',
+          email: 'meera@desai.in',
+          password: 'old-password-11',
+        }),
+      },
+      envVars
+    );
+    const oldCookie = cookieFromResponse(signup);
+
+    // 2. Forgot password sends Resend email with reset token
+    const forgot = await callEdgeApi(
+      db,
+      '/api/auth/forgot-password',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'meera@desai.in' }),
+      },
+      envVars
+    );
+    expect(forgot.status).toBe(200);
+    expect(((await forgot.json()) as { delivery: string }).delivery).toBe('email_queued');
+    expect(capturedResetToken.length).toBeGreaterThan(20);
+
+    // 3. Reset password succeeds once, rejects reuse, and invalidates old session cookie
+    const resetOk = await callEdgeApi(
+      db,
+      '/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: capturedResetToken, newPassword: 'new-strong-password-99' }),
+      },
+      envVars
+    );
+    expect(resetOk.status).toBe(200);
+
+    const resetReuse = await callEdgeApi(
+      db,
+      '/api/auth/reset-password',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: capturedResetToken, newPassword: 'another-password-11' }),
+      },
+      envVars
+    );
+    expect(resetReuse.status).toBe(400);
+
+    const oldMe = await callEdgeApi(db, '/api/auth/me', { headers: { Cookie: oldCookie } }, envVars);
+    expect(((await oldMe.json()) as { authenticated: boolean }).authenticated).toBe(false);
+
+    // Sign in with new password works
+    const relogin = await callEdgeApi(
+      db,
+      '/api/auth/login',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'meera@desai.in', password: 'new-strong-password-99' }),
+      },
+      envVars
+    );
+    expect(relogin.status).toBe(200);
+    const newCookie = cookieFromResponse(relogin);
+
+    // 4. Promo validation & discounted Razorpay checkout
+    const badPromo = await callEdgeApi(
+      db,
+      '/api/billing/validate-promo',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Cookie: newCookie },
+        body: JSON.stringify({
+          tier: 'advisor',
+          billingCycle: 'yearly',
+          currency: 'INR',
+          promoCode: 'FAKE99',
+        }),
+      },
+      envVars
+    );
+    expect(badPromo.status).toBe(404);
+
+    const goodPromo = await callEdgeApi(
+      db,
+      '/api/billing/validate-promo',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Cookie: newCookie },
+        body: JSON.stringify({
+          tier: 'advisor',
+          billingCycle: 'yearly',
+          currency: 'INR',
+          promoCode: 'student50',
+        }),
+      },
+      envVars
+    );
+    expect(goodPromo.status).toBe(200);
+    expect(((await goodPromo.json()) as { promo: { finalAmountMinor: number } }).promo.finalAmountMinor).toBe(
+      100
+    );
+
+    const promoCheckout = await callEdgeApi(
+      db,
+      '/api/billing/checkout',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Cookie: newCookie },
+        body: JSON.stringify({
+          tier: 'advisor',
+          billingCycle: 'yearly',
+          currency: 'INR',
+          promoCode: 'STUDENT50',
+        }),
+      },
+      envVars
+    );
+    expect(promoCheckout.status).toBe(200);
+    expect(
+      ((await promoCheckout.json()) as { checkout: { amountMinor: number; promoCode: string } }).checkout
+    ).toMatchObject({ amountMinor: 100, promoCode: 'STUDENT50' });
+
+    // 5. Feedback save & Resend alert
+    const fbPost = await callEdgeApi(
+      db,
+      '/api/feedback',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Cookie: newCookie },
+        body: JSON.stringify({
+          category: 'feature',
+          message: 'Please add SIP step-up CSV export too!',
+          pageView: 'pricing',
+        }),
+      },
+      envVars
+    );
+    expect(fbPost.status).toBe(200);
+
+    const fbList = await callEdgeApi(db, '/api/feedback', { headers: { Cookie: newCookie } }, envVars);
+    expect(fbList.status).toBe(200);
+    expect(((await fbList.json()) as { feedback: Array<{ message: string }> }).feedback[0].message).toContain(
+      'SIP step-up CSV'
+    );
+    expect(emailCalls.some((c) => c.url === 'https://api.resend.com/emails')).toBe(true);
+  });
 });

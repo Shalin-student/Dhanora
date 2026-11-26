@@ -6,10 +6,17 @@ import {
   computePlanExpiryIso,
   createGatewayCheckout,
   getPlanPriceMinor,
+  resolvePromoDiscount,
   verifyRazorpayPaymentSignature,
   verifyRazorpayWebhookSignature,
   verifyStripeWebhookSignature,
 } from './billing.mjs';
+import {
+  buildFeedbackAlertEmail,
+  buildInviteEmail,
+  buildPasswordResetEmail,
+  sendTransactionalEmail,
+} from './edge/emailCore.mjs';
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -590,6 +597,47 @@ export function createSyncServer(options = {}) {
           return;
         }
 
+        if (req.method === 'POST' && pathname === '/api/auth/forgot-password') {
+          const body = await readJsonBody(req, 16 * 1024);
+          const email = String(body?.email ?? '').trim().toLowerCase();
+          if (!email.includes('@')) {
+            sendJson(res, 400, { error: 'INVALID_EMAIL' });
+            return;
+          }
+          const created = store.createPasswordResetToken(email, 30);
+          const delivery = env.RESEND_API_KEY ? 'email_queued' : 'email_not_configured';
+          if (created && env.RESEND_API_KEY) {
+            const origin = resolveRequestOrigin(req, configuredBaseUrl);
+            const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(created.token)}`;
+            const mail = buildPasswordResetEmail({ name: created.name, resetUrl });
+            void sendTransactionalEmail({
+              to: created.email,
+              subject: mail.subject,
+              html: mail.html,
+              env,
+            });
+          }
+          sendJson(res, 200, { ok: true, delivery });
+          return;
+        }
+
+        if (req.method === 'POST' && pathname === '/api/auth/reset-password') {
+          const body = await readJsonBody(req, 16 * 1024);
+          const token = String(body?.token ?? '').trim();
+          const newPassword = String(body?.newPassword ?? '');
+          if (newPassword.length < 6) {
+            sendJson(res, 400, { error: 'PASSWORD_TOO_SHORT' });
+            return;
+          }
+          const out = store.consumePasswordResetToken({ token, newPassword });
+          if (!out.ok) {
+            sendJson(res, 400, { error: out.error });
+            return;
+          }
+          sendJson(res, 200, { ok: true });
+          return;
+        }
+
         if (req.method === 'DELETE' && pathname === '/api/account') {
           const session = resolveSession(req);
           if (!session) {
@@ -634,11 +682,75 @@ export function createSyncServer(options = {}) {
               createdByUserId: session.userId,
             });
             const origin = resolveRequestOrigin(req, configuredBaseUrl);
+            const inviteUrl = `${origin}/invite?code=${encodeURIComponent(inv.code)}`;
+            if (inv.invitedEmail && env.RESEND_API_KEY) {
+              const mail = buildInviteEmail({
+                householdName: session.householdName,
+                role: inv.role,
+                inviteUrl,
+              });
+              void sendTransactionalEmail({
+                to: inv.invitedEmail,
+                subject: mail.subject,
+                html: mail.html,
+                env,
+              });
+            }
             sendJson(res, 200, {
               ok: true,
               invite: inv,
-              inviteUrl: `${origin}/invite?code=${encodeURIComponent(inv.code)}`,
+              inviteUrl,
             });
+            return;
+          }
+        }
+
+        if (pathname === '/api/feedback') {
+          const session = resolveSession(req);
+          if (req.method === 'GET') {
+            if (!session) {
+              sendJson(res, 401, { error: 'AUTH_REQUIRED' });
+              return;
+            }
+            sendJson(res, 200, { feedback: store.listFeedback(session.householdId) });
+            return;
+          }
+          if (req.method === 'POST') {
+            const body = await readJsonBody(req, 32 * 1024);
+            const message = String(body?.message ?? '').trim();
+            if (message.length < 4) {
+              sendJson(res, 400, { error: 'FEEDBACK_TOO_SHORT' });
+              return;
+            }
+            const category = String(body?.category ?? 'general').trim();
+            const userEmail = session?.email || (body?.email ? String(body.email).trim() : null);
+            const userName = session?.name || (body?.name ? String(body.name).trim() : 'Guest User');
+            const saved = store.saveFeedback({
+              householdId: session?.householdId ?? null,
+              userId: session?.userId ?? null,
+              userEmail,
+              userName,
+              category,
+              message,
+              pageView: body?.pageView ? String(body.pageView) : null,
+            });
+            if (env.RESEND_API_KEY) {
+              const mail = buildFeedbackAlertEmail({
+                userName,
+                userEmail,
+                category,
+                message,
+                pageView: body?.pageView,
+              });
+              void sendTransactionalEmail({
+                to: env.SUPPORT_ALERT_EMAIL || 'shalinpatel1102@gmail.com',
+                replyTo: userEmail || undefined,
+                subject: mail.subject,
+                html: mail.html,
+                env,
+              });
+            }
+            sendJson(res, 200, { ok: true, id: saved.id });
             return;
           }
         }
@@ -684,6 +796,28 @@ export function createSyncServer(options = {}) {
             return;
           }
 
+          if (req.method === 'POST' && pathname === '/api/billing/validate-promo') {
+            const body = await readJsonBody(req, 16 * 1024);
+            const tier = body?.tier === 'advisor' ? 'advisor' : 'plus';
+            const billingCycle = body?.billingCycle === 'monthly' ? 'monthly' : 'yearly';
+            const currency = body?.currency === 'USD' ? 'USD' : 'INR';
+            const pricing = getPlanPriceMinor(tier, currency, billingCycle);
+            const promo = pricing
+              ? resolvePromoDiscount({
+                  promoCode: body?.promoCode,
+                  amountMinor: pricing.amountMinor,
+                  currency: pricing.currency,
+                  env,
+                })
+              : { valid: false };
+            if (!promo.valid) {
+              sendJson(res, 404, { error: 'INVALID_PROMO_CODE' });
+              return;
+            }
+            sendJson(res, 200, { ok: true, promo });
+            return;
+          }
+
           if (req.method === 'POST' && pathname === '/api/billing/checkout') {
             const body = await readJsonBody(req, 32 * 1024);
             const tier = body?.tier === 'advisor' ? 'advisor' : 'plus';
@@ -697,6 +831,7 @@ export function createSyncServer(options = {}) {
               billingCycle,
               currency,
               gstNumber: body?.gstNumber ? String(body.gstNumber).trim() : '',
+              promoCode: body?.promoCode ? String(body.promoCode).trim() : '',
               baseUrl: origin,
               env,
             });

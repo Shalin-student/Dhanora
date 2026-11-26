@@ -16,6 +16,7 @@ import {
   createBillingCheckout,
   fetchBillingHistory,
   startServerTrial,
+  validatePromoCode,
   verifyRazorpayCheckout,
   type ServerInvoice,
 } from '../storage/syncClient';
@@ -57,6 +58,11 @@ export const PricingView: React.FC<{
     state.settings.baseCurrency === 'USD' && !embedded ? 'USD' : 'INR'
   );
   const [gstNumber, setGstNumber] = useState('');
+  const [promoInput, setPromoInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discountPct: number } | null>(
+    null
+  );
+  const [promoError, setPromoError] = useState('');
   const [invoices, setInvoices] = useState<ServerInvoice[]>([]);
   const [busyTier, setBusyTier] = useState<PlanTier | null>(null);
   const [sandboxModal, setSandboxModal] = useState<{
@@ -81,14 +87,56 @@ export const PricingView: React.FC<{
     };
   }, [embedded, authSession, currentPlan, getAuthSyncConfig]);
 
+  const baseMinor = (tier: PlanTier): number => {
+    if (tier === 'free') return 0;
+    if (tier === 'plus') {
+      if (priceCurrency === 'INR') return 100;
+      return billing === 'yearly' ? 1500 : 250;
+    }
+    if (priceCurrency === 'INR') return 200;
+    return billing === 'yearly' ? 7900 : 800;
+  };
+
   const priceText = (tier: PlanTier) => {
     if (tier === 'free') return priceCurrency === 'INR' ? '₹0' : '$0';
-    if (tier === 'plus') {
-      if (billing === 'yearly') return priceCurrency === 'INR' ? '₹1' : '$15';
-      return priceCurrency === 'INR' ? '₹1' : '$2.50';
+    const raw = baseMinor(tier);
+    const finalMinor = appliedPromo
+      ? Math.max(Math.min(raw, 100), Math.round(raw * (1 - appliedPromo.discountPct / 100)))
+      : raw;
+    return formatInvoiceMinorAmount(finalMinor, priceCurrency);
+  };
+
+  const handleApplyPromo = async () => {
+    setPromoError('');
+    const code = promoInput.trim().toUpperCase();
+    if (!code) {
+      setAppliedPromo(null);
+      return;
     }
-    if (billing === 'yearly') return priceCurrency === 'INR' ? '₹2' : '$79';
-    return priceCurrency === 'INR' ? '₹2' : '$8';
+    if (import.meta.env.MODE !== 'test' && authSession && !authSession.isDemo) {
+      const res = await validatePromoCode(getAuthSyncConfig(), {
+        tier: 'advisor',
+        billingCycle: billing,
+        currency: priceCurrency,
+        promoCode: code,
+      });
+      if (res?.valid && res.discountPct) {
+        setAppliedPromo({ code: res.code || code, discountPct: res.discountPct });
+        return;
+      }
+      if (res && !res.valid) {
+        setAppliedPromo(null);
+        setPromoError(t('price.promoInvalid'));
+        return;
+      }
+    }
+    const localPromos: Record<string, number> = { STUDENT50: 50, EARLY30: 30, FAMILY20: 20 };
+    if (localPromos[code]) {
+      setAppliedPromo({ code, discountPct: localPromos[code] });
+    } else {
+      setAppliedPromo(null);
+      setPromoError(t('price.promoInvalid'));
+    }
   };
 
   const handleChoose = async (tier: PlanTier) => {
@@ -148,6 +196,7 @@ export const PricingView: React.FC<{
       billingCycle: billing,
       currency: priceCurrency,
       gstNumber: gstNumber.trim() || undefined,
+      promoCode: appliedPromo?.code,
     });
     setBusyTier(null);
 
@@ -335,19 +384,68 @@ export const PricingView: React.FC<{
         </div>
       </div>
 
-      {!embedded && priceCurrency === 'INR' && (
+      {!embedded && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-xs dark:border-slate-800 dark:bg-slate-900">
-          <span className="font-semibold text-slate-600 dark:text-slate-300">
-            {t('price.gstLabel')}
-          </span>
-          <input
-            type="text"
-            value={gstNumber}
-            onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
-            placeholder="24AABCU9603R1ZM"
-            maxLength={15}
-            className="w-48 rounded-lg border border-slate-300 px-3 py-1.5 text-xs uppercase dark:border-slate-700 dark:bg-slate-800"
-          />
+          {priceCurrency === 'INR' && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-semibold text-slate-600 dark:text-slate-300">
+                {t('price.gstLabel')}
+              </span>
+              <input
+                type="text"
+                value={gstNumber}
+                onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
+                placeholder="24AABCU9603R1ZM"
+                maxLength={15}
+                className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-xs uppercase dark:border-slate-700 dark:bg-slate-800"
+              />
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-slate-600 dark:text-slate-300">
+              {t('price.promoLabel')}
+            </span>
+            <input
+              type="text"
+              value={promoInput}
+              onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+              placeholder={t('price.promoPlaceholder')}
+              aria-label={t('price.promoLabel')}
+              maxLength={24}
+              className="w-44 rounded-lg border border-slate-300 px-3 py-1.5 text-xs uppercase dark:border-slate-700 dark:bg-slate-800"
+            />
+            <button
+              type="button"
+              onClick={() => void handleApplyPromo()}
+              className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900"
+            >
+              {t('price.promoApplyBtn')}
+            </button>
+            {appliedPromo && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+                {t('price.promoApplied', {
+                  code: appliedPromo.code,
+                  pct: appliedPromo.discountPct,
+                })}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAppliedPromo(null);
+                    setPromoInput('');
+                  }}
+                  className="underline"
+                >
+                  {t('price.promoRemove')}
+                </button>
+              </span>
+            )}
+            {promoError && (
+              <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400">
+                {promoError}
+              </span>
+            )}
+          </div>
         </div>
       )}
 

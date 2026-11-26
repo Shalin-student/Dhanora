@@ -371,6 +371,7 @@ export async function createBillingCheckout(
     billingCycle: 'monthly' | 'yearly';
     currency: 'INR' | 'USD';
     gstNumber?: string;
+    promoCode?: string;
   }
 ): Promise<{
   checkout?: {
@@ -385,6 +386,7 @@ export async function createBillingCheckout(
     tier: 'plus' | 'advisor';
     billingCycle: 'monthly' | 'yearly';
     planName: string;
+    promoCode?: string;
   };
   error?: string;
 } | null> {
@@ -495,6 +497,116 @@ export async function fetchBillingHistory(
       household?: ServerSnapshotResponse['household'];
     };
     return { invoices: data.invoices ?? [], household: data.household };
+  } catch {
+    return null;
+  }
+}
+
+export async function validatePromoCode(
+  config: SyncClientConfig,
+  params: {
+    tier: 'plus' | 'advisor';
+    billingCycle: 'monthly' | 'yearly';
+    currency: 'INR' | 'USD';
+    promoCode: string;
+  }
+): Promise<{
+  valid: boolean;
+  code?: string;
+  discountPct?: number;
+  finalAmountMinor?: number;
+  label?: string;
+  error?: string;
+} | null> {
+  try {
+    const base = buildBaseUrl(config.serverUrl);
+    const res = await fetchWithTimeout(`${base}/api/billing/validate-promo`, {
+      method: 'POST',
+      headers: buildHeaders(config),
+      body: JSON.stringify(params),
+    });
+    if (!res.headers.get('content-type')?.includes('json')) return null;
+    const data = (await res.json()) as {
+      ok?: boolean;
+      error?: string;
+      promo?: {
+        code: string;
+        discountPct: number;
+        finalAmountMinor: number;
+        label?: string;
+      };
+    };
+    if (!res.ok || !data.promo) return { valid: false, error: data.error || 'INVALID_PROMO_CODE' };
+    return {
+      valid: true,
+      code: data.promo.code,
+      discountPct: data.promo.discountPct,
+      finalAmountMinor: data.promo.finalAmountMinor,
+      label: data.promo.label,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function requestPasswordReset(
+  email: string,
+  config: SyncClientConfig = {}
+): Promise<{ ok: boolean; delivery?: string; error?: string } | null> {
+  try {
+    const base = buildBaseUrl(config.serverUrl);
+    const res = await fetchWithTimeout(`${base}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: buildHeaders(config),
+      body: JSON.stringify({ email }),
+    });
+    if (!res.headers.get('content-type')?.includes('json')) return null;
+    const data = (await res.json()) as { ok?: boolean; delivery?: string; error?: string };
+    return { ok: Boolean(res.ok && data.ok), delivery: data.delivery, error: data.error };
+  } catch {
+    return null;
+  }
+}
+
+export async function confirmPasswordReset(
+  params: { token: string; newPassword: string },
+  config: SyncClientConfig = {}
+): Promise<{ ok: boolean; error?: string } | null> {
+  try {
+    const base = buildBaseUrl(config.serverUrl);
+    const res = await fetchWithTimeout(`${base}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: buildHeaders(config),
+      body: JSON.stringify(params),
+    });
+    if (!res.headers.get('content-type')?.includes('json')) return null;
+    const data = (await res.json()) as { ok?: boolean; error?: string };
+    return { ok: Boolean(res.ok && data.ok), error: data.error };
+  } catch {
+    return null;
+  }
+}
+
+export async function submitFeedback(
+  config: SyncClientConfig,
+  params: {
+    category: string;
+    message: string;
+    pageView?: string;
+    email?: string;
+    name?: string;
+  }
+): Promise<{ ok: boolean; id?: string; error?: string } | null> {
+  try {
+    const base = buildBaseUrl(config.serverUrl);
+    const res = await fetchWithTimeout(`${base}/api/feedback`, {
+      method: 'POST',
+      headers: buildHeaders(config),
+      body: JSON.stringify(params),
+    });
+    if (!res.headers.get('content-type')?.includes('json')) return null;
+    const data = (await res.json()) as { ok?: boolean; id?: string; error?: string };
+    return { ok: Boolean(res.ok && data.ok), id: data.id, error: data.error };
   } catch {
     return null;
   }

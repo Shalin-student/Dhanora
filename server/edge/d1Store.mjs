@@ -98,6 +98,26 @@ const DDL_STATEMENTS = [
     amount_minor INTEGER NOT NULL,
     created_at TEXT NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS password_resets (
+    token_hash TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    email TEXT NOT NULL,
+    expires_at TEXT NOT NULL,
+    used_at TEXT,
+    created_at TEXT NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS feedback_messages (
+    id TEXT PRIMARY KEY,
+    household_id TEXT,
+    user_id TEXT,
+    user_email TEXT,
+    user_name TEXT,
+    category TEXT NOT NULL,
+    message TEXT NOT NULL,
+    page_view TEXT,
+    status TEXT NOT NULL DEFAULT 'open',
+    created_at TEXT NOT NULL
+  )`,
   `CREATE INDEX IF NOT EXISTS idx_receipts_tx ON receipts (tx_id)`,
   `CREATE INDEX IF NOT EXISTS idx_receipts_hh ON receipts (household_id, tx_id)`,
   `CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log (household_id, created_at DESC)`,
@@ -107,6 +127,8 @@ const DDL_STATEMENTS = [
   `CREATE INDEX IF NOT EXISTS idx_invites_hh ON invites (household_id)`,
   `CREATE INDEX IF NOT EXISTS idx_invoices_hh ON billing_invoices (household_id, created_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_orders_hh ON billing_orders (household_id, created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_resets_email ON password_resets (email, created_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_feedback_hh ON feedback_messages (household_id, created_at DESC)`,
 ];
 
 const initializedDbs = new WeakMap();
@@ -458,6 +480,105 @@ export function createD1Store(db) {
     return { ok: true };
   }
 
+  async function createPasswordResetToken(email, ttlMinutes = 30) {
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    if (!cleanEmail) return null;
+    const user = await db
+      .prepare('SELECT id, name, email FROM users WHERE email = ?')
+      .bind(cleanEmail)
+      .first();
+    if (!user) return null;
+
+    const rawToken = randomHex(32);
+    const tokenHash = await sha256Hex(rawToken);
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + ttlMinutes * 60000).toISOString();
+    await db
+      .prepare(
+        `INSERT INTO password_resets (token_hash, user_id, email, expires_at, created_at)
+         VALUES (?, ?, ?, ?, ?)`
+      )
+      .bind(tokenHash, user.id, user.email, expiresAt, now.toISOString())
+      .run();
+
+    return {
+      token: rawToken,
+      email: user.email,
+      name: user.name,
+      expiresAt,
+    };
+  }
+
+  async function consumePasswordResetToken({ token, newPassword }) {
+    const cleanToken = String(token || '').trim();
+    if (!cleanToken) return { ok: false, error: 'INVALID_OR_EXPIRED_RESET_TOKEN' };
+    const tokenHash = await sha256Hex(cleanToken);
+    const row = await db
+      .prepare(
+        `SELECT token_hash AS tokenHash, user_id AS userId, expires_at AS expiresAt, used_at AS usedAt
+         FROM password_resets WHERE token_hash = ?`
+      )
+      .bind(tokenHash)
+      .first();
+    if (!row || row.usedAt || Date.parse(row.expiresAt) < Date.now()) {
+      return { ok: false, error: 'INVALID_OR_EXPIRED_RESET_TOKEN' };
+    }
+
+    const now = nowIso();
+    const claim = await db
+      .prepare(
+        'UPDATE password_resets SET used_at = ? WHERE token_hash = ? AND used_at IS NULL'
+      )
+      .bind(now, tokenHash)
+      .run();
+    if (!claim?.meta?.changes) {
+      return { ok: false, error: 'INVALID_OR_EXPIRED_RESET_TOKEN' };
+    }
+
+    const salt = randomHex(16);
+    const hash = await hashUserPassword(newPassword, salt);
+    await db.batch([
+      db.prepare('UPDATE users SET password_hash = ?, password_salt = ? WHERE id = ?').bind(hash, salt, row.userId),
+      db.prepare('DELETE FROM sessions WHERE user_id = ?').bind(row.userId),
+    ]);
+    return { ok: true };
+  }
+
+  async function saveFeedback({ householdId, userId, userEmail, userName, category, message, pageView }) {
+    const id = `fb-${Date.now()}-${randomHex(3)}`;
+    const now = nowIso();
+    await db
+      .prepare(
+        `INSERT INTO feedback_messages (id, household_id, user_id, user_email, user_name, category, message, page_view, status, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'open', ?)`
+      )
+      .bind(
+        id,
+        householdId ?? null,
+        userId ?? null,
+        userEmail ?? null,
+        userName ?? null,
+        String(category || 'general').slice(0, 40),
+        String(message || '').trim().slice(0, 4000),
+        pageView ?? null,
+        now
+      )
+      .run();
+    return { id, createdAt: now };
+  }
+
+  async function listFeedback(householdId) {
+    if (!householdId) return [];
+    const res = await db
+      .prepare(
+        `SELECT id, category, message, page_view AS pageView, status, created_at AS createdAt
+         FROM feedback_messages WHERE household_id = ? ORDER BY created_at DESC LIMIT 20`
+      )
+      .bind(householdId)
+      .all();
+    return res.results ?? [];
+  }
+
   async function updateHouseholdBilling(householdId, patch) {
     const cur = await getHousehold(householdId);
     if (!cur) return null;
@@ -602,11 +723,17 @@ export function createD1Store(db) {
     if (!householdId || householdId === 'default') return false;
     await db.batch([
       db.prepare('DELETE FROM sessions WHERE household_id = ?').bind(householdId),
+      db
+        .prepare(
+          'DELETE FROM password_resets WHERE email IN (SELECT email FROM users WHERE household_id = ?)'
+        )
+        .bind(householdId),
       db.prepare('DELETE FROM invites WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM receipts WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM activity_log WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM billing_invoices WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM billing_orders WHERE household_id = ?').bind(householdId),
+      db.prepare('DELETE FROM feedback_messages WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM household_state WHERE id = ?').bind(householdId),
       db.prepare('DELETE FROM users WHERE household_id = ?').bind(householdId),
       db.prepare('DELETE FROM households WHERE id = ?').bind(householdId),
@@ -893,6 +1020,10 @@ export function createD1Store(db) {
     createUser,
     verifyUserLogin,
     rotateUserPassword,
+    createPasswordResetToken,
+    consumePasswordResetToken,
+    saveFeedback,
+    listFeedback,
     createSession,
     getSessionByToken,
     deleteSessionByToken,

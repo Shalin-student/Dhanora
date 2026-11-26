@@ -37,6 +37,7 @@ function resolveInitialPublicRoute(): {
   authMode: AuthScreenMode;
   legalPage: PublicLegalPage;
   inviteCode?: string;
+  resetToken?: string;
   scrollSection?: 'pricing' | 'calculators';
 } {
   if (typeof window === 'undefined') {
@@ -45,6 +46,16 @@ function resolveInitialPublicRoute(): {
   const path = window.location.pathname;
   const params = new URLSearchParams(window.location.search);
   const inviteCode = params.get('code') || params.get('invite') || undefined;
+  const resetToken =
+    params.get('resetToken') || (path === '/reset-password' ? params.get('token') || '' : undefined);
+  if (path === '/reset-password' || resetToken) {
+    return {
+      route: 'auth',
+      authMode: 'reset',
+      legalPage: 'privacy',
+      resetToken: resetToken || undefined,
+    };
+  }
   if (path === '/signin') return { route: 'auth', authMode: 'signin', legalPage: 'privacy' };
   if (path === '/signup' || path === '/invite' || inviteCode) {
     return { route: 'auth', authMode: 'signup', legalPage: 'privacy', inviteCode };
@@ -89,6 +100,7 @@ export const PublicPortal: React.FC = () => {
   const [authMode, setAuthMode] = useState<AuthScreenMode>(initial.authMode);
   const [legalPage, setLegalPage] = useState<PublicLegalPage>(initial.legalPage);
   const [initialInviteCode] = useState<string | undefined>(initial.inviteCode);
+  const [initialResetToken] = useState<string | undefined>(initial.resetToken);
   const [selectedPlan, setSelectedPlan] = useState<PlanTier>('free');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -139,6 +151,7 @@ export const PublicPortal: React.FC = () => {
         initialMode={authMode}
         initialPlan={selectedPlan}
         initialInviteCode={initialInviteCode}
+        initialResetToken={initialResetToken}
         onBackHome={backHome}
       />
     );

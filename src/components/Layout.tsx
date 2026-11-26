@@ -17,6 +17,7 @@ import {
   Lock,
   LogOut,
   Menu,
+  MessageSquarePlus,
   Moon,
   PiggyBank,
   Plus,
@@ -38,6 +39,7 @@ import { shiftMonth } from '../utils/calculations';
 import { useI18n } from '../i18n/useI18n';
 import type { TranslationKey } from '../i18n';
 import { BrandMark } from './BrandMark';
+import { FeedbackModal } from './FeedbackModal';
 import { LanguageToggle } from './LanguageToggle';
 
 const NAV_GROUPS: Array<{
@@ -111,6 +113,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const { t, formatMonth, memName, entityText, roleBadge } = useI18n();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
@@ -273,8 +276,22 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <Plus className="h-4 w-4" />
             {t('layout.addTransaction')}
           </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setFeedbackOpen(true);
+              setMobileMenuOpen(false);
+            }}
+            className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <MessageSquarePlus className="h-3.5 w-3.5 text-emerald-600" />
+            <span>{t('fb.openBtn')}</span>
+          </button>
         </div>
       </aside>
+
+      <FeedbackModal open={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
 
       {/* Main Column */}
       <div className="flex min-h-screen flex-col lg:pl-64">

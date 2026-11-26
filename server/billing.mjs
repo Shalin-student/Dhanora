@@ -1,13 +1,13 @@
 import crypto from 'node:crypto';
-import {
+import { safeHexEqual } from './edge/billingCore.mjs';
+export {
   PLAN_CATALOG,
+  DEFAULT_PROMO_CODES,
   computePlanExpiryIso,
   createGatewayCheckout,
   getPlanPriceMinor,
-  safeHexEqual,
+  resolvePromoDiscount,
 } from './edge/billingCore.mjs';
-
-export { PLAN_CATALOG, computePlanExpiryIso, createGatewayCheckout, getPlanPriceMinor };
 
 export function computeHmacHex(payload, secret) {
   return crypto.createHmac('sha256', String(secret)).update(payload).digest('hex');

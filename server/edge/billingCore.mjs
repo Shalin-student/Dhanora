@@ -13,6 +13,49 @@ export const PLAN_CATALOG = {
   },
 };
 
+export const DEFAULT_PROMO_CODES = {
+  STUDENT50: { discountPct: 50, label: 'Student 50% Launch Off' },
+  EARLY30: { discountPct: 30, label: 'Early Adopter 30% Off' },
+  FAMILY20: { discountPct: 20, label: 'Family 20% Off' },
+};
+
+export function resolvePromoDiscount({ promoCode, amountMinor, currency = 'INR', env = {} }) {
+  const cleanCode = String(promoCode || '').trim().toUpperCase();
+  if (!cleanCode) {
+    return { valid: false, code: '', discountPct: 0, finalAmountMinor: amountMinor };
+  }
+
+  let catalog = { ...DEFAULT_PROMO_CODES };
+  if (env.PROMO_CODES_JSON) {
+    try {
+      const parsed = JSON.parse(String(env.PROMO_CODES_JSON));
+      if (parsed && typeof parsed === 'object') {
+        catalog = { ...catalog, ...parsed };
+      }
+    } catch {
+      // ignore invalid PROMO_CODES_JSON
+    }
+  }
+
+  const rule = catalog[cleanCode];
+  if (!rule || !Number.isFinite(Number(rule.discountPct))) {
+    return { valid: false, code: cleanCode, discountPct: 0, finalAmountMinor: amountMinor };
+  }
+
+  const pct = Math.min(90, Math.max(1, Number(rule.discountPct)));
+  const minFloor = currency === 'INR' ? 100 : 100; // ₹1 / $1 minimum gateway settlement
+  const rawDiscounted = Math.round(amountMinor * (1 - pct / 100));
+  const finalAmountMinor = Math.max(Math.min(amountMinor, minFloor), rawDiscounted);
+  return {
+    valid: true,
+    code: cleanCode,
+    discountPct: pct,
+    label: rule.label || `${pct}% Off`,
+    originalAmountMinor: amountMinor,
+    finalAmountMinor,
+  };
+}
+
 export function getPlanPriceMinor(tier, currency, billingCycle) {
   const plan = PLAN_CATALOG[tier];
   if (!plan) return null;
@@ -131,6 +174,7 @@ export async function createGatewayCheckout({
   billingCycle,
   currency,
   gstNumber,
+  promoCode,
   baseUrl,
   env = {},
 }) {
@@ -138,6 +182,17 @@ export async function createGatewayCheckout({
   if (!pricing) {
     throw Object.assign(new Error('INVALID_PLAN_TIER'), { statusCode: 400 });
   }
+
+  const promo = resolvePromoDiscount({
+    promoCode,
+    amountMinor: pricing.amountMinor,
+    currency: pricing.currency,
+    env,
+  });
+  if (promoCode && String(promoCode).trim() && !promo.valid) {
+    throw Object.assign(new Error('INVALID_PROMO_CODE'), { statusCode: 400 });
+  }
+  const finalAmountMinor = promo.valid ? promo.finalAmountMinor : pricing.amountMinor;
 
   // INR -> Razorpay Order API
   if (pricing.currency === 'INR' && env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET) {
@@ -150,7 +205,7 @@ export async function createGatewayCheckout({
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        amount: pricing.amountMinor,
+        amount: finalAmountMinor,
         currency: 'INR',
         receipt,
         notes: {
@@ -158,6 +213,7 @@ export async function createGatewayCheckout({
           tier,
           billingCycle: pricing.billingCycle,
           gstNumber: gstNumber || '',
+          promoCode: promo.valid ? promo.code : '',
         },
       }),
     });
@@ -172,11 +228,12 @@ export async function createGatewayCheckout({
       mode: 'live',
       keyId: env.RAZORPAY_KEY_ID,
       orderId: data.id,
-      amountMinor: pricing.amountMinor,
+      amountMinor: finalAmountMinor,
       currency: 'INR',
       tier,
       billingCycle: pricing.billingCycle,
       planName: pricing.planName,
+      promoCode: promo.valid ? promo.code : undefined,
     };
   }
 
@@ -193,9 +250,10 @@ export async function createGatewayCheckout({
     form.set('metadata[tier]', tier);
     form.set('metadata[billingCycle]', pricing.billingCycle);
     form.set('metadata[currency]', 'USD');
+    if (promo.valid) form.set('metadata[promoCode]', promo.code);
     form.set('line_items[0][quantity]', '1');
     form.set('line_items[0][price_data][currency]', 'usd');
-    form.set('line_items[0][price_data][unit_amount]', String(pricing.amountMinor));
+    form.set('line_items[0][price_data][unit_amount]', String(finalAmountMinor));
     form.set(
       'line_items[0][price_data][product_data][name]',
       `HearthLedger ${pricing.planName} (${pricing.billingCycle})`
@@ -220,11 +278,12 @@ export async function createGatewayCheckout({
       mode: 'live',
       sessionId: data.id,
       checkoutUrl: data.url,
-      amountMinor: pricing.amountMinor,
+      amountMinor: finalAmountMinor,
       currency: 'USD',
       tier,
       billingCycle: pricing.billingCycle,
       planName: pricing.planName,
+      promoCode: promo.valid ? promo.code : undefined,
     };
   }
 
@@ -240,10 +299,11 @@ export async function createGatewayCheckout({
     provider: pricing.currency === 'INR' ? 'razorpay' : 'stripe',
     mode: 'sandbox',
     orderId: `ord_sandbox_${Date.now()}_${randomHex(3)}`,
-    amountMinor: pricing.amountMinor,
+    amountMinor: finalAmountMinor,
     currency: pricing.currency,
     tier,
     billingCycle: pricing.billingCycle,
     planName: pricing.planName,
+    promoCode: promo.valid ? promo.code : undefined,
   };
 }
