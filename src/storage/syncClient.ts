@@ -399,10 +399,33 @@ export async function createBillingCheckout(
       },
       6000
     );
-    if (res.status === 503 && !res.headers.get('content-type')?.includes('json')) return null;
+    if (!res.headers.get('content-type')?.includes('json')) return null;
     const data = (await res.json()) as { checkout?: any; error?: string };
     if (!res.ok) return { error: data.error || 'CHECKOUT_FAILED' };
     return { checkout: data.checkout };
+  } catch {
+    return null;
+  }
+}
+
+export async function startServerTrial(
+  config: SyncClientConfig
+): Promise<{ ok: boolean; error?: string; trialEndsAt?: string } | null> {
+  try {
+    const base = buildBaseUrl(config.serverUrl);
+    const res = await fetchWithTimeout(`${base}/api/billing/trial`, {
+      method: 'POST',
+      headers: buildHeaders(config),
+      body: '{}',
+    });
+    if (!res.headers.get('content-type')?.includes('json')) return null;
+    const data = (await res.json()) as {
+      ok?: boolean;
+      error?: string;
+      household?: { trialEndsAt?: string };
+    };
+    if (!res.ok) return { ok: false, error: data.error || 'TRIAL_FAILED' };
+    return { ok: true, trialEndsAt: data.household?.trialEndsAt };
   } catch {
     return null;
   }

@@ -434,6 +434,22 @@ export const DICT_SAAS = {
     en: 'Could not start payment checkout. Check server connection.',
     gu: 'પેમેન્ટ ચેકઆઉટ શરૂ થઈ શક્યું નહીં. કૃપા કરીને ફરી પ્રયાસ કરો.',
   },
+  'price.errKeysMissing': {
+    en: 'Payment keys are not configured on the server yet. Add RAZORPAY_KEY_ID & RAZORPAY_KEY_SECRET in Cloudflare environment variables.',
+    gu: 'સર્વર પર પેમેન્ટ કી સેટ નથી. Cloudflare માં RAZORPAY_KEY_ID અને RAZORPAY_KEY_SECRET ઉમેરો.',
+  },
+  'price.errDbMissing': {
+    en: 'Cloud database binding (DB) is not configured yet in Cloudflare Pages Settings -> Bindings.',
+    gu: 'Cloudflare Pages Settings -> Bindings માં DB ડેટાબેઝ બાઇન્ડિંગ હજી ઉમેરેલ નથી.',
+  },
+  'price.errAuthRequired': {
+    en: 'Please sign out and sign back in with your email to link your cloud billing session.',
+    gu: 'ક્લાઉડ બિલિંગ સત્ર જોડવા માટે કૃપા કરીને સાઇન આઉટ કરી ફરી સાઇન ઇન કરો.',
+  },
+  'price.errTrialUsed': {
+    en: 'Your 30-day free Plus trial has already been used. Pay below to activate your plan.',
+    gu: 'તમારો 30-દિવસનો ફ્રી ટ્રાયલ વપરાઈ ગયો છે. પ્લાન ચાલુ કરવા નીચે ચુકવણી કરો.',
+  },
 
   'ent.goalLimitReached': {
     en: 'Free tier supports up to {max} goals. Upgrade to Family Plus for unlimited goals.',

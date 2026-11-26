@@ -15,6 +15,7 @@ import {
   completeSandboxCheckout,
   createBillingCheckout,
   fetchBillingHistory,
+  startServerTrial,
   verifyRazorpayCheckout,
   type ServerInvoice,
 } from '../storage/syncClient';
@@ -70,7 +71,7 @@ export const PricingView: React.FC<{
   const currentPlan = state.settings.planTier ?? 'free';
 
   useEffect(() => {
-    if (embedded || !authSession || authSession.isDemo) return;
+    if (import.meta.env.MODE === 'test' || embedded || !authSession || authSession.isDemo) return;
     let active = true;
     void fetchBillingHistory(getAuthSyncConfig()).then((res) => {
       if (active && res) setInvoices(res.invoices);
@@ -90,10 +91,42 @@ export const PricingView: React.FC<{
     return priceCurrency === 'INR' ? '₹499' : '$8';
   };
 
-  const handleChoose = (tier: PlanTier) => {
+  const handleChoose = async (tier: PlanTier) => {
     if (onSelectPlanAuth) {
       onSelectPlanAuth(tier);
       return;
+    }
+    if (
+      import.meta.env.MODE !== 'test' &&
+      state.settings.syncEnabled !== false &&
+      tier === 'plus' &&
+      !embedded &&
+      authSession &&
+      !authSession.isDemo
+    ) {
+      setBusyTier('plus');
+      const trialRes = await startServerTrial(getAuthSyncConfig());
+      setBusyTier(null);
+      if (trialRes) {
+        if (trialRes.ok) {
+          upgradePlan('plus');
+          await refreshSessionFromServer();
+          pushToast(t('price.switchedMsg', { tier: 'PLUS' }));
+          return;
+        }
+        if (trialRes.error === 'TRIAL_ALREADY_USED') {
+          pushToast(t('price.errTrialUsed'));
+          return;
+        }
+        if (trialRes.error === 'AUTH_REQUIRED') {
+          pushToast(t('price.errAuthRequired'));
+          return;
+        }
+        if (trialRes.error !== 'D1_NOT_CONFIGURED') {
+          pushToast(t('price.openPaymentFailed'));
+          return;
+        }
+      }
     }
     upgradePlan(tier);
     pushToast(t('price.switchedMsg', { tier: tier.toUpperCase() }));
@@ -119,7 +152,15 @@ export const PricingView: React.FC<{
     setBusyTier(null);
 
     if (!res || res.error || !res.checkout) {
-      pushToast(t('price.openPaymentFailed'));
+      if (res?.error === 'BILLING_KEYS_NOT_CONFIGURED') {
+        pushToast(t('price.errKeysMissing'));
+      } else if (res?.error === 'D1_NOT_CONFIGURED') {
+        pushToast(t('price.errDbMissing'));
+      } else if (res?.error === 'AUTH_REQUIRED') {
+        pushToast(t('price.errAuthRequired'));
+      } else {
+        pushToast(t('price.openPaymentFailed'));
+      }
       return;
     }
 
@@ -172,6 +213,9 @@ export const PricingView: React.FC<{
             await refreshSessionFromServer();
             const hist = await fetchBillingHistory(cfg);
             if (hist) setInvoices(hist.invoices);
+            pushToast(t('price.switchedMsg', { tier: tier.toUpperCase() }));
+          } else {
+            pushToast(t('price.openPaymentFailed'));
           }
         },
       });
@@ -190,11 +234,13 @@ export const PricingView: React.FC<{
       gstNumber: gstNumber.trim() || undefined,
     });
     if (res?.ok) {
-      upgradePlan(sandboxModal.tier);
+      const activatedTier = sandboxModal.tier;
+      upgradePlan(activatedTier);
       await refreshSessionFromServer();
       const hist = await fetchBillingHistory(cfg);
       if (hist) setInvoices(hist.invoices);
       setSandboxModal(null);
+      pushToast(t('price.switchedMsg', { tier: activatedTier.toUpperCase() }));
     } else {
       pushToast(t('price.openPaymentFailed'));
     }
@@ -363,33 +409,39 @@ export const PricingView: React.FC<{
               </div>
 
               <div className="mt-6 space-y-2">
-                <button
-                  type="button"
-                  disabled={isCurrent}
-                  onClick={() => handleChoose(tier.id)}
-                  className={`w-full rounded-xl py-2.5 text-xs font-bold transition ${
-                    isCurrent
-                      ? 'cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
-                      : tier.featured
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                      : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
-                  }`}
-                >
-                  {isCurrent
-                    ? t('price.activePlanBadge')
-                    : tier.id === 'plus'
-                    ? t('price.startTrialCta')
-                    : tier.id === 'advisor'
-                    ? t('price.chooseAdvisorCta')
-                    : t('price.chooseFreeCta')}
-                </button>
+                {!(!embedded && authSession && !authSession.isDemo && tier.id === 'advisor' && !isCurrent) && (
+                  <button
+                    type="button"
+                    disabled={isCurrent || busyTier === tier.id}
+                    onClick={() => void handleChoose(tier.id)}
+                    className={`w-full rounded-xl py-2.5 text-xs font-bold transition ${
+                      isCurrent
+                        ? 'cursor-default border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300'
+                        : tier.featured
+                        ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                        : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
+                    }`}
+                  >
+                    {isCurrent
+                      ? t('price.activePlanBadge')
+                      : tier.id === 'plus'
+                      ? t('price.startTrialCta')
+                      : tier.id === 'advisor'
+                      ? t('price.chooseAdvisorCta')
+                      : t('price.chooseFreeCta')}
+                  </button>
+                )}
 
                 {!embedded && authSession && !authSession.isDemo && tier.id !== 'free' && !isCurrent && (
                   <button
                     type="button"
                     disabled={busyTier === tier.id}
                     onClick={() => void handlePaidCheckout(tier.id as 'plus' | 'advisor')}
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-300 bg-white py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-50 disabled:opacity-60 dark:border-emerald-800 dark:bg-slate-800 dark:text-emerald-300"
+                    className={`inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition disabled:opacity-60 ${
+                      tier.id === 'advisor'
+                        ? 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white'
+                        : 'border border-emerald-300 bg-white text-emerald-700 hover:bg-emerald-50 dark:border-emerald-800 dark:bg-slate-800 dark:text-emerald-300'
+                    }`}
                   >
                     <CreditCard className="h-3.5 w-3.5" />
                     {t('price.checkoutPayBtn')} ({priceText(tier.id)})
