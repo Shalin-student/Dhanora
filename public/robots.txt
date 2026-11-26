@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hearthledger.pages.dev/sitemap.xml
+Sitemap: https://hearthledger-7ar.pages.dev/sitemap.xml
