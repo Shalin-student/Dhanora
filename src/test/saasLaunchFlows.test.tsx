@@ -36,6 +36,11 @@ describe('SaaS Launch Flows: Legal Pages, Entitlement Limits & Clean Onboarding 
     expect(
       screen.getByText(/7 દિવસની 100% રિફંડ ગેરંટી મળે છે/i)
     ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'સપોર્ટ અને સંપર્ક' }));
+    expect(screen.getByText(/shalinpatel1102@gmail\.com/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+91 8160982125/)).toBeInTheDocument();
+    expect(screen.getByText(/383215/)).toBeInTheDocument();
   });
 
   it('enforces Free tier goal limit notice in Goals & Debts and routes to Pricing', async () => {

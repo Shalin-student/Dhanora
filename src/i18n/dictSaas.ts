@@ -485,8 +485,8 @@ export const DICT_SAAS = {
     gu: 'રિફંડ અથવા રદ કરવા માટે ઇન્વોઇસ નંબર સાથે સપોર્ટ પર સંપર્ક કરો — 5 થી 7 કામકાજના દિવસોમાં રકમ પરત મળશે.',
   },
   'legal.contactBody1': {
-    en: 'Support & Grievance Desk: support@hearthledger.app • Hours: Mon–Sat, 10:00 AM – 6:30 PM IST (Response within 24 business hours).',
-    gu: 'સપોર્ટ અને ફરિયાદ નિવારણ: support@hearthledger.app • સોમ–શનિ, સવારે 10:00 થી સાંજે 6:30 IST (24 કલાકમાં જવાબ).',
+    en: 'Support & Grievance Desk: Email shalinpatel1102@gmail.com • Phone +91 8160982125 • Operating Address: Gujarat, India - 383215 • Hours: Mon–Sat, 10:00 AM – 6:30 PM IST (Response within 24 business hours).',
+    gu: 'સપોર્ટ અને ફરિયાદ નિવારણ: ઇમેઇલ shalinpatel1102@gmail.com • ફોન +91 8160982125 • સરનામું: ગુજરાત, ભારત - 383215 • સમય: સોમ–શનિ, સવારે 10:00 થી સાંજે 6:30 IST (24 કલાકમાં જવાબ).',
   },
   'legal.contactBody2': {
     en: 'For GST billing corrections, enterprise advisor seats, or DPDP data deletion requests, email directly from your registered household owner address.',
