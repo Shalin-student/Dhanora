@@ -1,4 +1,4 @@
-import type { ActivityEntry, AppState } from '../src/types/finance';
+import type { SyncDatabase } from './db.mjs';
 
 export interface SyncServerOptions {
   dbPath?: string;
@@ -9,6 +9,7 @@ export interface SyncServerOptions {
   appBaseUrl?: string;
   googleSiteVerification?: string;
   env?: Record<string, string | undefined>;
+  fetchImpl?: typeof fetch;
 }
 
 export interface SyncServerInstance {
@@ -16,15 +17,7 @@ export interface SyncServerInstance {
     listen: (port: number, hostname?: string, listeningListener?: () => void) => void;
     address: () => { port: number; address: string; family: string } | string | null;
   };
-  store: {
-    getSnapshot: () => {
-      revision: number;
-      state: AppState | null;
-      updatedAt: string | null;
-      activity: ActivityEntry[];
-    };
-    close: () => void;
-  };
+  store: SyncDatabase;
   close: () => Promise<void>;
 }
 

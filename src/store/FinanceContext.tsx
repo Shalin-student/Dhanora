@@ -84,9 +84,10 @@ import {
 import {
   checkSyncHealth,
   deleteServerReceipt,
-  fetchCurrentAuthSession,
+  fetchAuthStatus,
   fetchServerReceipt,
   fetchServerState,
+  fetchSyncHealthDetails,
   pushServerReceipt,
   pushServerState,
   subscribeToSyncEvents,
@@ -97,6 +98,49 @@ const SYNC_REVISION_KEY = 'hearthledger_sync_rev_v1';
 const LANGUAGE_KEY = 'hearthledger_lang_v1';
 
 export type SyncStatus = 'local-only' | 'connecting' | 'synced' | 'offline' | 'conflict';
+
+export interface OauthNotice {
+  type: 'info' | 'error';
+  code: string;
+  message: string;
+}
+
+const OAUTH_ERROR_MAP: Record<string, { type: 'info' | 'error'; key: TranslationKey }> = {
+  google_not_configured: { type: 'info', key: 'auth.oauthErrNotConfigured' },
+  google_cancelled: { type: 'info', key: 'auth.oauthErrCancelled' },
+  google_invalid_state: { type: 'error', key: 'auth.oauthErrInvalidState' },
+  google_state_expired: { type: 'error', key: 'auth.oauthErrStateExpired' },
+  google_token_exchange_failed: { type: 'error', key: 'auth.oauthErrTokenFailed' },
+  google_email_unverified: { type: 'error', key: 'auth.oauthErrEmailUnverified' },
+  google_account_mismatch: { type: 'error', key: 'auth.oauthErrAccountMismatch' },
+  google_invite_invalid: { type: 'error', key: 'auth.oauthErrInviteInvalid' },
+  google_oauth_failed: { type: 'error', key: 'auth.oauthErrOauthFailed' },
+  google_offline: { type: 'error', key: 'auth.oauthErrOffline' },
+};
+
+interface ParsedOauthQuery {
+  oauth: string | null;
+  oauthNew: boolean;
+  postAuthPlan: 'plus' | 'advisor' | null;
+  authError: string | null;
+}
+
+function parseOauthQueryFromLocation(): ParsedOauthQuery {
+  if (typeof window === 'undefined') {
+    return { oauth: null, oauthNew: false, postAuthPlan: null, authError: null };
+  }
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const oauth = params.get('oauth');
+    const oauthNew = params.get('oauthNew') === '1';
+    const rawPlan = params.get('postAuthPlan');
+    const postAuthPlan = rawPlan === 'plus' || rawPlan === 'advisor' ? rawPlan : null;
+    const authError = params.get('authError');
+    return { oauth, oauthNew, postAuthPlan, authError };
+  } catch {
+    return { oauth: null, oauthNew: false, postAuthPlan: null, authError: null };
+  }
+}
 
 export interface ToastMessage {
   id: string;
@@ -224,6 +268,15 @@ export interface FinanceContextValue {
   upgradePlan: (tier: PlanTier, billingCycle?: 'monthly' | 'yearly') => void;
   refreshSessionFromServer: () => Promise<void>;
   dispatchStarterTemplate: (nextState: AppState) => void;
+  // Google OAuth hydration & post-auth routing
+  googleOAuthEnabled: boolean;
+  oauthNotice: OauthNotice | null;
+  dismissOauthNotice: () => void;
+  setOauthNoticeCode: (code: string, type?: 'info' | 'error') => void;
+  pendingPostAuthPlan: 'plus' | 'advisor' | null;
+  clearPendingPostAuthPlan: () => void;
+  isOauthOnboardingOpen: boolean;
+  dismissOauthOnboarding: () => void;
   // Multi-device SQLite sync state
   syncStatus: SyncStatus;
   syncRevision: number;
@@ -371,6 +424,38 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState<boolean>(() => !state.settings.pinEnabled);
 
+  // Google OAuth state & post-auth routing
+  const [initialOauthQuery] = useState<ParsedOauthQuery>(() => parseOauthQueryFromLocation());
+  const [googleOAuthEnabled, setGoogleOAuthEnabled] = useState<boolean>(false);
+  const [oauthNoticeState, setOauthNoticeState] = useState<{
+    type: 'info' | 'error';
+    code: string;
+  } | null>(null);
+  const [pendingPostAuthPlan, setPendingPostAuthPlan] = useState<'plus' | 'advisor' | null>(null);
+  const [isOauthOnboardingOpen, setIsOauthOnboardingOpen] = useState<boolean>(false);
+
+  const dismissOauthNotice = useCallback(() => setOauthNoticeState(null), []);
+  const setOauthNoticeCode = useCallback((code: string, explicitType?: 'info' | 'error') => {
+    const mapped = OAUTH_ERROR_MAP[code] ?? OAUTH_ERROR_MAP.google_oauth_failed;
+    setOauthNoticeState({
+      type: explicitType ?? mapped.type,
+      code,
+    });
+  }, []);
+  const clearPendingPostAuthPlan = useCallback(() => setPendingPostAuthPlan(null), []);
+  const dismissOauthOnboarding = useCallback(() => setIsOauthOnboardingOpen(false), []);
+
+  const oauthNotice = useMemo<OauthNotice | null>(() => {
+    if (!oauthNoticeState) return null;
+    const mapped = OAUTH_ERROR_MAP[oauthNoticeState.code] ?? OAUTH_ERROR_MAP.google_oauth_failed;
+    const lang: AppLanguage = state.settings.language === 'gu' ? 'gu' : 'en';
+    return {
+      type: oauthNoticeState.type,
+      code: oauthNoticeState.code,
+      message: translate(lang, mapped.key),
+    };
+  }, [oauthNoticeState, state.settings.language]);
+
   // Sync status
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('local-only');
   const syncStatusRef = useRef(syncStatus);
@@ -506,12 +591,17 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const applySessionTransition = useCallback(
     (session: AuthSession, explicitInitialState?: AppState, targetView: ActiveView = 'dashboard') => {
       try {
-        if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+        if (
+          typeof window !== 'undefined' &&
+          (window.location.pathname !== '/' || window.location.search)
+        ) {
           window.history.replaceState({}, '', '/');
         }
       } catch {
         // ignore
       }
+      setOauthNoticeState(null);
+      oauthAppliedRemoteRef.current = false;
       const preservedLang = stateRef.current.settings.language ?? 'en';
       const preservedTheme = stateRef.current.settings.theme ?? 'light';
       suppressNextPushRef.current = true;
@@ -624,7 +714,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       void logoutFromServer(token);
     }
     try {
-      if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      if (
+        typeof window !== 'undefined' &&
+        (window.location.pathname !== '/' || window.location.search)
+      ) {
         window.history.replaceState({}, '', '/');
       }
     } catch {
@@ -633,6 +726,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     persistAuthSession(null);
     setAuthSession(null);
     authSessionRef.current = null;
+    setPendingPostAuthPlan(null);
+    setIsOauthOnboardingOpen(false);
     setSyncStatus('local-only');
     setRawActiveView('dashboard');
   }, []);
@@ -646,7 +741,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     await deleteAppStateFromRepo(hhId);
     try {
-      if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+      if (
+        typeof window !== 'undefined' &&
+        (window.location.pathname !== '/' || window.location.search)
+      ) {
         window.history.replaceState({}, '', '/');
       }
     } catch {
@@ -655,6 +753,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     persistAuthSession(null);
     setAuthSession(null);
     authSessionRef.current = null;
+    setPendingPostAuthPlan(null);
+    setIsOauthOnboardingOpen(false);
     setSyncStatus('local-only');
     setRawActiveView('dashboard');
     return true;
@@ -662,7 +762,11 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const refreshSessionFromServer = useCallback(async () => {
     if (import.meta.env.MODE === 'test') return;
-    const serverSess = await fetchCurrentAuthSession(getSyncConfig());
+    const status = await fetchAuthStatus(getSyncConfig());
+    if (status) {
+      setGoogleOAuthEnabled(Boolean(status.googleOAuthConfigured));
+    }
+    const serverSess = status?.session ?? null;
     if (serverSess) {
       persistAuthSession(serverSess);
       setAuthSession(serverSess);
@@ -825,18 +929,152 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     [applyRemoteSnapshot, getSyncConfig, persistRevision, pushToast]
   );
 
+  // Parse Google OAuth redirect query params on mount (runs even in test mode & when a cached/demo session exists)
+  const [isOauthHydrating, setIsOauthHydrating] = useState<boolean>(
+    initialOauthQuery.oauth === 'ok'
+  );
+  const oauthAppliedRemoteRef = useRef(false);
+  useEffect(() => {
+    let active = true;
+    const { oauth, oauthNew, postAuthPlan, authError } = initialOauthQuery;
+    const hasOauthParams = Boolean(oauth || oauthNew || postAuthPlan || authError);
+
+    if (hasOauthParams) {
+      try {
+        if (typeof window !== 'undefined' && (window.location.pathname !== '/' || window.location.search)) {
+          window.history.replaceState({}, '', '/');
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (authError) {
+      setOauthNoticeCode(authError);
+    }
+
+    if (oauth === 'ok') {
+      setIsOauthHydrating(true);
+      oauthAppliedRemoteRef.current = false;
+      (async () => {
+        try {
+          const config = getSyncConfig();
+          const status = await fetchAuthStatus(config);
+          if (!active) return;
+          if (status) {
+            setGoogleOAuthEnabled(Boolean(status.googleOAuthConfigured));
+          }
+          if (status?.session) {
+            persistAuthSession(status.session);
+            const validPlan =
+              postAuthPlan === 'plus' || postAuthPlan === 'advisor' ? postAuthPlan : null;
+            const targetView: ActiveView =
+              validPlan && status.session.role !== 'dependent' ? 'pricing' : 'dashboard';
+            applySessionTransition(status.session, undefined, targetView);
+            if (validPlan && status.session.role !== 'dependent') {
+              setPendingPostAuthPlan(validPlan);
+            } else if (oauthNew && status.session.role === 'admin') {
+              setIsOauthOnboardingOpen(true);
+            }
+            pushToast(tr('toast.signedInAs', { name: status.session.name }));
+
+            if (!status.session.isDemo && stateRef.current.settings.syncEnabled !== false) {
+              const remote = await fetchServerState({
+                ...config,
+                authToken: status.session.token,
+              });
+              if (active && remote?.state) {
+                oauthAppliedRemoteRef.current = true;
+                await applyRemoteSnapshot(
+                  remote.state,
+                  remote.revision,
+                  remote.activity,
+                  remote.updatedAt
+                );
+                if (remote.state.settings.pinEnabled) {
+                  setIsUnlocked(false);
+                }
+              }
+            }
+          } else {
+            setOauthNoticeCode('google_oauth_failed', 'error');
+            if (authSessionRef.current?.isDemo || status !== null) {
+              persistAuthSession(null);
+              setAuthSession(null);
+              authSessionRef.current = null;
+            }
+          }
+        } catch {
+          if (active) {
+            setOauthNoticeCode('google_oauth_failed', 'error');
+            if (authSessionRef.current?.isDemo) {
+              persistAuthSession(null);
+              setAuthSession(null);
+              authSessionRef.current = null;
+            }
+          }
+        } finally {
+          if (active) {
+            setIsOauthHydrating(false);
+          }
+        }
+      })();
+      return () => {
+        active = false;
+      };
+    }
+
+    if (
+      (import.meta.env.MODE !== 'test' ||
+        (typeof globalThis !== 'undefined' &&
+          (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env
+            ?.MODE === 'production')) &&
+      true
+    ) {
+      void fetchSyncHealthDetails(getSyncConfig()).then((health) => {
+        if (active && health.available) {
+          setGoogleOAuthEnabled(Boolean(health.googleOAuthConfigured));
+        }
+      });
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [
+    initialOauthQuery,
+    getSyncConfig,
+    applySessionTransition,
+    applyRemoteSnapshot,
+    pushToast,
+    setOauthNoticeCode,
+    tr,
+  ]);
+
   // Hydrate asynchronously per-household from IndexedDB & connect SQLite sync when signed in
   useEffect(() => {
     let active = true;
-    const isTestEnv = import.meta.env.MODE === 'test';
+    const forcedProdEnv =
+      typeof globalThis !== 'undefined' &&
+      (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env
+        ?.MODE === 'production';
+    const isTestEnv = import.meta.env.MODE === 'test' && !forcedProdEnv;
     const currentSess = authSession;
 
+    if (isOauthHydrating) {
+      return () => {
+        active = false;
+      };
+    }
+
     if (!currentSess) {
-      if (!isTestEnv) {
-        void fetchCurrentAuthSession().then((serverSess) => {
-          if (active && serverSess) {
-            persistAuthSession(serverSess);
-            applySessionTransition(serverSess);
+      if (!isTestEnv && initialOauthQuery.oauth !== 'ok') {
+        void fetchAuthStatus().then((status) => {
+          if (!active || !status) return;
+          setGoogleOAuthEnabled(Boolean(status.googleOAuthConfigured));
+          if (status.session) {
+            persistAuthSession(status.session);
+            applySessionTransition(status.session);
           }
         });
       }
@@ -857,7 +1095,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           const { state: loaded, migratedFromLegacy } = await loadAppStateFromRepo(hhId);
           if (!active) return;
 
-          if (loaded && !hasMutatedBeforeHydrationRef.current) {
+          if (loaded && !hasMutatedBeforeHydrationRef.current && !oauthAppliedRemoteRef.current) {
             const { nextState, postedCount, postedTitles } = runDueAutoPost(loaded);
             currentLocal = nextState;
             suppressNextPushRef.current = true;
@@ -881,6 +1119,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             void purgeOrphanReceipts(nextState.transactions);
           } else {
             await saveAppStateToRepo(stateRef.current, hhId);
+            if (oauthAppliedRemoteRef.current) {
+              suppressNextPushRef.current = false;
+            }
             void purgeOrphanReceipts(stateRef.current.transactions);
           }
         } catch {
@@ -895,6 +1136,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       // Server SQLite sync handshake applies strictly to real authenticated accounts (never Demo)
       if (!active || isTestEnv || currentSess.isDemo || currentLocal.settings.syncEnabled === false) {
+        oauthAppliedRemoteRef.current = false;
         return;
       }
 
@@ -903,33 +1145,50 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         syncKey: currentLocal.settings.syncKey,
         authToken: currentSess.token,
       };
-      const health = await checkSyncHealth(config);
+      const health = await fetchSyncHealthDetails(config);
       if (!active) return;
 
       if (!health.available) {
+        oauthAppliedRemoteRef.current = false;
         setSyncStatus('offline');
         return;
       }
+      setGoogleOAuthEnabled(Boolean(health.googleOAuthConfigured));
 
       const remote = await fetchServerState(config);
       if (!active) return;
 
       if (!remote) {
+        oauthAppliedRemoteRef.current = false;
         // Server is reachable but rejected cached session token (e.g., rotated/expired DB session)
-        const activeOnServer = await fetchCurrentAuthSession(config);
-        if (active && !activeOnServer) {
-          persistAuthSession(null);
-          setAuthSession(null);
-          authSessionRef.current = null;
-          setSyncStatus('local-only');
+        const statusOnServer = await fetchAuthStatus(config);
+        if (active) {
+          if (statusOnServer) {
+            setGoogleOAuthEnabled(Boolean(statusOnServer.googleOAuthConfigured));
+            if (!statusOnServer.session) {
+              persistAuthSession(null);
+              setAuthSession(null);
+              authSessionRef.current = null;
+              setSyncStatus('local-only');
+            }
+          } else {
+            setSyncStatus('offline');
+          }
         }
         return;
       }
 
+      const hadOauthRemote = oauthAppliedRemoteRef.current;
+      oauthAppliedRemoteRef.current = false;
+
       if (remote && remote.state && remote.revision > 0) {
         if (
-          (syncRevisionRef.current === 0 || remote.revision >= syncRevisionRef.current) &&
-          !hasMutatedBeforeHydrationRef.current
+          (!hadOauthRemote &&
+            (syncRevisionRef.current === 0 || remote.revision >= syncRevisionRef.current) &&
+            !hasMutatedBeforeHydrationRef.current) ||
+          (hadOauthRemote &&
+            remote.revision > syncRevisionRef.current &&
+            !hasMutatedBeforeHydrationRef.current)
         ) {
           await applyRemoteSnapshot(
             remote.state,
@@ -979,6 +1238,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           if (pushed.serverState.settings.pinEnabled) {
             setIsUnlocked(false);
           }
+        } else if (active && !pushed) {
+          setSyncStatus('offline');
         }
       }
     })();
@@ -990,6 +1251,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     authSession?.householdId,
     authSession?.userId,
     authSession?.isDemo,
+    isOauthHydrating,
+    initialOauthQuery.oauth,
     applyRemoteSnapshot,
     applySessionTransition,
     persistRevision,
@@ -999,8 +1262,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Subscribe to Server-Sent Events only for authenticated real households after sync succeeds
   useEffect(() => {
+    const forcedProdEnv =
+      typeof globalThis !== 'undefined' &&
+      (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env
+        ?.MODE === 'production';
     if (
-      import.meta.env.MODE === 'test' ||
+      (import.meta.env.MODE === 'test' && !forcedProdEnv) ||
       !authSession ||
       authSession.isDemo ||
       state.settings.syncEnabled === false ||
@@ -1057,8 +1324,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
 
+    const forcedProdEnv =
+      typeof globalThis !== 'undefined' &&
+      (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env
+        ?.MODE === 'production';
     if (
-      import.meta.env.MODE === 'test' ||
+      (import.meta.env.MODE === 'test' && !forcedProdEnv) ||
       authSession.isDemo ||
       state.settings.syncEnabled === false ||
       syncStatusRef.current === 'local-only'
@@ -1885,6 +2156,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       upgradePlan,
       refreshSessionFromServer,
       dispatchStarterTemplate,
+      googleOAuthEnabled,
+      oauthNotice,
+      dismissOauthNotice,
+      setOauthNoticeCode,
+      pendingPostAuthPlan,
+      clearPendingPostAuthPlan,
+      isOauthOnboardingOpen,
+      dismissOauthOnboarding,
       syncStatus,
       syncRevision,
       lastSyncedAt,
@@ -1971,6 +2250,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       getSyncConfig,
       deleteHouseholdAccount,
       refreshSessionFromServer,
+      googleOAuthEnabled,
+      oauthNotice,
+      dismissOauthNotice,
+      setOauthNoticeCode,
+      pendingPostAuthPlan,
+      clearPendingPostAuthPlan,
+      isOauthOnboardingOpen,
+      dismissOauthOnboarding,
       syncStatus,
       syncRevision,
       lastSyncedAt,

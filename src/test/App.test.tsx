@@ -4,7 +4,7 @@ import { App } from '../App';
 import { resetMemoryFallbackForTests } from '../storage/repository';
 import { createGuestDemoSession } from '../utils/auth';
 
-describe('HearthLedger App UI', () => {
+describe('Dhanora (ધનોરા) App UI', () => {
   beforeEach(() => {
     localStorage.clear();
     resetMemoryFallbackForTests();

@@ -1,6 +1,35 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 export { onRequest } from '../../functions/api/[[path]].js';
 export { computeHmacHexWeb } from '../../server/edge/billingCore.mjs';
+
+export function createLegacyPreOAuthSqliteFile() {
+  const dir = fs.mkdtempSync(path.join(process.cwd(), '.tmp-oauth-mig-'));
+  const dbPath = path.join(dir, 'legacy.db');
+  const legacySqlite = new DatabaseSync(dbPath);
+  legacySqlite.exec(`
+    CREATE TABLE users (
+      id TEXT PRIMARY KEY,
+      household_id TEXT NOT NULL DEFAULT 'default',
+      email TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      role TEXT NOT NULL,
+      member_id TEXT NOT NULL,
+      avatar TEXT NOT NULL,
+      password_hash TEXT NOT NULL,
+      password_salt TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+  `);
+  legacySqlite.close();
+  return {
+    dbPath,
+    cleanup() {
+      fs.rmSync(dir, { recursive: true, force: true });
+    },
+  };
+}
 
 export function createMockD1Database() {
   const sqlite = new DatabaseSync(':memory:');

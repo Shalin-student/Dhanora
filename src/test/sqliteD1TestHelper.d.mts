@@ -5,6 +5,10 @@ export interface MockD1Database {
   close(): void;
 }
 
+export function createLegacyPreOAuthSqliteFile(): {
+  dbPath: string;
+  cleanup: () => void;
+};
 export function createMockD1Database(): MockD1Database;
 export function onRequest(context: {
   request: Request;

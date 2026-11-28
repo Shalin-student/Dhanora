@@ -101,7 +101,7 @@ export const SettingsView: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `hearthledger-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `dhanora-backup-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
   };

@@ -38,7 +38,7 @@ import type { ActiveView } from '../types/finance';
 import { shiftMonth } from '../utils/calculations';
 import { useI18n } from '../i18n/useI18n';
 import type { TranslationKey } from '../i18n';
-import { BrandMark } from './BrandMark';
+import { BrandLogoButton } from './BrandMark';
 import { FeedbackModal } from './FeedbackModal';
 import { LanguageToggle } from './LanguageToggle';
 import { MemberRoleAvatar } from './WdwPrimitives';
@@ -157,21 +157,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         }`}
         aria-label={t('a11y.primaryNav')}
       >
-        <div className="flex h-16 items-center justify-between border-b border-[#F1F5F9] px-5 dark:border-[#232f4f]">
-          <div className="flex items-center gap-2.5">
-            <BrandMark size="md" />
-            <div>
-              <div className="text-sm font-bold tracking-tight text-[#131b2e] dark:text-white">
-                {t('brand.name')}
-              </div>
-              <div className="max-w-[130px] truncate text-[11px] font-medium text-[#0F766E] dark:text-[#80bea6]">
-                {entityText(state.settings.householdName)}
-              </div>
-            </div>
-          </div>
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-[#F1F5F9] px-4 dark:border-[#232f4f]">
+          <BrandLogoButton
+            size="md"
+            subtitle={entityText(state.settings.householdName)}
+            ariaLabel={`${t('brand.name')} — ${t('nav.dashboard')}`}
+            onClick={() => {
+              setActiveView('dashboard');
+              setMobileMenuOpen(false);
+            }}
+            className="min-w-0 flex-1"
+          />
           <button
             type="button"
-            className="rounded-lg p-1 text-[#404944] lg:hidden"
+            className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg text-[#404944] hover:bg-[#f2f3ff] dark:text-[#bfc9c3] dark:hover:bg-[#1c2640] lg:hidden"
             onClick={() => setMobileMenuOpen(false)}
             aria-label={t('a11y.closeNav')}
           >
@@ -303,15 +302,25 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       <div className="flex min-h-screen flex-col lg:pl-64">
         {/* Top Bar */}
         <header className="no-print sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-[#bfc9c3]/40 bg-[#faf8ff]/90 px-4 py-3 backdrop-blur-md dark:border-[#232f4f] dark:bg-[#0b1120]/90 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="rounded-lg border border-[#bfc9c3]/70 bg-white p-2 text-[#404944] lg:hidden dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff]"
+              className="inline-flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-lg border border-[#bfc9c3]/70 bg-white text-[#404944] lg:hidden dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff]"
               aria-label={t('a11y.openNav')}
             >
               <Menu className="h-5 w-5" />
             </button>
+
+            <BrandLogoButton
+              size="sm"
+              ariaLabel={`${t('brand.name')} — ${t('nav.dashboard')}`}
+              onClick={() => {
+                setActiveView('dashboard');
+                setMobileMenuOpen(false);
+              }}
+              className="min-w-0 max-w-[220px] sm:max-w-none lg:hidden"
+            />
 
             {/* Month Selector */}
             <div className="flex items-center gap-1 rounded-lg border border-[#bfc9c3]/60 bg-white px-1.5 py-1 dark:border-[#2f3b52] dark:bg-[#131b2e]">
@@ -349,7 +358,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 aria-label={t('a11y.filterMember')}
                 value={selectedMemberId}
                 onChange={(e) => setSelectedMemberId(e.target.value)}
-                className="rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-semibold text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff]"
+                className="max-w-full min-w-0 rounded-lg border border-[#CBD5E1] bg-white px-3 py-1.5 text-xs font-semibold text-[#131b2e] dark:border-[#2f3b52] dark:bg-[#131b2e] dark:text-[#eef0ff]"
               >
                 <option value="all">👨‍👩‍👧‍👦 {t('layout.allMembers')}</option>
                 {state.members.map((m) => (
@@ -499,7 +508,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           type="button"
           aria-label="Bottom bar home"
           onClick={() => setActiveView('dashboard')}
-          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-semibold ${
+          className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-2.5 py-1 text-[10px] font-semibold ${
             activeView === 'dashboard' ? 'text-[#064E3B] dark:text-[#b0f0d6]' : 'text-[#404944] dark:text-[#bfc9c3]'
           }`}
         >
@@ -510,7 +519,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           type="button"
           aria-label="Bottom bar ledger"
           onClick={() => setActiveView('transactions')}
-          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-semibold ${
+          className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-2.5 py-1 text-[10px] font-semibold ${
             activeView === 'transactions' ? 'text-[#064E3B] dark:text-[#b0f0d6]' : 'text-[#404944] dark:text-[#bfc9c3]'
           }`}
         >
@@ -521,7 +530,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           type="button"
           aria-label="Bottom bar quick entry"
           onClick={() => openQuickAdd(null)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#064E3B] text-white shadow-md hover:bg-[#043D2E]"
+          className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full bg-[#064E3B] text-white shadow-md hover:bg-[#043D2E]"
         >
           <Plus className="h-5 w-5" />
         </button>
@@ -529,7 +538,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           type="button"
           aria-label="Bottom bar targets"
           onClick={() => setActiveView('goals')}
-          className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-semibold ${
+          className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-2.5 py-1 text-[10px] font-semibold ${
             activeView === 'goals' ? 'text-[#064E3B] dark:text-[#b0f0d6]' : 'text-[#404944] dark:text-[#bfc9c3]'
           }`}
         >
@@ -540,7 +549,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           type="button"
           aria-label="Bottom bar menu"
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-[10px] font-semibold text-[#404944] dark:text-[#bfc9c3]"
+          className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-2.5 py-1 text-[10px] font-semibold text-[#404944] dark:text-[#bfc9c3]"
         >
           <Menu className="h-4 w-4" />
           <span aria-hidden="true">{t('layout.mobileMore')}</span>

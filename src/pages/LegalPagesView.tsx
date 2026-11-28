@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowLeft, FileCheck2, HelpCircle, Lock, RefreshCw } from 'lucide-react';
 import type { PublicLegalPage } from '../types/finance';
 import { LanguageToggle } from '../components/LanguageToggle';
-import { BrandMark } from '../components/BrandMark';
+import { BrandLogoButton } from '../components/BrandMark';
 import { useI18n } from '../i18n/useI18n';
 
 export const LegalPagesView: React.FC<{
@@ -52,7 +52,11 @@ export const LegalPagesView: React.FC<{
     <div className="bg-mesh-hero min-h-screen text-[#131b2e] dark:text-[#eef0ff]">
       <header className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-center gap-3">
-          <BrandMark size="sm" />
+          <BrandLogoButton
+            size="sm"
+            ariaLabel={`${t('brand.name')} — ${t('auth.backHome')}`}
+            onClick={onBackHome}
+          />
           <button
             type="button"
             onClick={onBackHome}

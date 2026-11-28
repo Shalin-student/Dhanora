@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
+import { safeHexEqual } from './edge/billingCore.mjs';
 
 function tableHasColumn(db, tableName, columnName) {
   const cols = db.prepare(`PRAGMA table_info(${tableName})`).all();
@@ -10,6 +11,21 @@ function tableHasColumn(db, tableName, columnName) {
 
 function hashSessionToken(token) {
   return crypto.createHash('sha256').update(String(token)).digest('hex');
+}
+
+function roleAvatarFallback(role) {
+  if (role === 'partner') return '👩🏽‍🎨';
+  if (role === 'dependent') return '🧒🏽';
+  if (role === 'advisor') return '💼';
+  return '🧑🏽‍💻';
+}
+
+function resolveEmojiAvatar(avatarUrl, role) {
+  const trimmed = String(avatarUrl || '').trim();
+  if (trimmed && trimmed.length <= 16 && !/^(?:https?:|data:|javascript:)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return roleAvatarFallback(role);
 }
 
 export function createSyncDatabase(dbPath) {
@@ -80,6 +96,8 @@ export function createSyncDatabase(dbPath) {
       avatar TEXT NOT NULL,
       password_hash TEXT NOT NULL,
       password_salt TEXT NOT NULL,
+      auth_provider TEXT NOT NULL DEFAULT 'password',
+      google_sub TEXT,
       created_at TEXT NOT NULL
     );
 
@@ -119,6 +137,17 @@ export function createSyncDatabase(dbPath) {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS billing_orders (
+      order_id TEXT PRIMARY KEY,
+      household_id TEXT NOT NULL,
+      provider TEXT NOT NULL,
+      plan_tier TEXT NOT NULL,
+      billing_cycle TEXT NOT NULL,
+      currency TEXT NOT NULL,
+      amount_minor INTEGER NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS password_resets (
       token_hash TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -152,6 +181,12 @@ export function createSyncDatabase(dbPath) {
   if (!tableHasColumn(db, 'users', 'household_id')) {
     db.exec(`ALTER TABLE users ADD COLUMN household_id TEXT NOT NULL DEFAULT 'default';`);
   }
+  if (!tableHasColumn(db, 'users', 'auth_provider')) {
+    db.exec(`ALTER TABLE users ADD COLUMN auth_provider TEXT NOT NULL DEFAULT 'password';`);
+  }
+  if (!tableHasColumn(db, 'users', 'google_sub')) {
+    db.exec(`ALTER TABLE users ADD COLUMN google_sub TEXT;`);
+  }
 
   db.exec(`
     CREATE INDEX IF NOT EXISTS idx_receipts_tx ON receipts (tx_id);
@@ -159,9 +194,13 @@ export function createSyncDatabase(dbPath) {
     CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log (household_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
     CREATE INDEX IF NOT EXISTS idx_users_hh ON users (household_id);
+    CREATE INDEX IF NOT EXISTS idx_users_google_sub ON users (google_sub);
     CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id);
     CREATE INDEX IF NOT EXISTS idx_invites_hh ON invites (household_id);
     CREATE INDEX IF NOT EXISTS idx_invoices_hh ON billing_invoices (household_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_orders_hh ON billing_orders (household_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_resets_email ON password_resets (email, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_feedback_hh ON feedback_messages (household_id, created_at DESC);
   `);
 
   const nowIso = () => new Date().toISOString();
@@ -259,12 +298,14 @@ export function createSyncDatabase(dbPath) {
 
   const getUserByEmailStmt = db.prepare(`
     SELECT id, household_id AS householdId, email, name, role, member_id AS memberId, avatar,
-           password_hash AS passwordHash, password_salt AS passwordSalt
-    FROM users WHERE email = ?
+           password_hash AS passwordHash, password_salt AS passwordSalt,
+           auth_provider AS authProvider, google_sub AS googleSub
+    FROM users WHERE lower(email) = ?
   `);
   const getUserByIdStmt = db.prepare(`
     SELECT id, household_id AS householdId, email, name, role, member_id AS memberId, avatar,
-           password_hash AS passwordHash, password_salt AS passwordSalt
+           password_hash AS passwordHash, password_salt AS passwordSalt,
+           auth_provider AS authProvider, google_sub AS googleSub
     FROM users WHERE id = ?
   `);
   const insertUserStmt = db.prepare(`
@@ -482,9 +523,9 @@ export function createSyncDatabase(dbPath) {
 
   function verifyUserLogin(email, password) {
     const row = getUserByEmailStmt.get(String(email).trim().toLowerCase());
-    if (!row) return null;
+    if (!row || !row.passwordHash || !row.passwordSalt) return null;
     const candidate = hashUserPassword(password, row.passwordSalt);
-    if (candidate !== row.passwordHash) return null;
+    if (!safeHexEqual(candidate, row.passwordHash)) return null;
 
     const hh = getHouseholdStmt.get(row.householdId);
     const { token } = createSession({
@@ -515,7 +556,10 @@ export function createSyncDatabase(dbPath) {
   function rotateUserPassword(userId, currentPassword, nextPassword) {
     const row = getUserByIdStmt.get(userId);
     if (!row) return { ok: false, error: 'NOT_FOUND' };
-    if (hashUserPassword(currentPassword, row.passwordSalt) !== row.passwordHash) {
+    if (!row.passwordHash || !row.passwordSalt) {
+      return { ok: false, error: 'OAUTH_ACCOUNT_NO_PASSWORD' };
+    }
+    if (!safeHexEqual(hashUserPassword(currentPassword, row.passwordSalt), row.passwordHash)) {
       return { ok: false, error: 'INVALID_CURRENT_PASSWORD' };
     }
     const salt = crypto.randomBytes(16).toString('hex');
@@ -644,16 +688,51 @@ export function createSyncDatabase(dbPath) {
     return listInvoicesStmt.all(householdId);
   }
 
+  function savePendingOrder({
+    orderId,
+    householdId,
+    provider,
+    planTier,
+    billingCycle,
+    currency,
+    amountMinor,
+  }) {
+    if (!orderId) return;
+    db.prepare(
+      `INSERT INTO billing_orders (order_id, household_id, provider, plan_tier, billing_cycle, currency, amount_minor, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(order_id) DO UPDATE SET
+         household_id = excluded.household_id,
+         plan_tier = excluded.plan_tier,
+         billing_cycle = excluded.billing_cycle`
+    ).run(orderId, householdId, provider, planTier, billingCycle, currency, Number(amountMinor), nowIso());
+  }
+
+  function getPendingOrder(orderId) {
+    if (!orderId) return null;
+    return (
+      db
+        .prepare(
+          `SELECT order_id AS orderId, household_id AS householdId, provider,
+                  plan_tier AS planTier, billing_cycle AS billingCycle,
+                  currency, amount_minor AS amountMinor
+           FROM billing_orders WHERE order_id = ?`
+        )
+        .get(orderId) ?? null
+    );
+  }
+
   function createInvite({ householdId, role, invitedEmail, createdByUserId, ttlHours = 72 }) {
     const validRole = ['partner', 'dependent', 'advisor'].includes(role) ? role : 'partner';
     const code = crypto.randomBytes(6).toString('hex');
     const now = new Date();
     const expiresAt = new Date(now.getTime() + ttlHours * 3600000).toISOString();
+    const cleanEmail = invitedEmail ? String(invitedEmail).trim().toLowerCase() : null;
     insertInviteStmt.run(
       code,
       householdId,
       validRole,
-      invitedEmail ? String(invitedEmail).trim().toLowerCase() : null,
+      cleanEmail,
       createdByUserId,
       expiresAt,
       now.toISOString()
@@ -662,7 +741,7 @@ export function createSyncDatabase(dbPath) {
       code,
       householdId,
       role: validRole,
-      invitedEmail: invitedEmail || null,
+      invitedEmail: cleanEmail,
       expiresAt,
     };
   }
@@ -688,10 +767,15 @@ export function createSyncDatabase(dbPath) {
     db.exec('BEGIN IMMEDIATE');
     try {
       db.prepare('DELETE FROM sessions WHERE household_id = ?').run(householdId);
+      db.prepare(
+        'DELETE FROM password_resets WHERE email IN (SELECT email FROM users WHERE household_id = ?)'
+      ).run(householdId);
       db.prepare('DELETE FROM invites WHERE household_id = ?').run(householdId);
       db.prepare('DELETE FROM receipts WHERE household_id = ?').run(householdId);
       db.prepare('DELETE FROM activity_log WHERE household_id = ?').run(householdId);
       db.prepare('DELETE FROM billing_invoices WHERE household_id = ?').run(householdId);
+      db.prepare('DELETE FROM billing_orders WHERE household_id = ?').run(householdId);
+      db.prepare('DELETE FROM feedback_messages WHERE household_id = ?').run(householdId);
       db.prepare('DELETE FROM household_state WHERE id = ?').run(householdId);
       db.prepare('DELETE FROM users WHERE household_id = ?').run(householdId);
       db.prepare('DELETE FROM households WHERE id = ?').run(householdId);
@@ -861,6 +945,156 @@ export function createSyncDatabase(dbPath) {
     deleteReceiptScopedStmt.run(id, householdId || 'default');
   }
 
+  function upsertGoogleUser({
+    email,
+    name,
+    googleSub,
+    avatarUrl,
+    inviteCode,
+    emailVerified,
+  }) {
+    if (emailVerified !== true) {
+      throw Object.assign(new Error('GOOGLE_EMAIL_UNVERIFIED'), {
+        code: 'google_email_unverified',
+        statusCode: 400,
+      });
+    }
+
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanSub = String(googleSub || '').trim();
+    if (!cleanSub || !cleanEmail.includes('@')) {
+      throw Object.assign(new Error('GOOGLE_TOKEN_EXCHANGE_FAILED'), {
+        code: 'google_token_exchange_failed',
+        statusCode: 400,
+      });
+    }
+
+    const cleanName = String(name || '').trim() || cleanEmail.split('@')[0] || 'User';
+
+    const existing = db
+      .prepare(
+        `SELECT id, household_id AS householdId, email, name, role, member_id AS memberId, avatar,
+                auth_provider AS authProvider, google_sub AS googleSub
+         FROM users
+         WHERE google_sub = ? OR lower(email) = ?
+         ORDER BY CASE WHEN google_sub = ? THEN 0 ELSE 1 END
+         LIMIT 1`
+      )
+      .get(cleanSub, cleanEmail, cleanSub);
+
+    if (existing) {
+      if (existing.googleSub && existing.googleSub !== cleanSub) {
+        throw Object.assign(new Error('GOOGLE_ACCOUNT_MISMATCH'), {
+          code: 'google_account_mismatch',
+          statusCode: 409,
+        });
+      }
+      if (!existing.googleSub || !existing.authProvider) {
+        db.prepare(
+          `UPDATE users
+           SET google_sub = COALESCE(NULLIF(google_sub, ''), ?),
+               auth_provider = COALESCE(NULLIF(auth_provider, ''), 'google')
+           WHERE id = ?`
+        ).run(cleanSub, existing.id);
+      }
+      return {
+        userId: existing.id,
+        householdId: existing.householdId,
+        role: existing.role,
+        memberId: existing.memberId,
+        name: existing.name,
+        email: existing.email,
+        avatar: existing.avatar,
+        isNewUser: false,
+      };
+    }
+
+    const now = nowIso();
+    const userId = `usr-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+    const memberId = `m-${Date.now()}-${crypto.randomBytes(2).toString('hex')}`;
+    let targetHouseholdId = `hh-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+    let effectiveRole = 'admin';
+
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      let usedInviteCode = null;
+      const trimmedInvite = inviteCode ? String(inviteCode).trim() : '';
+      if (trimmedInvite) {
+        const inv = getInviteStmt.get(trimmedInvite);
+        if (!inv || inv.usedAt || Date.parse(inv.expiresAt) < Date.now()) {
+          db.exec('ROLLBACK');
+          throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+            code: 'google_invite_invalid',
+            statusCode: 400,
+          });
+        }
+        if (inv.invitedEmail && inv.invitedEmail.toLowerCase() !== cleanEmail) {
+          db.exec('ROLLBACK');
+          throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+            code: 'google_invite_invalid',
+            statusCode: 400,
+          });
+        }
+        targetHouseholdId = inv.householdId;
+        effectiveRole = ['admin', 'partner', 'dependent', 'advisor'].includes(inv.role)
+          ? inv.role
+          : 'partner';
+        usedInviteCode = inv.code;
+      } else {
+        const firstName = cleanName.split(/\s+/)[0] || 'Family';
+        const householdName = `${firstName}'s Household`;
+        insertHouseholdStmt.run(targetHouseholdId, householdName, 'free', 'active', null, now);
+      }
+
+      if (usedInviteCode) {
+        const invInfo = markInviteUsedStmt.run(userId, now, usedInviteCode);
+        if (!invInfo?.changes) {
+          db.exec('ROLLBACK');
+          throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+            code: 'google_invite_invalid',
+            statusCode: 400,
+          });
+        }
+      }
+
+      const avatar = resolveEmojiAvatar(avatarUrl, effectiveRole);
+      db.prepare(
+        `INSERT INTO users (id, household_id, email, name, role, member_id, avatar, password_hash, password_salt, auth_provider, google_sub, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, '', '', 'google', ?, ?)`
+      ).run(
+        userId,
+        targetHouseholdId,
+        cleanEmail,
+        cleanName,
+        effectiveRole,
+        memberId,
+        avatar,
+        cleanSub,
+        now
+      );
+
+      db.exec('COMMIT');
+
+      return {
+        userId,
+        householdId: targetHouseholdId,
+        role: effectiveRole,
+        memberId,
+        name: cleanName,
+        email: cleanEmail,
+        avatar,
+        isNewUser: true,
+      };
+    } catch (err) {
+      try {
+        db.exec('ROLLBACK');
+      } catch {
+        // already rolled back
+      }
+      throw err;
+    }
+  }
+
   function close() {
     db.close();
   }
@@ -870,6 +1104,8 @@ export function createSyncDatabase(dbPath) {
     updateHouseholdBilling,
     recordInvoice,
     listInvoices,
+    savePendingOrder,
+    getPendingOrder,
     getSnapshot,
     updateSnapshot,
     saveReceipt,
@@ -881,6 +1117,7 @@ export function createSyncDatabase(dbPath) {
     rotateUserPassword,
     createPasswordResetToken,
     consumePasswordResetToken,
+    upsertGoogleUser,
     saveFeedback,
     listFeedback,
     createSession,

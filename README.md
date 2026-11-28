@@ -1,4 +1,4 @@
-# Dhanora — Family Income & Spend Tracking System
+# HearthLedger — Family Income & Spend Tracking System
 
 A complete, multi-member household financial management web application built with React 19, TypeScript, Vite, and Tailwind CSS v4.
 

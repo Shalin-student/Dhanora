@@ -5,11 +5,11 @@ export interface BilingualEntry {
 
 export const DICT_CORE = {
   // Brand & Shell
-  'brand.name': { en: 'HearthLedger', gu: 'હાર્થલેજર (HearthLedger)' },
+  'brand.name': { en: 'Dhanora (ધનોરા)', gu: 'Dhanora (ધનોરા)' },
   'brand.subtitle': { en: 'The Carter Family', gu: 'કાર્ટર પરિવાર' },
   'meta.docTitle': {
-    en: 'HearthLedger — Family Income & Spend Tracker',
-    gu: 'હાર્થલેજર — પરિવાર આવક અને ખર્ચ ટ્રેકર',
+    en: 'Dhanora (ધનોરા) — Family Income & Spend Tracker',
+    gu: 'Dhanora (ધનોરા) — પરિવાર આવક અને ખર્ચ ટ્રેકર',
   },
   'a11y.skipToContent': { en: 'Skip to main content', gu: 'મુખ્ય સામગ્રી પર જાઓ' },
   'a11y.primaryNav': { en: 'Primary Navigation', gu: 'મુખ્ય નેવિગેશન' },
@@ -86,8 +86,8 @@ export const DICT_CORE = {
   },
   'layout.installApp': { en: 'Install App', gu: 'એપ ઇન્સ્ટોલ કરો' },
   'layout.installTitle': {
-    en: 'Install HearthLedger app for offline access',
-    gu: 'ઑફલાઇન ઉપયોગ માટે હાર્થલેજર એપ ઇન્સ્ટોલ કરો',
+    en: 'Install Dhanora (ધનોરા) app for offline access',
+    gu: 'ઑફલાઇન ઉપયોગ માટે Dhanora (ધનોરા) એપ ઇન્સ્ટોલ કરો',
   },
   'layout.jump': { en: 'Jump', gu: 'શોધો' },
   'layout.jumpTitle': {

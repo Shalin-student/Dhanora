@@ -84,8 +84,8 @@ export const DICT_SAAS = {
     gu: 'શું મારે મારો બેંક પાસવર્ડ કે OTP આપવો પડશે?',
   },
   'pub.faq1A': {
-    en: 'Never. HearthLedger stores no bank credentials. Add entries manually or import statements locally with full CSV/JSON ownership.',
-    gu: 'ક્યારેય નહીં. હાર્થલેજર બેંક પાસવર્ડ માંગતું નથી. CSV/JSON આયાત અથવા મેન્યુઅલ એન્ટ્રી દ્વારા સંપૂર્ણ નિયંત્રણ તમારી પાસે રહે છે.',
+    en: 'Never. Dhanora (ધનોરા) stores no bank credentials. Add entries manually or import statements locally with full CSV/JSON ownership.',
+    gu: 'ક્યારેય નહીં. Dhanora (ધનોરા) બેંક પાસવર્ડ માંગતું નથી. CSV/JSON આયાત અથવા મેન્યુઅલ એન્ટ્રી દ્વારા સંપૂર્ણ નિયંત્રણ તમારી પાસે રહે છે.',
   },
   'pub.faq2Q': {
     en: 'How does role security work for Partners, Children, and Advisors?',
@@ -96,8 +96,8 @@ export const DICT_SAAS = {
     gu: 'તમારી ભૂમિકા સાઇન ઇન કે સાઇન અપ ખાતા પરથી આપોઆપ નક્કી થાય છે — અંદરથી બદલી શકાતી નથી. સલાહકાર ખાનગી કટોકટી નોંધ જોઈ શકતા નથી.',
   },
   'pub.faq3Q': {
-    en: 'Is HearthLedger an investment adviser or broker?',
-    gu: 'શું હાર્થલેજર કોઈ રોકાણ સલાહકાર કે બ્રોકર છે?',
+    en: 'Is Dhanora (ધનોરા) an investment adviser or broker?',
+    gu: 'શું Dhanora (ધનોરા) કોઈ રોકાણ સલાહકાર કે બ્રોકર છે?',
   },
   'pub.faq3A': {
     en: 'No. We sell zero mutual funds or insurance and earn no commissions. Subscriptions keep the software independent.',
@@ -171,8 +171,8 @@ export const DICT_SAAS = {
     gu: 'હું ગોપનીયતા નીતિ સ્વીકારું છું — કોઈ બેંક પાસવર્ડ સંગ્રહિત થતો નથી.',
   },
   'auth.consentTerms': {
-    en: 'I understand HearthLedger is a planning tool, not SEBI/RIA financial advice.',
-    gu: 'હું સમજું છું કે હાર્થલેજર આયોજન સાધન છે, નાણાકીય સલાહકાર નથી.',
+    en: 'I understand Dhanora (ધનોરા) is a planning tool, not SEBI/RIA financial advice.',
+    gu: 'હું સમજું છું કે Dhanora (ધનોરા) આયોજન સાધન છે, નાણાકીય સલાહકાર નથી.',
   },
   'auth.signInBtn': { en: 'Sign In to Workspace', gu: 'ખાતાવહીમાં પ્રવેશ કરો' },
   'auth.createAccountBtn': { en: 'Create Account & Enter Plan', gu: 'ખાતું બનાવી આગળ વધો' },
@@ -477,16 +477,16 @@ export const DICT_SAAS = {
   'legal.navContact': { en: 'Support & Contact', gu: 'સપોર્ટ અને સંપર્ક' },
   'legal.lastUpdated': { en: 'Effective: November 2026', gu: 'અમલી તારીખ: નવેમ્બર 2026' },
   'legal.privacyBody1': {
-    en: 'HearthLedger stores no banking logins, netbanking passwords, PINs, or OTPs. Your family ledger lives locally in IndexedDB and optionally syncs end-to-server into your isolated SQLite household partition protected by HttpOnly sessions and salted SHA-256 credentials.',
-    gu: 'હાર્થલેજર ક્યારેય તમારા બેંક લોગિન, પાસવર્ડ, PIN કે OTP સંગ્રહિત કરતું નથી. તમારો ડેટા સ્થાનિક IndexedDB અને અલગ સુરક્ષિત SQLite પરિવાર ખાતામાં સુરક્ષિત રહે છે.',
+    en: 'Dhanora (ધનોરા) stores no banking logins, netbanking passwords, PINs, or OTPs. Your family ledger lives locally in IndexedDB and optionally syncs end-to-server into your isolated SQLite household partition protected by HttpOnly sessions and salted SHA-256 credentials.',
+    gu: 'Dhanora (ધનોરા) ક્યારેય તમારા બેંક લોગિન, પાસવર્ડ, PIN કે OTP સંગ્રહિત કરતું નથી. તમારો ડેટા સ્થાનિક IndexedDB અને અલગ સુરક્ષિત SQLite પરિવાર ખાતામાં સુરક્ષિત રહે છે.',
   },
   'legal.privacyBody2': {
     en: 'You own 100% of your financial records: export full JSON/CSV archives anytime or permanently delete your account & household from Settings (Indian DPDP & GDPR aligned).',
     gu: 'તમારા ડેટા પર તમારો સંપૂર્ણ અધિકાર છે: ગમે ત્યારે JSON/CSV નિકાસ કરો અથવા સેટિંગ્સમાંથી ખાતું કાયમી ધોરણે કાઢી નાખો.',
   },
   'legal.termsBody1': {
-    en: 'HearthLedger is household budgeting, wealth tracking, and decision-calculator software. Calculations (FIRE, Old vs New Tax Regime, Rent vs Buy, Prepay vs Invest) are educational estimates — not SEBI-registered investment, legal, or tax advisory services.',
-    gu: 'હાર્થલેજર એ પરિવારના બજેટ, સંપત્તિ ટ્રેકિંગ અને નાણાકીય ગણતરીનું સોફ્ટવેર છે. તમામ કેલ્ક્યુલેટર શૈક્ષણિક અંદાજ માટે છે, રોકાણ કે કાયદાકીય સલાહ નથી.',
+    en: 'Dhanora (ધનોરા) is household budgeting, wealth tracking, and decision-calculator software. Calculations (FIRE, Old vs New Tax Regime, Rent vs Buy, Prepay vs Invest) are educational estimates — not SEBI-registered investment, legal, or tax advisory services.',
+    gu: 'Dhanora (ધનોરા) એ પરિવારના બજેટ, સંપત્તિ ટ્રેકિંગ અને નાણાકીય ગણતરીનું સોફ્ટવેર છે. તમામ કેલ્ક્યુલેટર શૈક્ષણિક અંદાજ માટે છે, રોકાણ કે કાયદાકીય સલાહ નથી.',
   },
   'legal.termsBody2': {
     en: 'Household Admins control invited Partner, Dependent, and Advisor accounts within their workspace. Roles are tied strictly to authenticated credentials.',
@@ -703,8 +703,8 @@ export const DICT_SAAS = {
   'fb.openBtn': { en: 'Feedback & Support', gu: 'પ્રતિભાવ અને સપોર્ટ' },
   'fb.title': { en: 'Send Feedback or Report Issue', gu: 'પ્રતિભાવ કે સમસ્યા મોકલો' },
   'fb.sub': {
-    en: 'Goes directly to the HearthLedger team inbox & database.',
-    gu: 'તમારો સંદેશ સીધો HearthLedger ટીમને મળે છે.',
+    en: 'Goes directly to the Dhanora (ધનોરા) team inbox & database.',
+    gu: 'તમારો સંદેશ સીધો Dhanora (ધનોરા) ટીમને મળે છે.',
   },
   'fb.catLabel': { en: 'Topic', gu: 'વિષય' },
   'fb.catBug': { en: 'Bug / Error', gu: 'ભૂલ / સમસ્યા' },
@@ -721,5 +721,249 @@ export const DICT_SAAS = {
   'fb.directMailNote': {
     en: 'Or email shalinpatel1102@gmail.com directly',
     gu: 'અથવા સીધો shalinpatel1102@gmail.com પર મેઇલ કરો',
+  },
+
+  // M3: Split-Screen Auth, Google OAuth & Bilingual Fallback Notices
+  'auth.signinSub': {
+    en: 'Access your private family ledger, budgets, and nominee shield.',
+    gu: 'તમારી ખાનગી પરિવાર ખાતાવહી, બજેટ અને નોમિની સુરક્ષા ખોલો.',
+  },
+  'auth.signupSub': {
+    en: 'Create your private family wealth workspace — zero bank logins required.',
+    gu: 'બેંક પાસવર્ડ વિના તમારું ખાનગી પરિવાર સંપત્તિ ખાતું બનાવો.',
+  },
+  'auth.continueWithGoogle': {
+    en: 'Continue with Google',
+    gu: 'Google સાથે આગળ વધો',
+  },
+  'auth.orDivider': {
+    en: 'or',
+    gu: 'અથવા',
+  },
+  'auth.legalAckPrefix': {
+    en: 'By continuing, you agree to our',
+    gu: 'આગળ વધીને, તમે અમારી',
+  },
+  'auth.legalAckSuffix': {
+    en: '.',
+    gu: ' સ્વીકારો છો.',
+  },
+  'auth.legalTermsLink': {
+    en: 'Terms of Service',
+    gu: 'સેવાની શરતો',
+  },
+  'auth.legalPrivacyLink': {
+    en: 'Privacy Policy',
+    gu: 'ગોપનીયતા નીતિ',
+  },
+  'auth.switchToSignupPrompt': {
+    en: 'New to Dhanora (ધનોરા)?',
+    gu: 'Dhanora (ધનોરા) માં નવા છો?',
+  },
+  'auth.switchToSignupBtn': {
+    en: 'Create an account',
+    gu: 'નવું ખાતું બનાવો',
+  },
+  'auth.switchToSigninPrompt': {
+    en: 'Already have an account?',
+    gu: 'પહેલેથી ખાતું છે?',
+  },
+  'auth.switchToSigninBtn': {
+    en: 'Log in',
+    gu: 'લોગ ઇન કરો',
+  },
+  'auth.dismissNoticeAria': {
+    en: 'Dismiss notification',
+    gu: 'સૂચના બંધ કરો',
+  },
+  'auth.montageBadge': {
+    en: 'Dhanora (ધનોરા) · Private Indian Family Wealth OS',
+    gu: 'Dhanora (ધનોરા) · ખાનગી ભારતીય પરિવાર સંપત્તિ વ્યવસ્થા',
+  },
+  'auth.montageTitle': {
+    en: 'Clarity for every rupee, SIP, and family nominee.',
+    gu: 'દરેક રૂપિયા, SIP અને પરિવાર નોમિની માટે સંપૂર્ણ સ્પષ્ટતા.',
+  },
+  'auth.montageTrustLine': {
+    en: 'Built for Indian families · INR & Multi-Currency · Zero Bank Passwords',
+    gu: 'ભારતીય પરિવારો માટે નિર્મિત · બેંક પાસવર્ડ વિના સુરક્ષિત',
+  },
+  'auth.montagePulseTitle': {
+    en: 'Family Pulse',
+    gu: 'પરિવાર પલ્સ',
+  },
+  'auth.montagePulseSub': {
+    en: 'Net Worth · 50/30/20 Cashflow',
+    gu: 'કુલ સંપત્તિ · 50/30/20 બજેટ',
+  },
+  'auth.montageSipTitle': {
+    en: 'SIP & FIRE',
+    gu: 'SIP અને FIRE',
+  },
+  'auth.montageSipSub': {
+    en: '20-Yr Step-Up Corpus · Age 90 Ready',
+    gu: '20-વર્ષ SIP ભંડોળ · નિવૃત્તિ તૈયારી',
+  },
+  'auth.montageShieldTitle': {
+    en: 'Nominee Shield',
+    gu: 'નોમિની સુરક્ષા',
+  },
+  'auth.montageShieldSub': {
+    en: '₹1.50 Cr Term + ₹15L Health Audited',
+    gu: '₹1.50 Cr ટર્મ + ₹15L આરોગ્ય વીમો',
+  },
+  'auth.montageCalcTitle': {
+    en: 'GST / Rent vs Buy',
+    gu: 'ટેક્સ / ભાડું વિ. ખરીદી',
+  },
+  'auth.montageCalcSub': {
+    en: 'FY 26-27 Old vs New Tax · GST Invoices',
+    gu: 'FY 26-27 ટેક્સ તુલના · GST ઇન્વોઇસ',
+  },
+  'auth.montageReceiptTitle': {
+    en: 'Quick Receipt Scan',
+    gu: 'ઝડપી રસીદ સ્કેન',
+  },
+  'auth.montageReceiptSub': {
+    en: 'Local IndexedDB Vault · CSV/JSON Export',
+    gu: 'સ્થાનિક રસીદ તિજોરી · CSV/JSON નિકાસ',
+  },
+  'auth.oauthErrNotConfigured': {
+    en: 'Google Sign-In is not configured on this server yet. Use email & password or Explore Demo Roles below.',
+    gu: 'આ સર્વર પર Google સાઇન ઇન હજી સેટ નથી. નીચે ઇમેઇલ/પાસવર્ડ અથવા ડેમો ભૂમિકાઓ વાપરો.',
+  },
+  'auth.oauthErrCancelled': {
+    en: 'Google sign-in was cancelled. You can retry anytime or sign in with email.',
+    gu: 'Google સાઇન ઇન રદ કરવામાં આવ્યું. તમે ગમે ત્યારે ફરી પ્રયાસ કરી શકો છો અથવા ઇમેઇલથી સાઇન ઇન કરો.',
+  },
+  'auth.oauthErrInvalidState': {
+    en: 'Could not verify the Google sign-in security token. Please try again.',
+    gu: 'Google સાઇન ઇન સુરક્ષા ટોકન ચકાસી શકાયું નથી. કૃપા કરીને ફરી પ્રયાસ કરો.',
+  },
+  'auth.oauthErrStateExpired': {
+    en: 'Your Google sign-in session expired. Please start again.',
+    gu: 'તમારું Google સાઇન ઇન સત્ર સમાપ્ત થઈ ગયું છે. કૃપા કરીને ફરીથી શરૂ કરો.',
+  },
+  'auth.oauthErrTokenFailed': {
+    en: 'Could not complete Google sign-in token exchange. Please retry or use email login.',
+    gu: 'Google સાઇન ઇન પૂર્ણ થઈ શક્યું નહીં. કૃપા કરીને ફરી પ્રયાસ કરો અથવા ઇમેઇલ લોગિન વાપરો.',
+  },
+  'auth.oauthErrEmailUnverified': {
+    en: 'Your Google email is not verified. Verify it with Google or register using email & password.',
+    gu: 'તમારું Google ઇમેઇલ ચકાસાયેલ નથી. કૃપા કરીને Google માં ચકાસો અથવા ઇમેઇલથી ખાતું બનાવો.',
+  },
+  'auth.oauthErrAccountMismatch': {
+    en: 'This email is already linked to a different Google account.',
+    gu: 'આ ઇમેઇલ પહેલેથી અન્ય Google ખાતા સાથે જોડાયેલ છે.',
+  },
+  'auth.oauthErrInviteInvalid': {
+    en: 'The family invite code was invalid or expired during Google sign-in.',
+    gu: 'Google સાઇન ઇન દરમિયાન પરિવાર આમંત્રણ કોડ અમાન્ય અથવા સમાપ્ત થયેલ હતો.',
+  },
+  'auth.oauthErrOauthFailed': {
+    en: 'Google sign-in failed unexpectedly. Please try again or sign in with email.',
+    gu: 'Google સાઇન ઇન અણધારી રીતે નિષ્ફળ ગયું. કૃપા કરીને ફરી પ્રયાસ કરો અથવા ઇમેઇલથી લોગિન કરો.',
+  },
+  'auth.oauthErrOffline': {
+    en: 'You appear to be offline. Connect to the internet to continue with Google.',
+    gu: 'તમે હાલમાં ઑફલાઇન છો. Google સાથે આગળ વધવા ઇન્ટરનેટ ચાલુ કરો.',
+  },
+  'auth.reauthGooglePrompt': {
+    en: 'Re-authenticate with Google to link your cloud billing session:',
+    gu: 'તમારું ક્લાઉડ બિલિંગ સત્ર જોડવા Google સાથે ફરી સાઇન ઇન કરો:',
+  },
+
+  // M3: Folk Two-Pane Welcome Onboarding
+  'onb.welcomeTitle': {
+    en: 'Welcome to Dhanora (ધનોરા)',
+    gu: 'Dhanora (ધનોરા) માં તમારું સ્વાગત છે',
+  },
+  'onb.welcomeSub': {
+    en: 'Set up your family ledger in 3 calm steps — or apply a starter template right away.',
+    gu: '3 સરળ પગલાંમાં તમારી પરિવાર ખાતાવહી તૈયાર કરો — અથવા તરત જ નમૂનો લાગુ કરો.',
+  },
+  'onb.stepDot1': { en: 'Pick template', gu: 'નમૂનો પસંદ કરો' },
+  'onb.stepDot2': { en: 'Select members', gu: 'સભ્યો પસંદ કરો' },
+  'onb.stepDot3': { en: 'Launch vault', gu: 'તિજોરી શરૂ કરો' },
+  'onb.backBtn': { en: 'Back', gu: 'પાછા' },
+  'onb.nextBtn': { en: 'Continue', gu: 'આગળ વધો' },
+  'onb.launchVaultBtn': { en: 'Launch Vault', gu: 'તિજોરી શરૂ કરો' },
+  'onb.membersHeading': {
+    en: 'Select household members',
+    gu: 'પરિવારના સભ્યો પસંદ કરો',
+  },
+  'onb.membersSub': {
+    en: 'Choose who is starting in this vault — you can invite or edit members anytime.',
+    gu: 'આ તિજોરીમાં કોણ સામેલ છે તે પસંદ કરો — તમે ગમે ત્યારે સભ્યો ઉમેરી શકો છો.',
+  },
+  'onb.memberOpt1': {
+    en: 'Solo / Individual (1 Member)',
+    gu: 'એક વ્યક્તિ (1 સભ્ય)',
+  },
+  'onb.memberOpt2': {
+    en: 'Couple / Co-Managers (2 Adults)',
+    gu: 'દંપતી / સહ-સંચાલક (2 સભ્યો)',
+  },
+  'onb.memberOpt3': {
+    en: 'Joint Family (3+ Members)',
+    gu: 'સંયુક્ત પરિવાર (3+ સભ્યો)',
+  },
+  'onb.launchHeading': {
+    en: 'Ready to launch your Dhanora (ધનોરા) vault',
+    gu: 'તમારી Dhanora (ધનોરા) તિજોરી શરૂ કરવા તૈયાર છે',
+  },
+  'onb.launchSub': {
+    en: 'Review your setup below. All sample entries remain 100% editable and local-first.',
+    gu: 'નીચે તમારી પસંદગી ચકાસો. બધી વિગતો 100% સુધારી શકાય તેવી અને સ્થાનિક છે.',
+  },
+  'onb.launchTemplateLabel': { en: 'Starter template', gu: 'શરૂઆતનો નમૂનો' },
+  'onb.launchMembersLabel': { en: 'Household size', gu: 'પરિવારનું કદ' },
+  'onb.checklistTitle': {
+    en: 'Inside your Dhanora (ધનોરા) vault',
+    gu: 'તમારી Dhanora (ધનોરા) તિજોરીમાં સામેલ',
+  },
+  'onb.chk1Title': {
+    en: '50/30/20 Household Cashflow',
+    gu: '50/30/20 પરિવાર રોકડ પ્રવાહ',
+  },
+  'onb.chk1Desc': {
+    en: 'Track needs, wants, and savings envelopes across accounts.',
+    gu: 'તમામ ખાતાઓમાં જરૂરિયાત, શોખ અને બચતનું સરળ વિભાજન.',
+  },
+  'onb.chk2Title': {
+    en: 'Nominee & Insurance Shield',
+    gu: 'નોમિની અને વીમા સુરક્ષા',
+  },
+  'onb.chk2Desc': {
+    en: 'Audit missing nominees, term cover gaps, and emergency notes.',
+    gu: 'ખૂટતા નોમિની, ટર્મ વીમાની ખામી અને કટોકટી માર્ગદર્શિકા.',
+  },
+  'onb.chk3Title': {
+    en: 'Tax & FIRE Calculators',
+    gu: 'ટેક્સ અને FIRE કેલ્ક્યુલેટર',
+  },
+  'onb.chk3Desc': {
+    en: 'FY 26-27 Old vs New Tax, Rent vs Buy, and 20-yr SIP planners.',
+    gu: 'FY 26-27 જૂનો/નવો ટેક્સ, ભાડું વિ. ખરીદી અને SIP આયોજન.',
+  },
+  'onb.chk4Title': {
+    en: 'Private Advisor & Dependent Permissions',
+    gu: 'ખાનગી સલાહકાર અને આશ્રિત પરવાનગીઓ',
+  },
+  'onb.chk4Desc': {
+    en: 'Role-scoped views keep allowances and private packs separate.',
+    gu: 'ભૂમિકા મુજબ ગોપનીયતા ખિસ્સાખર્ચ અને ખાનગી નોંધ અલગ રાખે છે.',
+  },
+  'onb.chk5Title': {
+    en: 'Encrypted Sync & CSV Ownership',
+    gu: 'સુરક્ષિત સિંક અને CSV માલિકી',
+  },
+  'onb.chk5Desc': {
+    en: 'Local-first IndexedDB + optional SQLite sync with 1-click exports.',
+    gu: 'સ્થાનિક IndexedDB + વૈકલ્પિક SQLite સિંક અને સરળ નિકાસ.',
+  },
+  'onb.closeAria': {
+    en: 'Close templates dialog',
+    gu: 'નમૂના વિન્ડો બંધ કરો',
   },
 } satisfies Record<string, BilingualEntry>;

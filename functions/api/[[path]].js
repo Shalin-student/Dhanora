@@ -15,6 +15,12 @@ import {
   buildReceiptEmail,
   sendTransactionalEmail,
 } from '../../server/edge/emailCore.mjs';
+import {
+  buildGoogleAuthorizeUrl,
+  buildGoogleState,
+  exchangeGoogleCode,
+  verifyGoogleState,
+} from '../../server/edge/oauthCore.mjs';
 
 const SESSION_COOKIE_NAME = 'hl_session';
 const rateBuckets = new Map();
@@ -52,7 +58,10 @@ function parseCookies(request) {
 
 function isHttpsRequest(request) {
   try {
-    const proto = String(request.headers.get('x-forwarded-proto') || '').toLowerCase();
+    const proto = String(request.headers.get('x-forwarded-proto') || '')
+      .split(',')[0]
+      .trim()
+      .toLowerCase();
     return proto === 'https' || new URL(request.url).protocol === 'https:';
   } catch {
     return false;
@@ -95,6 +104,29 @@ function resolveRequestOrigin(request, env) {
     return String(env.APP_BASE_URL).trim().replace(/\/+$/, '');
   }
   return new URL(request.url).origin.replace(/\/+$/, '');
+}
+
+function getGoogleOAuthConfig(env) {
+  const clientId = String(env.GOOGLE_CLIENT_ID || '').trim();
+  const clientSecret = String(env.GOOGLE_CLIENT_SECRET || '').trim();
+  const stateSecret = String(env.SESSION_HMAC_SECRET || clientSecret || '').trim();
+  return {
+    configured: Boolean(clientId && clientSecret && stateSecret),
+    clientId,
+    clientSecret,
+    stateSecret,
+  };
+}
+
+function redirectResponse(request, env, location, extraHeaders = {}) {
+  return new Response(null, {
+    status: 302,
+    headers: buildSecurityHeaders(request, env, {
+      Location: location,
+      'Cache-Control': 'no-store',
+      ...extraHeaders,
+    }),
+  });
 }
 
 function buildSecurityHeaders(request, env, extra = {}) {
@@ -329,6 +361,7 @@ export async function onRequest(context) {
         updatedAt: snap.updatedAt,
         authenticated: Boolean(session),
         authRequired: requireAuthForSync,
+        googleOAuthConfigured: getGoogleOAuthConfig(env).configured,
       });
     }
 
@@ -414,11 +447,17 @@ export async function onRequest(context) {
 
     if (method === 'GET' && pathname === '/api/auth/me') {
       const session = await resolveSession();
+      const googleOAuthConfigured = getGoogleOAuthConfig(env).configured;
       if (!session) {
-        return jsonResponse(request, env, 200, { authenticated: false, session: null });
+        return jsonResponse(request, env, 200, {
+          authenticated: false,
+          session: null,
+          googleOAuthConfigured,
+        });
       }
       return jsonResponse(request, env, 200, {
         authenticated: true,
+        googleOAuthConfigured,
         session: {
           token: session.token,
           userId: session.userId,
@@ -436,6 +475,105 @@ export async function onRequest(context) {
           isDemo: false,
         },
       });
+    }
+
+    if (method === 'GET' && pathname === '/api/auth/google/start') {
+      if (!checkRateLimit(`oauth-start:${clientIp}`, 30, 60_000, disableRateLimit)) {
+        return jsonResponse(request, env, 429, { error: 'RATE_LIMITED' });
+      }
+      const origin = resolveRequestOrigin(request, env);
+      const oauth = getGoogleOAuthConfig(env);
+      if (!oauth.configured) {
+        return redirectResponse(request, env, `${origin}/?authError=google_not_configured`);
+      }
+      const mode = url.searchParams.get('mode') || 'signin';
+      const inviteCode = url.searchParams.get('invite') || '';
+      const nextPlan = url.searchParams.get('plan') || '';
+      const redirectUri =
+        String(env.GOOGLE_REDIRECT_URI || '').trim() || `${origin}/api/auth/google/callback`;
+      const state = await buildGoogleState({
+        secret: oauth.stateSecret,
+        mode,
+        inviteCode,
+        nextPlan,
+      });
+      return redirectResponse(
+        request,
+        env,
+        buildGoogleAuthorizeUrl({
+          clientId: oauth.clientId,
+          redirectUri,
+          state,
+        })
+      );
+    }
+
+    if (method === 'GET' && pathname === '/api/auth/google/callback') {
+      if (!checkRateLimit(`oauth-callback:${clientIp}`, 30, 60_000, disableRateLimit)) {
+        return jsonResponse(request, env, 429, { error: 'RATE_LIMITED' });
+      }
+      const origin = resolveRequestOrigin(request, env);
+      const oauth = getGoogleOAuthConfig(env);
+      const errParam = url.searchParams.get('error');
+      if (errParam) {
+        const authErr = errParam === 'access_denied' ? 'google_cancelled' : 'google_oauth_failed';
+        return redirectResponse(request, env, `${origin}/?authError=${authErr}`);
+      }
+      if (!oauth.configured) {
+        return redirectResponse(request, env, `${origin}/?authError=google_not_configured`);
+      }
+      const state = url.searchParams.get('state') || '';
+      const code = url.searchParams.get('code') || '';
+      const stateCheck = await verifyGoogleState({
+        secret: oauth.stateSecret,
+        state,
+      });
+      if (!stateCheck.ok) {
+        return redirectResponse(
+          request,
+          env,
+          `${origin}/?authError=${encodeURIComponent(stateCheck.error)}`
+        );
+      }
+      if (!code) {
+        return redirectResponse(request, env, `${origin}/?authError=google_token_exchange_failed`);
+      }
+      try {
+        const redirectUri =
+          String(env.GOOGLE_REDIRECT_URI || '').trim() || `${origin}/api/auth/google/callback`;
+        const profile = await exchangeGoogleCode({
+          code,
+          clientId: oauth.clientId,
+          clientSecret: oauth.clientSecret,
+          redirectUri,
+        });
+        const userRes = await store.upsertGoogleUser({
+          email: profile.email,
+          name: profile.name,
+          googleSub: profile.sub,
+          avatarUrl: profile.picture,
+          inviteCode: stateCheck.inviteCode,
+          emailVerified: profile.email_verified,
+        });
+        const { token } = await store.createSession({
+          userId: userRes.userId,
+          householdId: userRes.householdId,
+          role: userRes.role,
+        });
+        const qs = new URLSearchParams({ oauth: 'ok' });
+        if (userRes.isNewUser) qs.set('oauthNew', '1');
+        if (stateCheck.nextPlan) qs.set('postAuthPlan', stateCheck.nextPlan);
+        return redirectResponse(request, env, `${origin}/?${qs.toString()}`, {
+          'Set-Cookie': formatSessionCookie(request, token),
+        });
+      } catch (err) {
+        const authErr = String(err?.code || 'google_oauth_failed');
+        return redirectResponse(
+          request,
+          env,
+          `${origin}/?authError=${encodeURIComponent(authErr)}`
+        );
+      }
     }
 
     if (method === 'POST' && pathname === '/api/auth/logout') {

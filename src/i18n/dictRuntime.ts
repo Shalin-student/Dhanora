@@ -3,8 +3,8 @@ import type { BilingualEntry } from './dictCore';
 export const DICT_RUNTIME = {
   // Toasts & runtime feedback inside FinanceContext & hooks
   'toast.installed': {
-    en: 'HearthLedger installed for offline use.',
-    gu: 'હાર્થલેજર એપ ઑફલાઇન ઉપયોગ માટે ઇન્સ્ટોલ થઈ ગઈ છે.',
+    en: 'Dhanora (ધનોરા) installed for offline use.',
+    gu: 'Dhanora (ધનોરા) એપ ઑફલાઇન ઉપયોગ માટે ઇન્સ્ટોલ થઈ ગઈ છે.',
   },
   'toast.switchedProfile': {
     en: 'Switched profile to {avatar} {name} ({role})',

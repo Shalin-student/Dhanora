@@ -215,7 +215,7 @@ export const TransactionsView: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `hearthledger-transactions-${selectedMonth}.csv`;
+    link.download = `dhanora-transactions-${selectedMonth}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   };

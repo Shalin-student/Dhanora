@@ -128,7 +128,7 @@ export const FeedbackModal: React.FC<{
 
         <div className="mt-4 border-t border-[#F1F5F9] pt-3 text-center dark:border-[#232f4f]">
           <a
-            href="mailto:shalinpatel1102@gmail.com?subject=HearthLedger%20Support"
+            href="mailto:shalinpatel1102@gmail.com?subject=Dhanora%20(%E0%AA%A7%E0%AA%A8%E0%AB%8B%E0%AA%B0%E0%AA%BE)%20Support"
             className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#0F766E] hover:underline dark:text-[#6ac0b6]"
           >
             <Mail className="h-3 w-3" />

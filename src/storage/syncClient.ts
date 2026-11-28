@@ -108,9 +108,16 @@ async function fetchWithTimeout(
   }
 }
 
-export async function checkSyncHealth(
+export interface SyncHealthDetails {
+  available: boolean;
+  revision?: number;
+  unauthorized?: boolean;
+  googleOAuthConfigured?: boolean;
+}
+
+export async function fetchSyncHealthDetails(
   config: SyncClientConfig = {}
-): Promise<{ available: boolean; revision?: number; unauthorized?: boolean }> {
+): Promise<SyncHealthDetails> {
   if (typeof fetch === 'undefined') return { available: false };
   try {
     const base = buildBaseUrl(config.serverUrl);
@@ -121,11 +128,28 @@ export async function checkSyncHealth(
     );
     if (res.status === 401) return { available: false, unauthorized: true };
     if (!res.ok) return { available: false };
-    const data = (await res.json()) as { ok?: boolean; revision?: number };
-    return { available: Boolean(data.ok), revision: data.revision ?? 0 };
+    const data = (await res.json()) as {
+      ok?: boolean;
+      revision?: number;
+      googleOAuthConfigured?: boolean;
+    };
+    return {
+      available: Boolean(data.ok),
+      revision: data.revision ?? 0,
+      googleOAuthConfigured: Boolean(data.googleOAuthConfigured),
+    };
   } catch {
     return { available: false };
   }
+}
+
+export async function checkSyncHealth(
+  config: SyncClientConfig = {}
+): Promise<{ available: boolean; revision?: number; unauthorized?: boolean }> {
+  const details = await fetchSyncHealthDetails(config);
+  if (details.unauthorized) return { available: false, unauthorized: true };
+  if (!details.available) return { available: false };
+  return { available: true, revision: details.revision ?? 0 };
 }
 
 export async function fetchServerState(
@@ -288,20 +312,67 @@ export function subscribeToSyncEvents(
   };
 }
 
-export async function fetchCurrentAuthSession(
+export interface AuthStatusResponse {
+  authenticated: boolean;
+  session: AuthSession | null;
+  googleOAuthConfigured: boolean;
+}
+
+export async function fetchAuthStatus(
   config: SyncClientConfig = {}
-): Promise<AuthSession | null> {
+): Promise<AuthStatusResponse | null> {
+  if (typeof fetch === 'undefined') return null;
   try {
     const base = buildBaseUrl(config.serverUrl);
     const res = await fetchWithTimeout(`${base}/api/auth/me`, {
       headers: buildHeaders(config),
     });
     if (!res.ok) return null;
-    const data = (await res.json()) as { authenticated?: boolean; session?: AuthSession | null };
-    return data.authenticated && data.session ? data.session : null;
+    const data = (await res.json()) as {
+      authenticated?: boolean;
+      session?: AuthSession | null;
+      googleOAuthConfigured?: boolean;
+    };
+    const authenticated = Boolean(data.authenticated && data.session);
+    return {
+      authenticated,
+      session: authenticated && data.session ? data.session : null,
+      googleOAuthConfigured: Boolean(data.googleOAuthConfigured),
+    };
   } catch {
     return null;
   }
+}
+
+export async function fetchCurrentAuthSession(
+  config: SyncClientConfig = {}
+): Promise<AuthSession | null> {
+  const status = await fetchAuthStatus(config);
+  return status?.session ?? null;
+}
+
+export function buildGoogleOAuthStartUrl(params: {
+  serverUrl?: string;
+  mode?: 'signin' | 'signup';
+  inviteCode?: string;
+  plan?: PlanTier;
+} = {}): string {
+  const base = buildBaseUrl(params.serverUrl);
+  const search = new URLSearchParams();
+  if (params.mode === 'signup' || params.mode === 'signin') {
+    search.set('mode', params.mode);
+  } else {
+    search.set('mode', 'signin');
+  }
+  const cleanInvite = params.inviteCode?.trim();
+  if (cleanInvite) {
+    search.set('invite', cleanInvite);
+  }
+  if (params.plan === 'plus' || params.plan === 'advisor') {
+    search.set('plan', params.plan);
+  }
+  const qs = search.toString();
+  return `${base}/api/auth/google/start${qs ? `?${qs}` : ''}`;
 }
 
 export async function createServerInvite(

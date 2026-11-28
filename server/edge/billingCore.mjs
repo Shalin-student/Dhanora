@@ -256,7 +256,7 @@ export async function createGatewayCheckout({
     form.set('line_items[0][price_data][unit_amount]', String(finalAmountMinor));
     form.set(
       'line_items[0][price_data][product_data][name]',
-      `HearthLedger ${pricing.planName} (${pricing.billingCycle})`
+      `Dhanora (ધનોરા) ${pricing.planName} (${pricing.billingCycle})`
     );
 
     const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {

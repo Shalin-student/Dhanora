@@ -20,6 +20,7 @@ import {
   Target,
   TrendingUp,
   Users,
+  X,
 } from 'lucide-react';
 import { useFinance } from '../store/FinanceContext';
 import type { PlanTier, PublicLegalPage } from '../types/finance';
@@ -28,7 +29,7 @@ import { PricingView } from '../pages/PricingView';
 import { LegalPagesView } from '../pages/LegalPagesView';
 import { AuthPages, type AuthScreenMode } from './AuthPages';
 import { HeroProductPreview } from './HeroProductPreview';
-import { BrandMark } from './BrandMark';
+import { BrandLogoButton } from './BrandMark';
 import { LanguageToggle } from './LanguageToggle';
 import { useI18n } from '../i18n/useI18n';
 
@@ -91,7 +92,15 @@ function syncBrowserPath(nextPath: string) {
 }
 
 export const PublicPortal: React.FC = () => {
-  const { state, enterGuestDemo, updateSettings, canInstallPwa, triggerInstallPwa } = useFinance();
+  const {
+    state,
+    enterGuestDemo,
+    updateSettings,
+    canInstallPwa,
+    triggerInstallPwa,
+    oauthNotice,
+    dismissOauthNotice,
+  } = useFinance();
   const { t } = useI18n();
   const isDark = state.settings.theme === 'dark';
 
@@ -153,6 +162,7 @@ export const PublicPortal: React.FC = () => {
         initialInviteCode={initialInviteCode}
         initialResetToken={initialResetToken}
         onBackHome={backHome}
+        onOpenLegal={openLegal}
       />
     );
   }
@@ -252,17 +262,18 @@ export const PublicPortal: React.FC = () => {
       {/* Top Marketing Navbar */}
       <header className="sticky top-0 z-40 border-b border-[#bfc9c3]/40 bg-[#faf8ff]/90 backdrop-blur-md dark:border-[#232f4f] dark:bg-[#0b1120]/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-2.5">
-            <BrandMark size="md" />
-            <div>
-              <div className="text-sm font-bold tracking-tight text-[#131b2e] dark:text-white">
-                {t('brand.name')}
-              </div>
-              <div className="hidden text-[11px] font-medium text-[#0F766E] sm:block dark:text-[#80bea6]">
-                {t('pub.brandTagline')}
-              </div>
-            </div>
-          </div>
+          <BrandLogoButton
+            size="md"
+            subtitle={t('pub.brandTagline')}
+            subtitleClassName="hidden sm:block"
+            ariaLabel={t('brand.name')}
+            onClick={() => {
+              backHome();
+              if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          />
 
           <nav className="hidden items-center gap-6 text-xs font-semibold text-[#404944] md:flex dark:text-[#bfc9c3]">
             <a href="#features" className="transition hover:text-[#064E3B] dark:hover:text-[#b0f0d6]">
@@ -306,6 +317,38 @@ export const PublicPortal: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {oauthNotice && (
+        <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-10">
+          <div
+            role={oauthNotice.type === 'error' ? 'alert' : 'status'}
+            className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-xs font-semibold shadow-xs ${
+              oauthNotice.type === 'error'
+                ? 'border-[#ba1a1a]/30 bg-[#ffdad6] text-[#93000a]'
+                : 'border-[#FCD34D] bg-[#FEF3C7] text-[#904d00]'
+            }`}
+          >
+            <span className="leading-relaxed">{oauthNotice.message}</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => openAuth('signin')}
+                className="inline-flex min-h-[44px] items-center rounded-lg border border-current/20 bg-white/70 px-3 text-xs font-bold hover:bg-white"
+              >
+                {t('pub.signInBtn')}
+              </button>
+              <button
+                type="button"
+                onClick={dismissOauthNotice}
+                aria-label={t('auth.dismissNoticeAria')}
+                className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg hover:bg-black/5"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="mx-auto max-w-7xl space-y-16 px-4 py-10 sm:px-6 lg:px-10 sm:py-12">
         {/* Split Hero + Interactive 3-Tab Live App Preview */}
@@ -526,12 +569,18 @@ export const PublicPortal: React.FC = () => {
 
       <footer className="border-t border-[#bfc9c3]/40 bg-[#f2f3ff]/80 py-8 text-xs text-[#404944] dark:border-[#232f4f] dark:bg-[#131b2e] dark:text-[#bfc9c3]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-2">
-            <BrandMark size="sm" />
-            <span>
-              <span className="font-bold text-[#131b2e] dark:text-white">{t('brand.name')}</span>{' '}
-              — {t('pub.footerDisclaimer')}
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <BrandLogoButton
+              size="sm"
+              ariaLabel={t('brand.name')}
+              onClick={() => {
+                backHome();
+                if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            />
+            <span>— {t('pub.footerDisclaimer')}</span>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             {canInstallPwa && (

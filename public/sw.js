@@ -1,5 +1,5 @@
-const CACHE_NAME = 'hearthledger-cache-v2';
-const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/icon.svg'];
+const CACHE_NAME = 'dhanora-cache-v3';
+const APP_SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/icon.svg', '/favicon.ico'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

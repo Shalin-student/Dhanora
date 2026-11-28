@@ -53,6 +53,8 @@ const DDL_STATEMENTS = [
     avatar TEXT NOT NULL,
     password_hash TEXT NOT NULL,
     password_salt TEXT NOT NULL,
+    auth_provider TEXT NOT NULL DEFAULT 'password',
+    google_sub TEXT,
     created_at TEXT NOT NULL
   )`,
   `CREATE TABLE IF NOT EXISTS sessions (
@@ -148,6 +150,30 @@ export async function ensureD1Schema(db) {
           .bind('default', 'Shared Household', new Date().toISOString()),
       ];
       await db.batch(statements);
+
+      const colRes = await db.prepare('PRAGMA table_info(users)').all();
+      const existingCols = new Set((colRes?.results ?? []).map((c) => c.name));
+      if (!existingCols.has('auth_provider')) {
+        try {
+          await db
+            .prepare("ALTER TABLE users ADD COLUMN auth_provider TEXT NOT NULL DEFAULT 'password'")
+            .run();
+        } catch (err) {
+          if (!String(err?.message || '').toLowerCase().includes('duplicate column')) {
+            throw err;
+          }
+        }
+      }
+      if (!existingCols.has('google_sub')) {
+        try {
+          await db.prepare('ALTER TABLE users ADD COLUMN google_sub TEXT').run();
+        } catch (err) {
+          if (!String(err?.message || '').toLowerCase().includes('duplicate column')) {
+            throw err;
+          }
+        }
+      }
+      await db.prepare('CREATE INDEX IF NOT EXISTS idx_users_google_sub ON users (google_sub)').run();
     })().catch((err) => {
       initializedDbs.delete(db);
       throw err;
@@ -159,6 +185,21 @@ export async function ensureD1Schema(db) {
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function roleAvatarFallback(role) {
+  if (role === 'partner') return '👩🏽‍🎨';
+  if (role === 'dependent') return '🧒🏽';
+  if (role === 'advisor') return '💼';
+  return '🧑🏽‍💻';
+}
+
+function resolveEmojiAvatar(avatarUrl, role) {
+  const trimmed = String(avatarUrl || '').trim();
+  if (trimmed && trimmed.length <= 16 && !/^(?:https?:|data:|javascript:)/i.test(trimmed)) {
+    return trimmed;
+  }
+  return roleAvatarFallback(role);
 }
 
 async function hashUserPassword(password, salt) {
@@ -306,7 +347,7 @@ export function createD1Store(db) {
   }) {
     const cleanEmail = String(email).trim().toLowerCase();
     const existing = await db
-      .prepare('SELECT id FROM users WHERE email = ?')
+      .prepare('SELECT id FROM users WHERE lower(email) = ?')
       .bind(cleanEmail)
       .first();
     if (existing) return { exists: true };
@@ -421,11 +462,11 @@ export function createD1Store(db) {
       .prepare(
         `SELECT id, household_id AS householdId, email, name, role, member_id AS memberId, avatar,
                 password_hash AS passwordHash, password_salt AS passwordSalt
-         FROM users WHERE email = ?`
+         FROM users WHERE lower(email) = ?`
       )
       .bind(String(email).trim().toLowerCase())
       .first();
-    if (!row) return null;
+    if (!row || !row.passwordHash || !row.passwordSalt) return null;
 
     const candidate = await hashUserPassword(password, row.passwordSalt);
     if (!safeHexEqual(candidate, row.passwordHash)) return null;
@@ -465,6 +506,9 @@ export function createD1Store(db) {
       .bind(userId)
       .first();
     if (!row) return { ok: false, error: 'NOT_FOUND' };
+    if (!row.passwordHash || !row.passwordSalt) {
+      return { ok: false, error: 'OAUTH_ACCOUNT_NO_PASSWORD' };
+    }
 
     const candidate = await hashUserPassword(currentPassword, row.passwordSalt);
     if (!safeHexEqual(candidate, row.passwordHash)) {
@@ -484,7 +528,7 @@ export function createD1Store(db) {
     const cleanEmail = String(email || '').trim().toLowerCase();
     if (!cleanEmail) return null;
     const user = await db
-      .prepare('SELECT id, name, email FROM users WHERE email = ?')
+      .prepare('SELECT id, name, email FROM users WHERE lower(email) = ?')
       .bind(cleanEmail)
       .first();
     if (!user) return null;
@@ -1004,6 +1048,170 @@ export function createD1Store(db) {
       .run();
   }
 
+  async function upsertGoogleUser({
+    email,
+    name,
+    googleSub,
+    avatarUrl,
+    inviteCode,
+    emailVerified,
+  }) {
+    if (emailVerified !== true) {
+      throw Object.assign(new Error('GOOGLE_EMAIL_UNVERIFIED'), {
+        code: 'google_email_unverified',
+        statusCode: 400,
+      });
+    }
+
+    const cleanEmail = String(email || '').trim().toLowerCase();
+    const cleanSub = String(googleSub || '').trim();
+    if (!cleanSub || !cleanEmail.includes('@')) {
+      throw Object.assign(new Error('GOOGLE_TOKEN_EXCHANGE_FAILED'), {
+        code: 'google_token_exchange_failed',
+        statusCode: 400,
+      });
+    }
+
+    const cleanName = String(name || '').trim() || cleanEmail.split('@')[0] || 'User';
+
+    const existing = await db
+      .prepare(
+        `SELECT id, household_id AS householdId, email, name, role, member_id AS memberId, avatar,
+                auth_provider AS authProvider, google_sub AS googleSub
+         FROM users
+         WHERE google_sub = ? OR lower(email) = ?
+         ORDER BY CASE WHEN google_sub = ? THEN 0 ELSE 1 END
+         LIMIT 1`
+      )
+      .bind(cleanSub, cleanEmail, cleanSub)
+      .first();
+
+    if (existing) {
+      if (existing.googleSub && existing.googleSub !== cleanSub) {
+        throw Object.assign(new Error('GOOGLE_ACCOUNT_MISMATCH'), {
+          code: 'google_account_mismatch',
+          statusCode: 409,
+        });
+      }
+      if (!existing.googleSub || !existing.authProvider) {
+        await db
+          .prepare(
+            `UPDATE users
+             SET google_sub = COALESCE(NULLIF(google_sub, ''), ?),
+                 auth_provider = COALESCE(NULLIF(auth_provider, ''), 'google')
+             WHERE id = ?`
+          )
+          .bind(cleanSub, existing.id)
+          .run();
+      }
+      return {
+        userId: existing.id,
+        householdId: existing.householdId,
+        role: existing.role,
+        memberId: existing.memberId,
+        name: existing.name,
+        email: existing.email,
+        avatar: existing.avatar,
+        isNewUser: false,
+      };
+    }
+
+    const now = nowIso();
+    const userId = `usr-${Date.now()}-${randomHex(3)}`;
+    const memberId = `m-${Date.now()}-${randomHex(2)}`;
+    let targetHouseholdId = `hh-${Date.now()}-${randomHex(3)}`;
+    let effectiveRole = 'admin';
+    let usedInviteCode = null;
+    const statements = [];
+
+    const trimmedInvite = inviteCode ? String(inviteCode).trim() : '';
+    if (trimmedInvite) {
+      const inv = await getInviteByCode(trimmedInvite);
+      if (!inv || !inv.valid) {
+        throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+          code: 'google_invite_invalid',
+          statusCode: 400,
+        });
+      }
+      if (inv.invitedEmail && inv.invitedEmail.toLowerCase() !== cleanEmail) {
+        throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+          code: 'google_invite_invalid',
+          statusCode: 400,
+        });
+      }
+      targetHouseholdId = inv.householdId;
+      effectiveRole = ['admin', 'partner', 'dependent', 'advisor'].includes(inv.role)
+        ? inv.role
+        : 'partner';
+      usedInviteCode = inv.code;
+
+      const invUpdate = await db
+        .prepare('UPDATE invites SET used_by_user_id = ?, used_at = ? WHERE code = ? AND used_at IS NULL')
+        .bind(userId, now, usedInviteCode)
+        .run();
+      if (!invUpdate?.meta?.changes) {
+        throw Object.assign(new Error('GOOGLE_INVITE_INVALID'), {
+          code: 'google_invite_invalid',
+          statusCode: 400,
+        });
+      }
+    } else {
+      const firstName = cleanName.split(/\s+/)[0] || 'Family';
+      const householdName = `${firstName}'s Household`;
+      statements.push(
+        db
+          .prepare(
+            `INSERT INTO households (id, name, plan_tier, plan_status, billing_cycle, trial_ends_at, created_at)
+             VALUES (?, ?, 'free', 'active', 'yearly', NULL, ?)`
+          )
+          .bind(targetHouseholdId, householdName, now)
+      );
+    }
+
+    const avatar = resolveEmojiAvatar(avatarUrl, effectiveRole);
+    statements.push(
+      db
+        .prepare(
+          `INSERT INTO users (id, household_id, email, name, role, member_id, avatar, password_hash, password_salt, auth_provider, google_sub, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, '', '', 'google', ?, ?)`
+        )
+        .bind(
+          userId,
+          targetHouseholdId,
+          cleanEmail,
+          cleanName,
+          effectiveRole,
+          memberId,
+          avatar,
+          cleanSub,
+          now
+        )
+    );
+
+    try {
+      await db.batch(statements);
+    } catch (err) {
+      if (usedInviteCode) {
+        await db
+          .prepare('UPDATE invites SET used_by_user_id = NULL, used_at = NULL WHERE code = ? AND used_by_user_id = ?')
+          .bind(usedInviteCode, userId)
+          .run();
+      }
+      throw err;
+    }
+
+    return {
+      userId,
+      householdId: targetHouseholdId,
+      role: effectiveRole,
+      memberId,
+      name: cleanName,
+      email: cleanEmail,
+      avatar,
+      isNewUser: true,
+    };
+  }
+
   return {
     getHousehold,
     updateHouseholdBilling,
@@ -1022,6 +1230,7 @@ export function createD1Store(db) {
     rotateUserPassword,
     createPasswordResetToken,
     consumePasswordResetToken,
+    upsertGoogleUser,
     saveFeedback,
     listFeedback,
     createSession,
